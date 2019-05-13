@@ -4,8 +4,9 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './login/login.component';
-import { routing } from './app.routing'
 import { MaterialFormsModule } from '@material';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { routing } from './app.routing'
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { MaterialFormsModule } from '@material';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialFormsModule,
+    FlexLayoutModule,
     routing
   ],
   providers: [],
