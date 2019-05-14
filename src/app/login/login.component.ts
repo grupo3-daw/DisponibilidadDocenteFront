@@ -1,47 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
-  login: FormGroup
-  hide = true
-  constructor ( private _formBuilder: FormBuilder ) {
-    this.inicializarFormulario()
-  }
-
-  ngOnInit() {
-  }
-
-  private inicializarFormulario() { 
-    this.login = this._formBuilder.group( {
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    } )
+export class LoginComponent {
+  login: FormGroup;
+  hide = true;
+  constructor(private _formBuilder: FormBuilder) {
+    this.inicializarFormulario();
   }
 
   emailValido(): boolean {
-    return this.login.get( 'email' ).valid
+    return this.login.get('email').valid;
   }
 
   emailDirty(): boolean {
-    return this.login.get( 'email' ).dirty
+    return this.login.get('email').dirty;
   }
 
   contrasenaValida(): boolean {
-    return this.login.get( 'password' ).valid
+    return this.login.get('password').valid;
   }
 
   getErrorMessage(): string {
-    return 'Este campo es requerido'
+    return 'Este campo es requerido';
   }
 
-  onSubmit() {
-    if ( this.login.valid ) {
-      console.log('Ingreso');
+  onSubmit(): void {
+    if (this.login.valid) {
+      // console.log('Ingreso');
 
       // this.loading = true
       // this.payLoad = JSON.stringify( this.login.value )
@@ -61,4 +51,10 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  private inicializarFormulario(): void {
+    this.login = this._formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+  }
 }
