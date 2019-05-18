@@ -16,9 +16,9 @@
               required
               (keyup.enter)="onSubmit()"
             />
-            <mat-error *ngIf="!emailValido()">{{
-              getErrorMessage()
-            }}</mat-error>
+            <mat-error *ngIf="!email.valid"
+              >{{ getErrorMessage() }} {{ email.errors | json }}
+            </mat-error>
           </mat-form-field>
           <mat-form-field>
             <input
@@ -32,7 +32,7 @@
             <mat-icon matSuffix (click)="hide = !hide">{{
               hide ? "visibility_off" : "visibility"
             }}</mat-icon>
-            <mat-error *ngIf="!contrasenaValida()">{{
+            <mat-error *ngIf="!password.valid">{{
               getErrorMessage()
             }}</mat-error>
           </mat-form-field>

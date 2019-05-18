@@ -9,29 +9,22 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 export class LoginComponent implements OnInit {
   login: FormGroup;
   hide = true;
-  constructor(private _formBuilder: FormBuilder) {
-    this.inicializarFormulario();
-  }
 
-  ngOnInit() {}
+  constructor(private _formBuilder: FormBuilder) {}
 
-  private inicializarFormulario() {
+  ngOnInit() {
     this.login = this._formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required]
     });
   }
 
-  emailValido(): boolean {
-    return this.login.get("email").valid;
+  get email() {
+    return this.login.get("email");
   }
 
-  emailDirty(): boolean {
-    return this.login.get("email").dirty;
-  }
-
-  contrasenaValida(): boolean {
-    return this.login.get("password").valid;
+  get password() {
+    return this.login.get("password");
   }
 
   getErrorMessage(): string {
