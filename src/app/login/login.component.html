@@ -17,7 +17,7 @@
               (keyup.enter)="onSubmit()"
             />
             <mat-error *ngIf="!email.valid"
-              >{{ getErrorMessage() }} {{ email.errors | json }}
+              >{{ getErrorMessage(email) }}
             </mat-error>
           </mat-form-field>
           <mat-form-field>
@@ -33,7 +33,7 @@
               hide ? "visibility_off" : "visibility"
             }}</mat-icon>
             <mat-error *ngIf="!password.valid">{{
-              getErrorMessage()
+              getErrorMessage(password)
             }}</mat-error>
           </mat-form-field>
           <button id="ingresar" mat-button color="accent" (click)="onSubmit()">

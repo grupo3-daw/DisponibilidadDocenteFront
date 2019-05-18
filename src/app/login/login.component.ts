@@ -1,5 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl
+} from "@angular/forms";
 
 @Component({
   selector: "app-login",
@@ -10,10 +15,10 @@ export class LoginComponent implements OnInit {
   login: FormGroup;
   hide = true;
 
-  constructor(private _formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit() {
-    this.login = this._formBuilder.group({
+    this.login = this.formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.required]
     });
@@ -27,8 +32,17 @@ export class LoginComponent implements OnInit {
     return this.login.get("password");
   }
 
-  getErrorMessage(): string {
-    return "Este campo es requerido";
+  getErrorMessage(control: AbstractControl): string {
+    const errors = control.errors;
+
+    switch (Object.keys(errors)[0]) {
+      case "email":
+        return "Correo invalido";
+      case "required":
+        return "Este campo es requerido";
+    }
+
+    return ""; // TODO: no hay mensaje de error para tal tipo
   }
 
   onSubmit() {
