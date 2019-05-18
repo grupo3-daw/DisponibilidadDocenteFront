@@ -1,28 +1,40 @@
 <div class="fondo">
-  <div class="row  contenedor-autenticacion col-12 col-sm-9 col-md-8" >
+  <div class="row  contenedor-autenticacion col-12 col-sm-9 col-md-8">
     <div class="header-image col-md-6">
-      <img  class="img-fluid" src="../../assets/img/logo_san_marcos.png" />
+      <img class="img-fluid" src="../../assets/img/logo_san_marcos.png" />
     </div>
     <mat-card class="mat-card col-md-6 mat-elevation-z8">
-        <mat-card-title class="mat-headline">Iniciar Sesión</mat-card-title>
+      <mat-card-title class="mat-headline">Iniciar Sesión</mat-card-title>
       <mat-card-content>
-        <form  [formGroup]="login" (ngSubmit)="onSubmit()">
+        <form [formGroup]="login" (ngSubmit)="onSubmit()">
           <mat-form-field>
-            <input matInput type="email" placeholder="Correo Electrónico" formControlName="email" required
-              (keyup.enter)="onSubmit()" />
+            <input
+              matInput
+              type="email"
+              placeholder="Correo Electrónico"
+              formControlName="email"
+              required
+              (keyup.enter)="onSubmit()"
+            />
             <mat-error *ngIf="!emailValido()">{{
-                        getErrorMessage()
-                      }}</mat-error>
+              getErrorMessage()
+            }}</mat-error>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Contraseña" [type]="hide ? 'password' : 'text'" formControlName="password" required
-              (keyup.enter)="onSubmit()" />
+            <input
+              matInput
+              placeholder="Contraseña"
+              [type]="hide ? 'password' : 'text'"
+              formControlName="password"
+              required
+              (keyup.enter)="onSubmit()"
+            />
             <mat-icon matSuffix (click)="hide = !hide">{{
-                        hide ? 'visibility_off' : 'visibility'
-                      }}</mat-icon>
+              hide ? "visibility_off" : "visibility"
+            }}</mat-icon>
             <mat-error *ngIf="!contrasenaValida()">{{
-                        getErrorMessage()
-                      }}</mat-error>
+              getErrorMessage()
+            }}</mat-error>
           </mat-form-field>
           <button id="ingresar" mat-button color="accent" (click)="onSubmit()">
             Ingresar
