@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginComponent } from './login.component';
+import { LayoutAdministradorComponent } from './layout.component';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+describe('LayoutAdministradorComponent', () => {
+  let component: LayoutAdministradorComponent;
+  let fixture: ComponentFixture<LayoutAdministradorComponent>;
 
   beforeEach(async(() => {
 // tslint:disable-next-line: no-floating-promises
     TestBed.configureTestingModule({
-      declarations: [ LoginComponent ]
+      declarations: [ LayoutAdministradorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(LayoutAdministradorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
