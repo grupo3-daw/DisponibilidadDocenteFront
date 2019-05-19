@@ -1,37 +1,47 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   login: FormGroup;
   hide = true;
-  constructor(private _formBuilder: FormBuilder) {
-    this.inicializarFormulario();
+
+  constructor(private readonly formBuilder: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.login = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
   }
 
-  emailValido(): boolean {
-    return this.login.get('email').valid;
+  get email(): AbstractControl {
+    return this.login.get('email');
   }
 
-  emailDirty(): boolean {
-    return this.login.get('email').dirty;
+  get password(): AbstractControl {
+    return this.login.get('password');
   }
 
-  contrasenaValida(): boolean {
-    return this.login.get('password').valid;
-  }
+  getErrorMessage(control: AbstractControl): string {
+    const errors = control.errors;
 
-  getErrorMessage(): string {
-    return 'Este campo es requerido';
+    switch (Object.keys(errors)[0]) {
+      case 'email':
+        return 'Correo invalido';
+      case 'required':
+        return 'Este campo es requerido';
+      default: return '' ;
+    }
   }
 
   onSubmit(): void {
     if (this.login.valid) {
-      // console.log('Ingreso');
+      // console.log("Ingreso");
 
       // this.loading = true
       // this.payLoad = JSON.stringify( this.login.value )
@@ -49,12 +59,5 @@ export class LoginComponent {
       //     this.loading = false
       //   } )
     }
-  }
-
-  private inicializarFormulario(): void {
-    this.login = this._formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    });
   }
 }
