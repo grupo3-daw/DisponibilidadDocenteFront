@@ -1,0 +1,69 @@
+<!-- <mat-expansion-panel>
+  <mat-expansion-panel-header>
+    
+  </mat-expansion-panel-header>
+</mat-expansion-panel> -->
+
+<div id="contenedor">
+  <div id="informacion">
+    <h3>Disponibilidad Semanal</h3>
+    <div fxLayout fxLayout.xs="column" id="indicaciones">
+      <h5 fxFlex="70%" fxFlex.xs="100%">
+        Estimando profesor presione los <b>dias</b> y <b>horas</b>
+      </h5>
+      <h4 fxFlex="30%" fxFlex.xs="100%" class="txcenter">
+        Horas Disponibles <b>{{ horas }}</b> horas
+      </h4>
+    </div>
+  </div>
+  <div class="example-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="hora" sticky>
+        <th mat-header-cell *matHeaderCellDef>Hora/ Dia</th>
+        <td mat-cell *matCellDef="let element">{{ element.hora }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="lunes">
+        <th mat-header-cell *matHeaderCellDef>Lunes</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"> </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="martes">
+        <th mat-header-cell *matHeaderCellDef>Martes</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"> </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="miercoles">
+        <th mat-header-cell *matHeaderCellDef>Miercoles</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"> </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="jueves">
+        <th mat-header-cell *matHeaderCellDef>Jueves</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"> </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="viernes">
+        <th mat-header-cell *matHeaderCellDef>Viernes</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"> </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="sabado">
+        <th mat-header-cell *matHeaderCellDef>Sabado</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"> </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>

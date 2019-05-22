@@ -1,0 +1,67 @@
+@import '../../../../custom-theme.scss';
+h3,
+h4,
+h5 {
+  font-weight: 400;
+  margin: 0;
+}
+
+h4.txcenter > b {
+  color: $accent;
+}
+
+#contenedor {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+#indicaciones {
+  margin: 15px 0;
+}
+
+.example-container {
+  height: 400px;
+  width: 100%;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 500px;
+}
+
+th.mat-column-hora,
+td.mat-column-hora,
+th.mat-column-lunes,
+td.mat-column-lunes {
+  padding-left: 8px !important;
+}
+
+th.mat-column-lunes,
+td.mat-column-lunes,
+th.mat-column-martes,
+td.mat-column-martes,
+th.mat-column-miercoles,
+td.mat-column-miercoles,
+th.mat-column-jueves,
+td.mat-column-jueves,
+th.mat-column-viernes,
+td.mat-column-viernes,
+th.mat-column-sabado,
+td.mat-column-sabado {
+  text-align: center;
+}
+
+th.mat-column-sabado,
+td.mat-column-sabado {
+  padding-right: 8px !important;
+}
+
+.mat-table-sticky:first-child {
+  border-right: 1px solid #e0e0e0;
+}
+
+.mat-table-sticky:last-child {
+  border-left: 1px solid #e0e0e0;
+}
