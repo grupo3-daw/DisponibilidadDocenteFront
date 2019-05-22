@@ -1,48 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { Validators } from '@angular/forms';
+import { Formulario } from '@shared/formulario/formulario';
+
+import { LoginService } from './login.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
-  login: FormGroup;
+export class LoginComponent extends Formulario {
   hide = true;
 
-  constructor(private readonly formBuilder: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.login = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    });
-  }
-
-  get email(): AbstractControl {
-    return this.login.get('email');
-  }
-
-  get password(): AbstractControl {
-    return this.login.get('password');
-  }
-
-  getErrorMessage(control: AbstractControl): string {
-    const errors = control.errors;
-
-    switch (Object.keys(errors)[0]) {
-      case 'email':
-        return 'Correo invalido';
-      case 'required':
-        return 'Este campo es requerido';
-      default: return '' ;
-    }
+  constructor(private _loginService: LoginService) {
+    super([
+      { name: 'id', validators: [Validators.required] },
+      { name: 'password', validators: [Validators.required] }
+    ]);
   }
 
   onSubmit(): void {
-    if (this.login.valid) {
+    if (this.formGroup.valid) {
       // console.log("Ingreso");
-
       // this.loading = true
       // this.payLoad = JSON.stringify( this.login.value )
       // this.login_srv

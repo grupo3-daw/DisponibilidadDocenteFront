@@ -1,39 +1,65 @@
-<div class="container h100"
-fxLayout
-fxLayout.sm="column"
-fxLayout.xs="column"
-fxLayoutAlign="center"
-fxLayoutGap.sm="0">
+<div
+  class="container h100"
+  fxLayout
+  fxLayout.sm="column"
+  fxLayout.xs="column"
+  fxLayoutAlign="center"
+  fxLayoutGap.sm="0"
+>
   <div fxFlex fxHide.sm="true" fxHide.xs="true">
-    <img  class="h100 w100" src="../../assets/img/fondo.jpg">
+    <img id="portada" class="h100 w100" src="../../assets/img/fondo.jpg" />
   </div>
-  <div fxLayout="column" fxFlex="30%" fxFlex.sm="100%" fxFlex.xs="100%" class="mat-elevation-z12 p30">
-    <h3 fxFlex="10%" class="txcenter" >Sistema de Disponibilidad Docente</h3>
+  <div
+    fxLayout="column"
+    fxFlex="30%"
+    fxFlex.sm="100%"
+    fxFlex.xs="100%"
+    class="mat-elevation-z12 p30"
+  >
+    <h3 fxFlex="10%" class="txcenter">Sistema de Disponibilidad Docente</h3>
     <img fxFlex="10%" id="logo" src="../../assets/img/logo.png" />
-    <form fxLayout="column" [formGroup]="login" (ngSubmit)="onSubmit()">
+    <form fxLayout="column" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
       <mat-form-field>
-        <input matInput type="email" placeholder="Correo Electrónico" formControlName="email" required
-          (keyup.enter)="onSubmit()" />
-        <mat-error *ngIf="!emailValido()">{{
-                    getErrorMessage()
-                  }}</mat-error>
+        <input
+          id="identificador"
+          matInput
+          placeholder="Usuario"
+          formControlName="id"
+          required
+          (keyup.enter)="onSubmit()"
+        />
+        <mat-error *ngIf="!getControl('id').valid">{{
+          getErrorMessage('id')
+        }}</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput placeholder="Contraseña" [type]="hide ? 'password' : 'text'" formControlName="password" required
-          (keyup.enter)="onSubmit()" />
+        <input
+          id="contrasena"
+          matInput
+          placeholder="Contraseña"
+          [type]="hide ? 'password' : 'text'"
+          formControlName="password"
+          required
+          (keyup.enter)="onSubmit()"
+        />
         <mat-icon matSuffix (click)="hide = !hide">{{
-                    hide ? 'visibility_off' : 'visibility'
-                  }}</mat-icon>
-        <mat-error *ngIf="!contrasenaValida()">{{
-                    getErrorMessage()
-                  }}</mat-error>
+          hide ? 'visibility_off' : 'visibility'
+        }}</mat-icon>
+        <mat-error *ngIf="!getControl('password').valid">{{
+          getErrorMessage('password')
+        }}</mat-error>
       </mat-form-field>
       <div class="m20">
-          <button id="ingresar" class="w100"  mat-raised-button color="accent" (click)="onSubmit()">
-              Ingresar
-            </button>
+        <button
+          id="ingresar"
+          class="w100"
+          mat-raised-button
+          color="accent"
+          (click)="onSubmit()"
+        >
+          Ingresar
+        </button>
       </div>
-      
     </form>
     <div fxHide.sm="true" fxHide.xs="true" class="login_decorator"></div>
   </div>
