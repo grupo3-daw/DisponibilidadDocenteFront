@@ -10,16 +10,22 @@
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($DisponibilidadDocente-theme);
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
 div.fondo {
   width: 100%;
   height: 100%;
-  background-color: $primary;
+  background-color: $fondo;
 }
 
 .h100 {
-  height: 100%
+  height: 100%;
 }
 
 .w100 {
@@ -38,8 +44,10 @@ div.fondo {
   margin: auto;
 }
 
-.txcenter{
-  text-align: center
+.txcenter {
+  text-align: center;
 }
 
-
+.grid {
+  display: grid;
+}
