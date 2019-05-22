@@ -1,0 +1,17 @@
+<mat-form-field class="{{ clase }}">
+  <input
+    matInput
+    [(ngModel)]="filterValue"
+    color="accent"
+    (keyup)="buscar.emit($event.target.value)"
+    placeholder="{{ placeholder }}"
+  />
+  <mat-icon matSuffix color="accent">search</mat-icon>
+  <mat-icon
+    *ngIf="icono"
+    matSuffix
+    color="accent"
+    (click)="otro_evento.emit()"
+    >{{ icono }}</mat-icon
+  >
+</mat-form-field>
