@@ -9,6 +9,9 @@ h5 {
 h4.txcenter > b {
   color: $accent;
 }
+#indicaciones {
+  margin: 15px 0;
+}
 
 #contenedor {
   background: white;
@@ -16,9 +19,7 @@ h4.txcenter > b {
   border-radius: 15px;
 }
 
-#indicaciones {
-  margin: 15px 0;
-}
+
 
 .example-container {
   height: 400px;
@@ -29,6 +30,11 @@ h4.txcenter > b {
 table {
   width: 100%;
   min-width: 500px;
+}
+
+th.mat-column-hora,
+td.mat-column-hora{
+  width: 100px ;
 }
 
 th.mat-column-hora,
