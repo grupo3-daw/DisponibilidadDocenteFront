@@ -6,6 +6,7 @@ import { MaterialFormsModule } from '@material';
 import { LayoutProfesorComponent } from './layout/layout.component';
 import { ProfesorRoutingModule } from './profesor-routing.module';
 import { DisponibilidadSemanalComponent } from './disponibilidad-semanal/disponibilidad-semanal.component';
+import { ToolbarSharedModule } from '@shared/toolbar/toolbar.module';
 
 @NgModule({
   declarations: [LayoutProfesorComponent, DisponibilidadSemanalComponent],
@@ -13,7 +14,8 @@ import { DisponibilidadSemanalComponent } from './disponibilidad-semanal/disponi
     CommonModule,
     FlexLayoutModule,
     ProfesorRoutingModule,
-    MaterialFormsModule
+    MaterialFormsModule,
+    ToolbarSharedModule
   ],
   exports: [DisponibilidadSemanalComponent]
 })

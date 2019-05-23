@@ -8,6 +8,7 @@ import { CursosComponent } from './cursos/cursos.component';
 import { EscuelasComponent } from './escuelas/escuelas.component';
 import { LayoutAdministradorComponent } from './layout/layout.component';
 import { ProfesoresComponent } from './profesores/profesores.component';
+import { ToolbarSharedModule } from '@shared/toolbar/toolbar.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ProfesoresComponent } from './profesores/profesores.component';
     CommonModule,
     AdministradorRoutingModule,
     MaterialFormsModule,
-    MaterialTablesModule
+    MaterialTablesModule,
+    ToolbarSharedModule
   ]
 })
 export class AdministradorModule {}
