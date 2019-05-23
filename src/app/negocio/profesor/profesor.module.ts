@@ -2,14 +2,19 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialFormsModule } from '@material';
-
-import { LayoutProfesorComponent } from './layout/layout.component';
-import { ProfesorRoutingModule } from './profesor-routing.module';
-import { DisponibilidadSemanalComponent } from './disponibilidad-semanal/disponibilidad-semanal.component';
 import { ToolbarSharedModule } from '@shared/toolbar/toolbar.module';
 
+import { DisponibilidadSemanalComponent } from './disponibilidad-semanal/disponibilidad-semanal.component';
+import { InformacionPerfilComponent } from './informacion-perfil/informacion-perfil.component';
+import { LayoutProfesorComponent } from './layout/layout.component';
+import { ProfesorRoutingModule } from './profesor-routing.module';
+
 @NgModule({
-  declarations: [LayoutProfesorComponent, DisponibilidadSemanalComponent],
+  declarations: [
+    LayoutProfesorComponent,
+    DisponibilidadSemanalComponent,
+    InformacionPerfilComponent
+  ],
   imports: [
     CommonModule,
     FlexLayoutModule,

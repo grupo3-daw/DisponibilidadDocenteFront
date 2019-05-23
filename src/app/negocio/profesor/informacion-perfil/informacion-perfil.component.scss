@@ -1,0 +1,33 @@
+#info {
+  margin-bottom: 20px;
+  p {
+    margin: 0px 0px 5px 0px;
+  }
+}
+
+#perfil {
+  position: relative;
+  height: 100px;
+  z-index: 2;
+  margin-top: 25px;
+  left: -5%;
+}
+
+#portada {
+  height: 150px;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+#contenedor {
+  background: white;
+  border-radius: 15px;
+}
+
+@media all and (max-width: 576px) {
+  #perfil {
+    left: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}

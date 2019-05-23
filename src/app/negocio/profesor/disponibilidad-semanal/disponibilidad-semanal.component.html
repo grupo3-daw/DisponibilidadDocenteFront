@@ -11,7 +11,7 @@
       <h5 fxFlex="70%" fxFlex.xs="100%">
         Estimando profesor presione los <b>dias</b> y <b>horas</b>
       </h5>
-      <h4 fxFlex="30%" fxFlex.xs="100%" class="txcenter">
+      <h4 fxFlex="30%" fxFlex.xs="100%" class="txright">
         Horas Disponibles <b>{{ horas }}</b> horas
       </h4>
     </div>
@@ -65,5 +65,8 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+  </div>
+  <div id="footer">
+    <button mat-raised-button color="accent">Registrar</button>
   </div>
 </div>

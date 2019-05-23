@@ -6,8 +6,11 @@ h5 {
   margin: 0;
 }
 
-h4.txcenter > b {
-  color: $accent;
+h4.txright {
+  padding-right: 10px;
+  > b {
+    color: $accent;
+  }
 }
 #indicaciones {
   margin: 15px 0;
@@ -18,8 +21,6 @@ h4.txcenter > b {
   padding: 20px;
   border-radius: 15px;
 }
-
-
 
 .example-container {
   height: 400px;
@@ -33,8 +34,8 @@ table {
 }
 
 th.mat-column-hora,
-td.mat-column-hora{
-  width: 100px ;
+td.mat-column-hora {
+  width: 100px;
 }
 
 th.mat-column-hora,
@@ -70,4 +71,9 @@ td.mat-column-sabado {
 
 .mat-table-sticky:last-child {
   border-left: 1px solid #e0e0e0;
+}
+
+div#footer {
+  text-align: right;
+  margin-top: 20px;
 }
