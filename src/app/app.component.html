@@ -1,4 +1,10 @@
-<div #container *ngIf="!loading" class="h100"
-  [@routeAnimations]="{value:o.isActivated ? o.activatedRoute : '', params: { height: maxHeight }}">
+<div
+  #container
+  *ngIf="!loading"
+  [@routeAnimations]="{
+    value: o.isActivated ? o.activatedRoute : '',
+    params: { height: maxHeight }
+  }"
+>
   <router-outlet #o="outlet"></router-outlet>
 </div>
