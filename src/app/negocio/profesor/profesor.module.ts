@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialFormsModule } from '@material';
+import { ModalsModule } from '@shared/modals/modals.module';
 import { ToolbarSharedModule } from '@shared/toolbar/toolbar.module';
 
 import { DisponibilidadSemanalComponent } from './disponibilidad-semanal/disponibilidad-semanal.component';
@@ -20,7 +21,8 @@ import { ProfesorRoutingModule } from './profesor-routing.module';
     FlexLayoutModule,
     ProfesorRoutingModule,
     MaterialFormsModule,
-    ToolbarSharedModule
+    ToolbarSharedModule,
+    ModalsModule
   ],
   exports: [DisponibilidadSemanalComponent]
 })

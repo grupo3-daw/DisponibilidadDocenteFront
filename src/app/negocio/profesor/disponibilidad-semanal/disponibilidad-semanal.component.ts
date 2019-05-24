@@ -1,9 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatTableDataSource } from '@angular/material';
+import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 
 import { DiaLaborable } from './dia-laborable.type';
 import { EstadoHoras } from './estado-horas.enum';
 import { SemanaLaborable } from './semana-laborable';
+
+function sumarHora(horaActual: string, horaNueva: string): string {
+  const inicioFinNuevo = horaNueva.split('-');
+  if (horaActual.includes(inicioFinNuevo[0])) {
+    return horaActual.replace(inicioFinNuevo[0], inicioFinNuevo[1]);
+  }
+
+  return `${horaActual} - ${horaNueva}`;
+}
 
 @Component({
   selector: 'app-disponibilidad-semanal',
@@ -11,7 +21,10 @@ import { SemanaLaborable } from './semana-laborable';
   styleUrls: ['./disponibilidad-semanal.component.scss']
 })
 export class DisponibilidadSemanalComponent implements OnInit {
+  @ViewChild('tabla') tabla;
+  @ViewChild('otro') otro;
   horas = 20;
+  disponibilidad;
   displayedColumns = [
     'hora',
     'lunes',
@@ -37,6 +50,10 @@ export class DisponibilidadSemanalComponent implements OnInit {
     new SemanaLaborable('20:00-21:00'),
     new SemanaLaborable('21:00-22:00')
   ]);
+
+  constructor(public dialog: MatDialog) {}
+
+  ngOnInit() {}
 
   masterToggle(dia: DiaLaborable): void {
     let anterior: EstadoHoras = 0;
@@ -102,7 +119,47 @@ export class DisponibilidadSemanalComponent implements OnInit {
     return EstadoHoras.Fin;
   }
 
-  constructor() {}
+  openDialog(): void {
+    this.disponibilidad = this.generarHorario();
+    console.log(this.disponibilidad);
+    const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
+      width: '450px',
+      data: {
+        titulo: 'Disponibilidad',
+        mensaje: '¿Esta seguro de registrar este horario?',
+        template: { element: this.tabla, data: this.disponibilidad }
+      }
+    });
 
-  ngOnInit() {}
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed' + result);
+    });
+  }
+
+  private generarHorario(): Array<any> {
+    const horario = [];
+    for (
+      let indexDia = 1;
+      indexDia < this.displayedColumns.length;
+      indexDia++
+    ) {
+      let horas = '';
+
+      for (const row of this.dataSource.data) {
+        console.log(row[this.displayedColumns[indexDia]]);
+
+        if (row[this.displayedColumns[indexDia]]) {
+          horas = sumarHora(horas, row.hora);
+        }
+      }
+      if (horas !== '') {
+        horario.push({
+          dia: this.displayedColumns[indexDia],
+          horas: horas.replace('-', '')
+        });
+      }
+    }
+
+    return horario;
+  }
 }

@@ -173,6 +173,15 @@
     </table>
   </div>
   <div id="footer">
-    <button mat-raised-button color="accent">Registrar</button>
+    <button mat-raised-button color="accent" (click)="openDialog()">
+      Registrar
+    </button>
   </div>
 </div>
+
+<ng-template #tabla>
+  <div *ngFor="let row of disponibilidad">
+    <span style="text-transform: capitalize;">{{ row.dia }}</span
+    >: <span>{{ row.horas }}</span>
+  </div>
+</ng-template>
