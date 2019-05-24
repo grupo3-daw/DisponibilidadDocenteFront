@@ -1,43 +1,9 @@
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 
-export type DiaLaborable =
-  | 'lunes'
-  | 'martes'
-  | 'miercoles'
-  | 'jueves'
-  | 'viernes'
-  | 'sabado';
-
-export class SemanaLaborable {
-  hora: string;
-  lunes: boolean;
-  martes: boolean;
-  miercoles: boolean;
-  jueves: boolean;
-  viernes: boolean;
-  sabado: boolean;
-
-  constructor(hora) {
-    this.hora = hora;
-    this.lunes = false;
-    this.martes = false;
-    this.miercoles = false;
-    this.jueves = false;
-    this.viernes = false;
-    this.sabado = false;
-  }
-}
-
-export class SeleccionSemana {
-  lunes = new SelectionModel<SemanaLaborable>(true, []);
-  martes = new SelectionModel<SemanaLaborable>(true, []);
-  miercoles = new SelectionModel<SemanaLaborable>(true, []);
-  jueves = new SelectionModel<SemanaLaborable>(true, []);
-  viernes = new SelectionModel<SemanaLaborable>(true, []);
-  sabado = new SelectionModel<SemanaLaborable>(true, []);
-}
+import { DiaLaborable } from './dia-laborable.type';
+import { EstadoHoras } from './estado-horas.enum';
+import { SemanaLaborable } from './semana-laborable';
 
 @Component({
   selector: 'app-disponibilidad-semanal',
@@ -71,15 +37,33 @@ export class DisponibilidadSemanalComponent implements OnInit {
     new SemanaLaborable('20:00-21:00'),
     new SemanaLaborable('21:00-22:00')
   ]);
-  selection = new SeleccionSemana();
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(dia: DiaLaborable): void {
+    let anterior: EstadoHoras = 0;
     for (let index = 0; index < this.dataSource.data.length; index++) {
       const resultado = this.actualizarDisponibilidad(dia, index);
       console.log(this.horas);
-      if (resultado === 0) {
+      console.log(resultado);
+      console.log(anterior);
+      if (
+        resultado === EstadoHoras.Fin ||
+        (anterior !== EstadoHoras.Fin && resultado !== anterior)
+      ) {
+        switch (resultado) {
+          case EstadoHoras.Agregando:
+            this.horas++;
+            this.dataSource.data[index][dia] = false;
+            break;
+          case EstadoHoras.Disminuyendo:
+            this.horas--;
+            this.dataSource.data[index][dia] = true;
+            break;
+          default:
+            break;
+        }
         index = this.dataSource.data.length;
+      } else {
+        anterior = resultado;
       }
     }
   }
@@ -99,22 +83,23 @@ export class DisponibilidadSemanalComponent implements OnInit {
     return this.dataSource.data.findIndex(row => row[dia]) > -1;
   }
 
-  actualizarDisponibilidad(dia: DiaLaborable, numeroFila: number): number {
+  actualizarDisponibilidad(dia: DiaLaborable, numeroFila: number): EstadoHoras {
     if (this.dataSource.data[numeroFila][dia]) {
       this.horas++;
       console.log('Desmarcando Celda');
       this.dataSource.data[numeroFila][dia] = false;
-    } else {
-      if (this.horas > 0) {
-        console.log('Marcando Celda');
-        this.horas--;
-        this.dataSource.data[numeroFila][dia] = true;
-      } else {
-        return 0;
-      }
+
+      return EstadoHoras.Disminuyendo;
+    }
+    if (this.horas > 0) {
+      console.log('Marcando Celda');
+      this.horas--;
+      this.dataSource.data[numeroFila][dia] = true;
+
+      return EstadoHoras.Agregando;
     }
 
-    return 1;
+    return EstadoHoras.Fin;
   }
 
   constructor() {}

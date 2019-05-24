@@ -1,6 +1,7 @@
 <div
   #container
   *ngIf="!loading"
+  class="h100"
   [@routeAnimations]="{
     value: o.isActivated ? o.activatedRoute : '',
     params: { height: maxHeight }

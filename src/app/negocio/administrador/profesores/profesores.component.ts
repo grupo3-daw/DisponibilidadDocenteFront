@@ -14,7 +14,7 @@ export class ProfesoresComponent extends MatTablePadre<Profesor>
   implements OnInit {
   displayedColumns = [
     {
-      header: 'Activar/Desactivar',
+      header: 'Operaciones',
       columna: 'acciones'
     },
     {
