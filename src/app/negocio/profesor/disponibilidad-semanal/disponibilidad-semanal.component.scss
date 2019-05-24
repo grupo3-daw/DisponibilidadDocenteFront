@@ -33,6 +33,15 @@ table {
   min-width: 500px;
 }
 
+th.mat-header-cell:not(.mat-column-hora) {
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+td.mat-cell:not(.mat-column-hora) {
+  text-align: center;
+}
+
 th.mat-column-hora,
 td.mat-column-hora {
   width: 100px;
@@ -43,21 +52,6 @@ td.mat-column-hora,
 th.mat-column-lunes,
 td.mat-column-lunes {
   padding-left: 8px !important;
-}
-
-th.mat-column-lunes,
-td.mat-column-lunes,
-th.mat-column-martes,
-td.mat-column-martes,
-th.mat-column-miercoles,
-td.mat-column-miercoles,
-th.mat-column-jueves,
-td.mat-column-jueves,
-th.mat-column-viernes,
-td.mat-column-viernes,
-th.mat-column-sabado,
-td.mat-column-sabado {
-  text-align: center;
 }
 
 th.mat-column-sabado,
