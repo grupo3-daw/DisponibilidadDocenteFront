@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Formulario } from '@shared/formulario/formulario';
-
+import {Router} from '@angular/router'
 import { LoginService } from './login.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { LoginService } from './login.service';
 export class LoginComponent extends Formulario {
   hide = true;
 
-  constructor(private _loginService: LoginService) {
+  constructor(private _loginService: LoginService,private router:Router) {
     super([
       { name: 'id', validators: [Validators.required] },
       { name: 'password', validators: [Validators.required] }
@@ -21,6 +21,7 @@ export class LoginComponent extends Formulario {
 
   onSubmit(): void {
     if (this.formGroup.valid) {
+      this.router.navigate(['profesor']);
       // console.log("Ingreso");
       // this.loading = true
       // this.payLoad = JSON.stringify( this.login.value )
