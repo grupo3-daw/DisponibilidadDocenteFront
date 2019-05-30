@@ -1,87 +1,45 @@
-<div
-  id="botones_superiores"
-  *ngIf="!loading && buttonsExt && buttonsExt.length > 0"
->
-  <!-- <app-group-buttons    
-    [buttons]="buttonsExt"
-    [row]="{}"
-    (clickEvent)="clickExterno($event)"
-  >
-  </app-group-buttons> -->
+<div id="botones_superiores" *ngIf="!loading && buttonsExt && buttonsExt.length > 0">
+  <app-group-buttons [buttons]="buttonsExt" [row]="{}" (clickEvent)="clickExterno($event)">
+  </app-group-buttons>
 </div>
 
 <div class="table-header">
-  <app-buscador-input
-    [filterValue]="filterValue"
-    [clase]="clase"
-    [icono]="icono"
-    [placeholder]="placeholder"
-    (buscar)="applyFilter($event)"
-    (otro_evento)="otro_evento.emit()"
-  ></app-buscador-input>
+  <app-buscador-input [filterValue]="filterValue" [clase]="clase" [icono]="icono" [placeholder]="placeholder"
+    (buscar)="applyFilter($event)" (otro_evento)="otro_evento.emit()"></app-buscador-input>
 </div>
 <ng-content></ng-content>
 <div class="mat-elevation-z8" *ngIf="!loading">
   <div class="table-container">
-    <table
-      mat-table
-      [dataSource]="dataSource"
-      [@agregar_eliminar]="dataSource.data.length"
-      (@agregar_eliminar.start)="onAnimationEvent($event)"
-      (@agregar_eliminar.done)="onAnimationEvent($event)"
-      matSort
-    >
+    <table mat-table [dataSource]="dataSource" [@agregar_eliminar]="dataSource.data.length"
+      (@agregar_eliminar.start)="onAnimationEvent($event)" (@agregar_eliminar.done)="onAnimationEvent($event)" matSort>
       <ng-container *ngFor="let column of displayedColumns">
-        <ng-container
-          [matColumnDef]="column.columna"
-          *ngIf="column.columna !== 'acciones'"
-        >
+        <ng-container [matColumnDef]="column.columna" *ngIf="column.columna !== 'acciones'">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>
             {{ column.header }}
           </th>
           <td mat-cell *matCellDef="let row">
             <ng-container *ngIf="column.editable">
-              <a
-                class="editar"
-                *ngIf="row[column.columna] !== null"
-                (click)="editar(row, column)"
-                >{{ row[column.columna] }}</a
-              >
-              <a
-                class="editar"
-                *ngIf="row[column.columna] === null"
-                (click)="editar(row, column)"
-                >Editar</a
-              >
+              <a class="editar" *ngIf="row[column.columna] !== null"
+                (click)="editar(row, column)">{{ row[column.columna] }}</a>
+              <a class="editar" *ngIf="row[column.columna] === null" (click)="editar(row, column)">Editar</a>
             </ng-container>
             <ng-container *ngIf="!column.editable">
               {{ row[column.columna] }}
             </ng-container>
           </td>
         </ng-container>
-        <ng-container
-          [matColumnDef]="column.columna"
-          *ngIf="column.columna === 'acciones' && buttons"
-        >
+        <ng-container [matColumnDef]="column.columna" *ngIf="column.columna === 'acciones' && buttons">
           <th mat-header-cell *matHeaderCellDef class="w70">
             {{ column.header }}
           </th>
           <td mat-cell *matCellDef="let row; let i = index">
-            <!-- <app-comprimed-buttons
-              *ngIf="comprimed_buttons; else no_comprimed"
-              [buttons]="buttons"
-              [row]="row"
-              [hide_buttons]="indice_mostrado !== i"
-              (hide_other_buttons)="hide_other_buttons(i)"
-              (clickEvent)="clickEvent($event, i)"
-            ></app-comprimed-buttons>
-            <ng-template #no_comprimed
-              ><app-group-buttons
-                [buttons]="buttons"
-                [row]="row"
-                (clickEvent)="clickEvent($event, i)"
-              ></app-group-buttons
-            ></ng-template> -->
+            <app-comprimed-buttons *ngIf="comprimed_buttons; else no_comprimed" [buttons]="buttons" [row]="row"
+              [hide_buttons]="indice_mostrado !== i" (hide_other_buttons)="hide_other_buttons(i)"
+              (clickEvent)="clickEvent($event, i)"></app-comprimed-buttons>
+            <ng-template #no_comprimed>
+              <app-group-buttons [buttons]="buttons" [row]="row" (clickEvent)="clickEvent($event, i)">
+              </app-group-buttons>
+            </ng-template>
           </td>
         </ng-container>
       </ng-container>
@@ -89,8 +47,5 @@
       <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
     </table>
   </div>
-  <mat-paginator
-    [pageSizeOptions]="[5, 10, 25]"
-    [pageSize]="page_size"
-  ></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]" [pageSize]="page_size"></mat-paginator>
 </div>
