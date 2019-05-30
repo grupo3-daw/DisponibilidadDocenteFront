@@ -14,14 +14,7 @@
 }
 
 #portada {
-  height: 150px;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-}
-
-#contenedor {
-  background: white;
-  border-radius: 15px;
+  height: 170px;
 }
 
 @media all and (max-width: 576px) {
@@ -29,5 +22,9 @@
     left: 0;
     margin-left: 10px;
     margin-right: 10px;
+  }
+  #contenedor {
+  
+    margin: 0;
   }
 }

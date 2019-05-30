@@ -1,22 +1,14 @@
-<div id="contenedor" fxLayout>
-  <img
-    fxFlex="30%"
-    fxHide.xs="true"
-    id="portada"
-    src="../../../../assets/img/fondo.jpg"
-  />
+<mat-card>
+  <div id="contenedor" fxLayout>
+    <img fxFlex="30%" fxHide.xs="true" id="portada" src="../../../../assets/img/fondo.jpg" />
 
-  <img
-    fxFlex="10%"
-    fxFlex.xs="20%"
-    id="perfil"
-    src="../../../../assets/img/logo.png"
-  />
+    <img fxFlex="10%" fxFlex.xs="20%" id="perfil" src="../../../../assets/img/logo.png" />
 
-  <div fxFlex="50%" fxFlex.xs="80%" id="info">
-    <h3>{{ perfil.nombre }}</h3>
-    <p>Código: {{ perfil.codigo }}</p>
-    <p>Categoria: {{ perfil.categoria }}</p>
-    <p>Horas: {{ perfil.horas }} horas</p>
+    <div fxFlex="50%" fxFlex.xs="80%" id="info">
+      <h3>{{ perfil.nombre }}</h3>
+      <p>Código: {{ perfil.codigo }}</p>
+      <p>Categoria: {{ perfil.categoria }}</p>
+      <p>Horas: {{ perfil.horas }} horas</p>
+    </div>
   </div>
-</div>
+</mat-card>
