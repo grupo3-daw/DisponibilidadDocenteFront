@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Formulario } from '@shared/formulario/formulario';
-import {Router} from '@angular/router'
+
 import { LoginService } from './login.service';
 
 @Component({
@@ -12,7 +13,7 @@ import { LoginService } from './login.service';
 export class LoginComponent extends Formulario {
   hide = true;
 
-  constructor(private _loginService: LoginService,private router:Router) {
+  constructor(public loginService: LoginService, public router: Router) {
     super([
       { name: 'id', validators: [Validators.required] },
       { name: 'password', validators: [Validators.required] }
@@ -20,24 +21,12 @@ export class LoginComponent extends Formulario {
   }
 
   onSubmit(): void {
+    // this.loginService.onSubmit(this.formGroup);
     if (this.formGroup.valid) {
-      this.router.navigate(['profesor']);
-      // console.log("Ingreso");
-      // this.loading = true
-      // this.payLoad = JSON.stringify( this.login.value )
-      // this.login_srv
-      //   .login( this.login.value )
-      //   .then( resultado =>
-      //   {
-      //     if ( resultado === null )
-      //     {
-      //       this.loading = false
-      //     }
-      //   } )
-      //   .catch( () =>
-      //   {
-      //     this.loading = false
-      //   } )
+      this.router
+        .navigate(['profesor'])
+        .then()
+        .catch();
     }
   }
 }
