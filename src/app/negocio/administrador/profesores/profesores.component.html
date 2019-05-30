@@ -1,5 +1,76 @@
-<app-mat-table
-  [data]="profesores"
-  [buttons]="[]"
-  [displayedColumns]="displayedColumns"
-></app-mat-table>
+<mat-tab-group mat-stretch-tabs class="profesores mat-elevation-z4">
+  <mat-tab label="Ingenieria de Software">
+    <app-mat-table [data]="filtradoSoftware" [buttonsExt]="buttonsExt" [buttons]="buttons"
+      [displayedColumns]="displayedColumns" (click_externo)="filtros($event,escuela.Software)">
+      <mat-chip-list #chipList>
+        <ng-container *ngFor="let row of cursosSoftware">
+          <mat-chip *ngIf="row.seleccionado" [selectable]="true" [removable]="true"
+            (removed)="remove(true, row,escuela.Software)" color="accent" selected>
+            {{ row.nombre }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </ng-container>
+        <ng-container *ngFor="let row of tiposSoftware">
+          <mat-chip *ngIf="row.seleccionado" [selectable]="true" [removable]="true"
+            (removed)="remove(false, row,escuela.Software)" color="primary" selected>
+            {{ row.nombre }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </ng-container>
+      </mat-chip-list>
+    </app-mat-table>
+  </mat-tab>
+  <mat-tab label="Ingenieria de Sistemas">
+    <app-mat-table [data]="filtradoSistemas" [buttonsExt]="buttonsExt" [buttons]="buttons"
+      [displayedColumns]="displayedColumns" (click_externo)="filtros($event,escuela.Sistemas)">
+      <mat-chip-list #chipList>
+        <ng-container *ngFor="let curso of cursosSistemas">
+          <mat-chip *ngIf="curso.seleccionado" [selectable]="true" [removable]="true"
+            (removed)="remove(true,curso,escuela.Sistemas)" color="accent" selected>
+            {{ curso.nombre }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </ng-container>
+        <ng-container *ngFor="let row of tiposSistemas">
+          <mat-chip *ngIf="row.seleccionado" [selectable]="true" [removable]="true"
+            (removed)="remove(false,row,escuela.Software)" color="primary" selected>
+            {{ row.nombre }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </ng-container>
+      </mat-chip-list>
+    </app-mat-table>
+  </mat-tab>
+</mat-tab-group>
+
+<ng-template #cursosSistemasVista>
+  <div *ngFor="let curso of cursosSistemas;let i = index">
+    <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true,i,escuela.Sistemas):null">
+      {{curso.nombre}}
+    </mat-checkbox>
+  </div>
+</ng-template>
+
+<ng-template #cursosSoftwareVista>
+  <div *ngFor="let curso of cursosSoftware;let i = index">
+    <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true,i,escuela.Software):null">
+      {{curso.nombre}}
+    </mat-checkbox>
+  </div>
+</ng-template>
+
+<ng-template #tiposSistemasVista>
+  <div *ngFor="let tipo of tiposSistemas;let i = index">
+    <mat-checkbox [checked]="tipo.seleccionado" (change)="$event ? actualizar(false,i,escuela.Sistemas):null">
+      {{tipo.nombre}}
+    </mat-checkbox>
+  </div>
+</ng-template>
+
+<ng-template #tiposSoftwareVista>
+  <div *ngFor="let tipo of tiposSoftware;let i = index">
+    <mat-checkbox [checked]="tipo.seleccionado" (change)="$event ? actualizar(false,i,escuela.Software):null">
+      {{tipo.nombre}}
+    </mat-checkbox>
+  </div>
+</ng-template>

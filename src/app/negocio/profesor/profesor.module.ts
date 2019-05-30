@@ -9,12 +9,14 @@ import { DisponibilidadSemanalComponent } from './disponibilidad-semanal/disponi
 import { InformacionPerfilComponent } from './informacion-perfil/informacion-perfil.component';
 import { LayoutProfesorComponent } from './layout/layout.component';
 import { ProfesorRoutingModule } from './profesor-routing.module';
+import { SeleccionarCursoComponent } from './seleccionar-curso/seleccionar-curso.component';
 
-@NgModule({
+@NgModule( {
   declarations: [
     LayoutProfesorComponent,
     DisponibilidadSemanalComponent,
-    InformacionPerfilComponent
+    InformacionPerfilComponent,
+    SeleccionarCursoComponent
   ],
   imports: [
     CommonModule,
@@ -24,6 +26,6 @@ import { ProfesorRoutingModule } from './profesor-routing.module';
     ToolbarSharedModule,
     ModalsModule
   ],
-  exports: [DisponibilidadSemanalComponent]
-})
-export class ProfesorModule {}
+  exports: [ DisponibilidadSemanalComponent ]
+} )
+export class ProfesorModule { }

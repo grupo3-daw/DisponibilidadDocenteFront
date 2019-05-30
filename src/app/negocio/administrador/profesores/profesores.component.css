@@ -1,0 +1,8 @@
+.profesores::ng-deep .mat-tab-body-wrapper {
+  margin: 20px;
+}
+
+mat-chip-list {
+  display: block;
+  margin-bottom: 20px;
+}
