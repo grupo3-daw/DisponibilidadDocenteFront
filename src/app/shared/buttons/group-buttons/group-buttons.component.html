@@ -1,0 +1,20 @@
+<div class="button-row" *ngIf="buttons">
+  <ng-container *ngFor="let button of buttons;let i = index">
+    <ng-container *ngIf="button.mostrar(row)">
+      <ng-container [ngSwitch]="button.type">
+        <ng-container *ngSwitchCase="typeButton.Icon">
+          <app-icon-button [data]="button" [row]="row" (clickEvent)="click($event)"></app-icon-button>
+        </ng-container>
+        <ng-container *ngSwitchCase="typeButton.Button">
+          <app-button [data]="button" [row]="row"  (clickEvent)="click($event)"></app-button>
+        </ng-container>
+        <ng-container *ngSwitchCase="typeButton.Check">
+          <app-checkbox-button [data]="button" [row]="row" [checked]="button.estado(row)" (clickEvent)="click($event)"></app-checkbox-button>
+        </ng-container>
+        <ng-container *ngSwitchCase="typeButton.Fab">
+            <app-fab-button [data]="button" [row]="row"  (clickEvent)="click($event)"></app-fab-button>
+          </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>

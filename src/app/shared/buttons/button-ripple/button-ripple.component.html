@@ -1,0 +1,4 @@
+<button class="mat-elevation-z2" [disabled]="disabled" (click)="click_event.emit()" [ngStyle]="{'width': tamanio + tipo,'height':tamanio + tipo}"
+  matRipple [matRippleCentered]="true" [matTooltip]="descripcion">
+  <mat-icon [ngStyle]="{'width': tamanio_icon + tipo,'height':tamanio_icon + tipo,'font-size':tamanio_icon + tipo}">{{icono}}</mat-icon>
+</button>

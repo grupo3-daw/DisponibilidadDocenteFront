@@ -1,0 +1,47 @@
+<div class="button-row ">
+  <button
+    mat-fab
+    class="fab-toggler"
+    (click)="onToggleFab()"
+  >
+    <i class="material-icons" [@fabToggler]="{value: fabTogglerState}">add</i>
+  </button>
+
+  <div class="button-row buttons" [@speedDialStagger]="buttons_temp.length">
+    <ng-container *ngFor="let button of buttons_temp; let i = index">
+      <ng-container *ngIf="button.mostrar(row)">
+        <ng-container [ngSwitch]="button.type">
+          <ng-container *ngSwitchCase="typeButton.Icon">
+            <app-icon-button
+              [data]="button"
+              [row]="row"
+              (clickEvent)="click($event)"
+            ></app-icon-button>
+          </ng-container>
+          <ng-container *ngSwitchCase="typeButton.Button">
+            <app-button
+              [data]="button"
+              [row]="row"
+              (clickEvent)="click($event)"
+            ></app-button>
+          </ng-container>
+          <ng-container *ngSwitchCase="typeButton.Check">
+            <app-checkbox-button
+              [data]="button"
+              [row]="row"
+              [checked]="button.estado(row)"
+              (clickEvent)="click($event)"
+            ></app-checkbox-button>
+          </ng-container>
+          <ng-container *ngSwitchCase="typeButton.Fab">
+            <app-fab-button
+              [data]="button"
+              [row]="row"
+              (clickEvent)="click($event)"
+            ></app-fab-button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

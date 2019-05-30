@@ -1,0 +1,28 @@
+<ng-container *ngIf="position != null">
+    <button
+        mat-icon-button
+        isIconButton="true"
+        matTooltip="{{data.tooltipTitulo}}"
+        [matTooltipPosition]="position.value"
+        appClickStopPropagation
+        (click)="click(data.id)"
+        [disabled]="data.disabled"
+        id="{{data.id}}"
+        color="primary"
+    >
+        <mat-icon>{{data.imagen}}</mat-icon>
+    </button>
+</ng-container>
+<ng-container *ngIf="position == null">
+    <button
+        mat-icon-button
+        isIconButton="true"
+        appClickStopPropagation
+        [disabled]="data.disabled"
+        (click)="click(data.id)"
+        id="{{data.id}}"
+        color="primary"
+    >
+        <mat-icon>{{data.imagen}}</mat-icon>
+    </button>
+</ng-container>

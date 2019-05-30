@@ -1,0 +1,24 @@
+<ng-container *ngIf="position !== null">
+    <button
+        mat-raised-button
+        matTooltip="{{data.tooltipTitulo}}"
+        [matTooltipPosition]="position.value"
+        [disabled]="data.disabled"
+        (click)="click(data.id)"
+        id="{{data.id}}"
+        color="accent"
+    >
+        {{data.titulo}}
+    </button>
+</ng-container>
+<ng-container *ngIf="position === null">
+    <button
+        mat-raised-button
+        [disabled]="data.disabled"
+        (click)="click(data.id)"
+        id="{{data.id}}"
+        color="accent"
+    >
+        {{data.titulo}}
+    </button>
+</ng-container>
