@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog, MatTableDataSource } from '@angular/material';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 
@@ -20,11 +20,12 @@ function sumarHora(horaActual: string, horaNueva: string): string {
   templateUrl: './disponibilidad-semanal.component.html',
   styleUrls: ['./disponibilidad-semanal.component.scss']
 })
-export class DisponibilidadSemanalComponent implements OnInit {
-  @ViewChild('tabla') tabla;
-  @ViewChild('otro') otro;
+export class DisponibilidadSemanalComponent {
+  @Input() cursosSeleccionados: any;
+  @ViewChild('horario') horario;
   horas = 20;
   disponibilidad;
+  diasNoSeleccionados = true;
   displayedColumns = [
     'hora',
     'lunes',
@@ -52,8 +53,6 @@ export class DisponibilidadSemanalComponent implements OnInit {
   ]);
 
   constructor(public dialog: MatDialog) {}
-
-  ngOnInit() {}
 
   masterToggle(dia: DiaLaborable): void {
     let anterior: EstadoHoras = 0;
@@ -103,6 +102,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
   actualizarDisponibilidad(dia: DiaLaborable, numeroFila: number): EstadoHoras {
     if (this.dataSource.data[numeroFila][dia]) {
       this.horas++;
+      this.diasNoSeleccionados = true;
       console.log('Desmarcando Celda');
       this.dataSource.data[numeroFila][dia] = false;
 
@@ -112,6 +112,9 @@ export class DisponibilidadSemanalComponent implements OnInit {
       console.log('Marcando Celda');
       this.horas--;
       this.dataSource.data[numeroFila][dia] = true;
+      if (this.horas === 0) {
+        this.diasNoSeleccionados = false;
+      }
 
       return EstadoHoras.Agregando;
     }
@@ -127,7 +130,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
       data: {
         titulo: 'Disponibilidad',
         mensaje: '¿Esta seguro de registrar este horario?',
-        template: { element: this.tabla, data: this.disponibilidad }
+        template: {element: this.horario, data: this.disponibilidad}
       }
     });
 
