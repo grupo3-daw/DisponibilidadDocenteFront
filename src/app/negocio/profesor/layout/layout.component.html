@@ -1,5 +1,8 @@
 <app-toolbar></app-toolbar>
 <div class="fondo">
-  <app-informacion-perfil></app-informacion-perfil>
-  <app-disponibilidad-semanal></app-disponibilidad-semanal>
+  <div>
+    <app-informacion-perfil></app-informacion-perfil>
+    <app-seleccionar-curso (cursosSeleccionados)="cursosSeleccionados = $event"></app-seleccionar-curso>
+  </div>
+  <app-disponibilidad-semanal [cursosSeleccionados]="cursosSeleccionados"></app-disponibilidad-semanal>
 </div>

@@ -1,0 +1,93 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title id="titulos">
+            <div class="txcenter">Cursos</div>
+            <div class="txcenter">Escuelas</div>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form [formGroup]="formGroup">
+            <mat-form-field>
+                <mat-select placeholder="Escoja un Curso" formControlName="curso1" name="item">
+                    <mat-option *ngFor="let item of cursos" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('curso1').valid">{{
+                                                getErrorMessage('curso1')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja una Escuela" formControlName="escuela1" name="item">
+                    <mat-option *ngFor="let item of escuelas" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('escuela1').valid">{{
+                                                getErrorMessage('escuela1')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja un Curso" formControlName="curso2" name="item">
+                    <mat-option *ngFor="let item of cursos" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('curso2').valid">{{
+                                                getErrorMessage('curso2')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja una Escuela" formControlName="escuela2" name="item">
+                    <mat-option *ngFor="let item of escuelas" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('escuela2').valid">{{
+                                                getErrorMessage('escuela2')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja un Curso" formControlName="curso3" name="item">
+                    <mat-option *ngFor="let item of cursos" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('curso3').valid">{{
+                                                getErrorMessage('curso3')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja una Escuela" formControlName="escuela3" name="item">
+                    <mat-option *ngFor="let item of escuelas" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('escuela3').valid">{{
+                                                getErrorMessage('escuela3')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja un Curso" formControlName="curso4" name="item">
+                    <mat-option *ngFor="let item of cursos" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('curso4').valid">{{
+                                                getErrorMessage('curso4')
+                                              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Escoja una Escuela" formControlName="escuela4" name="item">
+                    <mat-option *ngFor="let item of escuelas" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!getControl('escuela4').valid">{{
+                                                getErrorMessage('escuela4')
+                                              }}</mat-error>
+            </mat-form-field>
+
+        </form>
+    </mat-card-content>
+</mat-card>
