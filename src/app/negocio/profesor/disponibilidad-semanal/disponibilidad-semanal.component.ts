@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog, MatTableDataSource } from '@angular/material';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 
@@ -20,39 +20,49 @@ function sumarHora(horaActual: string, horaNueva: string): string {
   templateUrl: './disponibilidad-semanal.component.html',
   styleUrls: ['./disponibilidad-semanal.component.scss']
 })
-export class DisponibilidadSemanalComponent {
+export class DisponibilidadSemanalComponent implements OnChanges{
   @Input() cursosSeleccionados: any;
   @ViewChild('horario') horario;
   horas = 20;
   disponibilidad;
   diasNoSeleccionados = true;
-  displayedColumns = [
-    'hora',
-    'lunes',
-    'martes',
-    'miercoles',
-    'jueves',
-    'viernes',
-    'sabado'
-  ];
-  dataSource = new MatTableDataSource<SemanaLaborable>([
-    new SemanaLaborable('8:00-9:00'),
-    new SemanaLaborable('9:00-10:00'),
-    new SemanaLaborable('10:00-11:00'),
-    new SemanaLaborable('11:00-12:00'),
-    new SemanaLaborable('12:00-13:00'),
-    new SemanaLaborable('13:00-14:00'),
-    new SemanaLaborable('14:00-15:00'),
-    new SemanaLaborable('15:00-16:00'),
-    new SemanaLaborable('16:00-17:00'),
-    new SemanaLaborable('17:00-18:00'),
-    new SemanaLaborable('18:00-19:00'),
-    new SemanaLaborable('19:00-20:00'),
-    new SemanaLaborable('20:00-21:00'),
-    new SemanaLaborable('21:00-22:00')
-  ]);
+  displayedColumns: Array<string>;
+  dataSource: MatTableDataSource<SemanaLaborable>;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog) {
+    this.displayedColumns = [
+      'hora',
+      'lunes',
+      'martes',
+      'miercoles',
+      'jueves',
+      'viernes',
+      'sabado'
+    ];
+    this.dataSource = new MatTableDataSource<SemanaLaborable>([
+      new SemanaLaborable('8:00-9:00'),
+      new SemanaLaborable('9:00-10:00'),
+      new SemanaLaborable('10:00-11:00'),
+      new SemanaLaborable('11:00-12:00'),
+      new SemanaLaborable('12:00-13:00'),
+      new SemanaLaborable('13:00-14:00'),
+      new SemanaLaborable('14:00-15:00'),
+      new SemanaLaborable('15:00-16:00'),
+      new SemanaLaborable('16:00-17:00'),
+      new SemanaLaborable('17:00-18:00'),
+      new SemanaLaborable('18:00-19:00'),
+      new SemanaLaborable('19:00-20:00'),
+      new SemanaLaborable('20:00-21:00'),
+      new SemanaLaborable('21:00-22:00')
+    ]);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    //Add '${implements OnChanges}' to the class.
+    console.log(changes.cursosSeleccionados);
+
+  }
 
   masterToggle(dia: DiaLaborable): void {
     let anterior: EstadoHoras = 0;
@@ -130,12 +140,13 @@ export class DisponibilidadSemanalComponent {
       data: {
         titulo: 'Disponibilidad',
         mensaje: '¿Esta seguro de registrar este horario?',
-        template: {element: this.horario, data: this.disponibilidad}
+        template: { element: this.horario, data: this.disponibilidad }
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed' + result);
+    dialogRef.afterClosed()
+    .subscribe(result => {
+      console.log(`The dialog was closed  ${result}`);
     });
   }
 
