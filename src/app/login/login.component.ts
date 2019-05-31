@@ -13,20 +13,20 @@ import { LoginService } from './login.service';
 export class LoginComponent extends Formulario {
   hide = true;
 
-  constructor(public loginService: LoginService, public router: Router) {
+  constructor(private readonly loginService: LoginService, public router: Router) {
     super([
-      { name: 'id', validators: [Validators.required, Validators.email] },
+      { name: 'email', validators: [Validators.required, Validators.email] },
       { name: 'password', validators: [Validators.required] }
     ]);
   }
 
   onSubmit(): void {
-    // this.loginService.onSubmit(this.formGroup);
-    if (this.formGroup.valid) {
-      this.router
-        .navigate(['profesor'])
-        .then()
-        .catch();
-    }
+    this.loginService.onSubmit(this.formGroup);
+    // if (this.formGroup.valid) {
+    //   this.router
+    //     .navigate(['profesor'])
+    //     .then()
+    //     .catch();
+    // }
   }
 }
