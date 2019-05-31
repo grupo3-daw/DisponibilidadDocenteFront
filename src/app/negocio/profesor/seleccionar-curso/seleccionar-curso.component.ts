@@ -1,13 +1,14 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Escuela } from '@negocio/administrador/profesores/profesores.component';
 import { Formulario } from '@shared/formulario/formulario';
+import { CursoDetalle, CursoService } from '@shared/services/curso.service';
 
 import { CursoSeleccionados } from './cursos-escogidos/cursos-escogidos.component';
 
 export interface RowSelect {
-  value: any,
-  viewValue: string
+  value: any;
+  viewValue: string;
 }
 
 @Component({
@@ -15,54 +16,24 @@ export interface RowSelect {
   templateUrl: './seleccionar-curso.component.html',
   styleUrls: ['./seleccionar-curso.component.scss']
 })
-export class SeleccionarCursoComponent extends Formulario {
+export class SeleccionarCursoComponent extends Formulario implements OnInit {
   cursosSeleccionadosEvento = new EventEmitter<any>();
-  cursosSeleccionados: Array<CursoSeleccionados>= []
-  cursos: Array<RowSelect>;
+  cursosSeleccionados: Array<CursoSeleccionados> = []
+  cursos: Array<CursoDetalle>;
   escuelas: Array<RowSelect>;
   escuelasCursos: Array<RowSelect> = [];
   searchValue = '';
   valido = true;
-  temp = []
-  constructor() {
+  temp = [];
+  constructor(private readonly cursoService: CursoService) {
     super([
       { name: 'cursos', validators: [Validators.required] }
     ]);
     this.escuelas = [
-      { value: 0, viewValue: Escuela.Sistemas },
-      { value: 1, viewValue: Escuela.Software }
+      { value: 2, viewValue: Escuela.Sistemas },
+      { value: 3, viewValue: Escuela.Software }
     ];
-    this.cursos = [
-      { value: 0, viewValue: 'Arquitectura de Software' },
-      { value: 1, viewValue: 'Diseño de Software' },
-      { value: 2, viewValue: 'Calidad de Software' },
-      { value: 3, viewValue: 'Base de Datos 1' },
-      { value: 4, viewValue: 'Base de Datos 2' },
-      { value: 5, viewValue: 'Teoria General de Sistemas' },
-      { value: 6, viewValue: 'Programación 1' },
-      { value: 7, viewValue: 'Programación 2' },
-      { value: 8, viewValue: 'Redes Neuronales' },
-      { value: 9, viewValue: 'Planeamiento de Recursos Empresariales' },
-      { value: 10, viewValue: 'Estructura de Datos 1' },
-      { value: 11, viewValue: 'Estructura de Datos 2' },
-      { value: 12, viewValue: 'Sistemas Inteligentes' },
-      { value: 13, viewValue: 'Inteligencia Artificial' }
-    ];
-    this.escuelas.forEach(
-      escuela => {
-        this.cursos.forEach(
-          curso => {
-            this.escuelasCursos.push(
-              {
-                value: `${escuela.value} - ${curso.value}`,
-                viewValue: `${escuela.viewValue} |  ${curso.viewValue}`
-              }
-            );
-          }
-        );
-      }
-    );
-    this.temp = this.escuelasCursos;
+
     this.formGroup.valueChanges.subscribe(
       result => {
         this.actualizarCursosSeleccionados(result.cursos);
@@ -78,6 +49,26 @@ export class SeleccionarCursoComponent extends Formulario {
     );
   }
 
+  async ngOnInit(): Promise<any> {
+    this.cursos = await this.cursoService.listarCursos();
+
+    this.cursos.forEach(
+      curso => {
+        let escuela = Escuela.Sistemas;
+        if (curso.IDESCUELA === 3) {
+          escuela = Escuela.Software;
+        }
+        this.escuelasCursos.push(
+          {
+            value: `${curso.IDESCUELA} - ${curso.IDCURSO}`,
+            viewValue: `${escuela} |  ${curso.NOMBRECURSO}`
+          }
+        );
+      }
+    );
+    this.temp = this.escuelasCursos;
+  }
+
   buscar(value: string): void {
     this.escuelasCursos = this.temp.filter(
       item => item.viewValue.toUpperCase()
@@ -89,21 +80,21 @@ export class SeleccionarCursoComponent extends Formulario {
     event.length > 3 ? this.valido = false : this.valido = true;
   }
 
-  private actualizarCursosSeleccionados(identificadores:Array<string>): void {
+  private actualizarCursosSeleccionados(identificadores: Array<string>): void {
     console.log(identificadores);
 
     const filtrado = this.escuelasCursos.filter(
       escuelaCurso => {
         console.log(escuelaCurso);
 
-        return identificadores.findIndex( identificador => escuelaCurso.value === identificador) !== -1}
+        return identificadores.findIndex(identificador => escuelaCurso.value === identificador) !== -1;
+      }
     );
-    this.cursosSeleccionados = []
-    filtrado.forEach( row => {
-      const separado = row.viewValue.split('|')
-      this.cursosSeleccionados.push({ escuela:separado[0], curso: separado[1]})
-    })
-
+    this.cursosSeleccionados = [];
+    filtrado.forEach(row => {
+      const separado = row.viewValue.split('|');
+      this.cursosSeleccionados.push({ escuela: separado[0], curso: separado[1] });
+    });
 
   }
 

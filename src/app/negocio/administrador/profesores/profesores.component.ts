@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { TypeButton } from '@shared/buttons/type-button.enum';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
@@ -38,6 +38,7 @@ export interface ProfesorVista {
 })
 export class ProfesoresComponent extends MatTablePadre<ProfesorVista> {
   escuela = Escuela;
+  @Input() user;
   @ViewChild('cursosSistemasVista') cursosSistemasVista;
   @ViewChild('cursosSoftwareVista') cursosSoftwareVista;
   @ViewChild('tiposSoftwareVista') tiposSoftwareVista;

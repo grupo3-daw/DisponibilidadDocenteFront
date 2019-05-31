@@ -6,8 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./layout.component.css']
 })
 export class LayoutAdministradorComponent implements OnInit {
-
-  constructor() { }
+  user;
+  constructor() {
+    this.user = localStorage.getItem('user');
+  }
 
   ngOnInit() {
   }

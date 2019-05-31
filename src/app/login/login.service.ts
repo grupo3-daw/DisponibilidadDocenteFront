@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiService } from '@shared/api/api.service';
-import { Consulta } from '@shared/api/consulta.enum';
+import { ApiService } from '@shared/services/api.service';
+import { Consulta } from '@shared/services/consulta.enum';
 
 /**
  * @export

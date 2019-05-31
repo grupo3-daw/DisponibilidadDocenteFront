@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-
-import { ProfesorDetalle } from '../profesor.service';
+import { ProfesorDetalle } from '@shared/services/profesor.service';
 
 @Component({
   selector: 'app-informacion-perfil',

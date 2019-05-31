@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '@shared/api/api.service';
+import { ApiService } from '@shared/services/api.service';
 import { Profesor } from 'app/login/login.service';
 
 export interface Disponibilidad {
