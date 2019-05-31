@@ -4,7 +4,11 @@ import { Router } from '@angular/router';
 import { ApiService } from '@shared/api/api.service';
 import { Consulta } from '@shared/api/consulta.enum';
 
-
+/**
+ * @export
+ * @var EMAIL: string
+ * @var CONTRASENA: string
+ */
 export interface Usuario {
   EMAIL: string;
   CONTRASENA: string;
@@ -15,6 +19,16 @@ export interface Administrador extends Usuario{
   facultad_IDFACULTAD: number;
 }
 
+/**
+ * @export
+ * @extends {Usuario}
+ * @var IDPROFESOR: number
+ * @var  IDCATEGORIA: number
+ * @var   NOMBRE: string
+ * @var   APPATERNO: string
+ * @var   APMATERNO: string
+ * @var   PERMISO: number
+ */
 export interface Profesor extends Usuario{
   IDPROFESOR: number;
   IDCATEGORIA: number;
