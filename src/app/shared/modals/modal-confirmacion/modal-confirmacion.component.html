@@ -1,13 +1,15 @@
 <h1 mat-dialog-title class="txcenter">{{ data.titulo }}</h1>
 <div mat-dialog-content>
   <p>{{ data.mensaje }}</p>
-  <ng-container
-    *ngTemplateOutlet="
-      data.template ? data.template.element : default;
-      context: data.template.data
-    "
-  >
+  <ng-container *ngIf="data.template">
+    <ng-container *ngTemplateOutlet="
+         data.template.element
+          context: data.template.data
+        ">
+    </ng-container>
   </ng-container>
+
+
 </div>
 <div mat-dialog-actions>
   <button
@@ -21,4 +23,3 @@
   <button mat-raised-button color="warn" [mat-dialog-close]="false">No</button>
 </div>
 
-<ng-template #default> </ng-template>
