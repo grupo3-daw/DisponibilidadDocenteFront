@@ -15,6 +15,11 @@ function sumarHora(horaActual: string, horaNueva: string): string {
   return `${horaActual} - ${horaNueva}`;
 }
 
+export interface Disponibilidad {
+  DIA: number;
+  HORAS: string;
+}
+
 @Component({
   selector: 'app-disponibilidad-semanal',
   templateUrl: './disponibilidad-semanal.component.html',
@@ -22,9 +27,10 @@ function sumarHora(horaActual: string, horaNueva: string): string {
 })
 export class DisponibilidadSemanalComponent implements OnChanges{
   @Input() cursosSeleccionados: any;
+  @Input() disponibilidadHoraria: Array<Disponibilidad>;
+  disponibilidad;
   @ViewChild('horario') horario;
   horas = 20;
-  disponibilidad;
   diasNoSeleccionados = true;
   displayedColumns: Array<string>;
   dataSource: MatTableDataSource<SemanaLaborable>;
@@ -61,7 +67,23 @@ export class DisponibilidadSemanalComponent implements OnChanges{
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     //Add '${implements OnChanges}' to the class.
     console.log(changes.cursosSeleccionados);
+    if (changes.disponibilidad) {
+      this.disponibilidadHoraria.forEach(
+        disponibilidad => {
 
+          // switch (disponibilidad.DIA) {
+          //   case DiaLaborableEnum.LUNES:
+          //     this.dataSource.data[]['lunes'] = true;
+          //     break;
+
+          //   default:
+          //     this.dataSource.data[]['sabado'] = true;
+          //     break;
+          // }
+
+        }
+      )
+    }
   }
 
   masterToggle(dia: DiaLaborable): void {

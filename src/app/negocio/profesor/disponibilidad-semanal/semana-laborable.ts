@@ -1,3 +1,12 @@
+export enum DiaLaborableEnum {
+  LUNES = 1,
+  MARTES = 1,
+  MIERCOLES = 1,
+  JUEVES = 1,
+  VIERNES = 1,
+  SABADO = 1,
+}
+
 export class SemanaLaborable {
   hora: string;
   lunes: boolean;

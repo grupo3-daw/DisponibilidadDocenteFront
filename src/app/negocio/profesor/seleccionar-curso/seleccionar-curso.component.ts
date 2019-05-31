@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Escuela } from '@negocio/administrador/profesores/profesores.component';
 import { Formulario } from '@shared/formulario/formulario';
-import { CursoDetalle, CursoService } from '@shared/services/curso.service';
+import { Curso, CursoDetalle, CursoService } from '@shared/services/curso';
 
 import { CursoSeleccionados } from './cursos-escogidos/cursos-escogidos.component';
 
@@ -17,7 +17,16 @@ export interface RowSelect {
   styleUrls: ['./seleccionar-curso.component.scss']
 })
 export class SeleccionarCursoComponent extends Formulario implements OnInit {
-  cursosSeleccionadosEvento = new EventEmitter<any>();
+  @Input() cursosEscogidos: Array<Curso>;
+  // set cursosEscogidos(cursos: Array<Curso>) {
+  //   console.log(cursos);
+  //   this._cursosEscogidos = cursos;
+  //   this.formGroup.setValue({ cursos: cursos.map( curso => curso.IDCURSO)})
+  // }
+  // get cursosEscogidos(): Array<Curso> {
+  //   return this._cursosEscogidos;
+  // }
+  @Output() readonly cursosSeleccionadosEvento = new EventEmitter<any>();
   cursosSeleccionados: Array<CursoSeleccionados> = []
   cursos: Array<CursoDetalle>;
   escuelas: Array<RowSelect>;
@@ -51,12 +60,15 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
 
   async ngOnInit(): Promise<any> {
     this.cursos = await this.cursoService.listarCursos();
-
     this.cursos.forEach(
       curso => {
         let escuela = Escuela.Sistemas;
         if (curso.IDESCUELA === 3) {
           escuela = Escuela.Software;
+        }
+        const temp = this.cursosEscogidos.find(cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO);
+        if (temp) {
+          this.cursosSeleccionados.push({ id: `${curso.IDESCUELA} - ${curso.IDCURSO}`, escuela: escuela, curso: curso.NOMBRECURSO })
         }
         this.escuelasCursos.push(
           {
@@ -66,6 +78,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
         );
       }
     );
+    this.formGroup.setValue({ cursos: this.cursosSeleccionados.map(curso => curso.id) });
     this.temp = this.escuelasCursos;
   }
 
@@ -93,7 +106,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
     this.cursosSeleccionados = [];
     filtrado.forEach(row => {
       const separado = row.viewValue.split('|');
-      this.cursosSeleccionados.push({ escuela: separado[0], curso: separado[1] });
+      this.cursosSeleccionados.push({ id: row.value, escuela: separado[0], curso: separado[1] });
     });
 
   }

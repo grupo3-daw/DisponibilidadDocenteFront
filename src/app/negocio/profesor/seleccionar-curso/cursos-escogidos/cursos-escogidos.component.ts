@@ -3,8 +3,9 @@ import { TypeButton } from '@shared/buttons/type-button.enum';
 import { MatTablePadre } from '@shared/tables';
 
 export interface CursoSeleccionados {
-  escuela:string;
-  curso:string;
+  id: string;
+  escuela: string;
+  curso: string;
 }
 
 @Component({
@@ -16,8 +17,8 @@ export class CursosEscogidosComponent extends MatTablePadre<CursoSeleccionados> 
   constructor() {
     super()
     this.displayedColumns = [
-      {header:'Eliminar',columna:'acciones'},
-      {header:'Escuela',columna:'escuela'},
+      { header: 'Eliminar', columna: 'acciones' },
+      { header: 'Escuela', columna: 'escuela' },
       { header: 'Curso', columna: 'curso' }
     ]
     this.buttons = [
