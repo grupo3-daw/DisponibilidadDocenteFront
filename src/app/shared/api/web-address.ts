@@ -1,83 +1,84 @@
-import { HttpHeaders } from '@angular/common/http'
+import { HttpHeaders } from '@angular/common/http';
 
 export class WebAddress {
-  public headers: HttpHeaders
-  private dominio: string
-  private siguientes: string
-  private queryParams: any[] = []
-  private formData: any[] = []
-  private token = ''
+  headers: HttpHeaders;
+  private dominio: string;
+  private siguientes: string;
+  private readonly queryParams: Array<any> = [];
+  private readonly formData: Array<any> = [];
+  private readonly token : string = '';
   constructor(url: string) {
     if (localStorage.getItem('token')) {
-      this.token = localStorage.getItem('token')
+      this.token = localStorage.getItem('token');
+      console.log(this.token);
     }
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json',"Access-Control-Allow-Origin": "*" })
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
 
-    this.dominio = url
-    this.siguientes = ''
-    this.headers = headers
+    this.dominio = url;
+    this.siguientes = '';
+    this.headers = headers;
   }
 
-  setUrlPath(url: string) {
-    this.dominio = url
+  setUrlPath(url: string): void {
+    this.dominio = url;
   }
 
-  addUrl(ruta: any) {
+  addUrl(ruta: string): void {
     if (ruta !== undefined && ruta !== null && ruta !== '') {
-      this.siguientes += '/' + ruta
+      this.siguientes += '/' + `${ruta}`;
     }
   }
 
-  setSiguientes(ruta: any) {
+  setSiguientes(ruta: string): void {
     if (ruta !== undefined && ruta !== null && ruta !== '') {
-      this.siguientes = '/' + ruta
+      this.siguientes = '/' + `${ruta}`;
     }
   }
 
-  private addHeader(header: { name; value }) {
+  addHeaders(headers: { name; value }[]): void {
+    headers.forEach(header => {
+      this.addHeader(header);
+    });
+  }
+
+  addQueryParams(query: { name; value }) : void{
+    const indice = this.queryParams.indexOf(query);
+    if (indice >= 0) {
+      this.queryParams[indice] = query;
+    } else {
+      this.queryParams.push(query);
+    }
+  }
+
+  addFormData(data: { name; value }): void {
+    const indice = this.formData.indexOf(data);
+    if (indice >= 0) {
+      this.formData[indice] = data;
+    } else {
+      this.formData.push(data);
+    }
+  }
+
+  getFormData(): any {
+    return this.formData;
+  }
+
+  getUrl(): string {
+    return this.dominio + this.siguientes;
+  }
+
+  getHeaders(): HttpHeaders {
+    return this.headers;
+  }
+
+  getHeaderKeys(): Array<string> {
+    return this.headers.keys();
+  }
+
+  private addHeader(header: { name; value }): void {
     if (this.headers.has(header.name)) {
-      this.headers.delete(header.name)
+      this.headers.delete(header.name);
     }
     this.headers.append(header.name, header.value)
-  }
-
-  addHeaders(headers: { name; value }[]) {
-    for (const header of headers) {
-      this.addHeader(header)
-    }
-  }
-
-  addQueryParams(query: { name; value }) {
-    const indice = this.queryParams.indexOf(query)
-    if (indice >= 0) {
-      this.queryParams[indice] = query
-    } else {
-      this.queryParams.push(query)
-    }
-  }
-
-  addFormData(data: { name; value }) {
-    const indice = this.formData.indexOf(data)
-    if (indice >= 0) {
-      this.formData[indice] = data
-    } else {
-      this.formData.push(data)
-    }
-  }
-
-  getFormData() {
-    return this.formData
-  }
-
-  public getUrl(): string {
-    return this.dominio + this.siguientes
-  }
-
-  public getHeaders(): HttpHeaders {
-    return this.headers
-  }
-
-  public getHeaderKeys(): string[] {
-    return this.headers.keys()
   }
 }

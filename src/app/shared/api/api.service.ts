@@ -45,6 +45,7 @@ export class ApiService {
    * @param mostrarAlertaError boolean
    */
   async operacion<T = any>(
+    ruta: string,
     tipo: Consulta = Consulta.GET,
     body: any = {},
     headers: HttpHeaders = this.webAddress.getHeaders(),
@@ -52,7 +53,9 @@ export class ApiService {
     mostrarAlertaError = true
   ): Promise<T> {
     let consulta;
-
+    this.webAddress.setSiguientes(ruta)
+    console.log(this.webAddress.getUrl());
+    console.log(body);
     switch (tipo) {
       case Consulta.POST:
         consulta = this.http
@@ -82,15 +85,6 @@ export class ApiService {
     const resultado = this.evaluate(consulta)
       .then(resultados => {
         if (resultados !== undefined) {
-          if (resultados.rpta !== undefined) {
-            this.results = resultados.rpta;
-            if (mostrarAlertaSuccess && resultados.msg !== undefined) {
-              this.notificationService.mostrarMensajeInfo(resultados.msg);
-            }
-
-            return resultados.rpta;
-          }
-
           return this.validacionMensajes(
             resultados,
             mostrarAlertaSuccess,
