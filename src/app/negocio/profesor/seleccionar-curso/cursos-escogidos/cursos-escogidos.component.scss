@@ -1,0 +1,12 @@
+mat-card {
+  overflow-y: auto;
+  height: 350px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+app-mat-table ::ng-deep {
+  td.mat-cell {
+        text-align: left;
+  }
+}

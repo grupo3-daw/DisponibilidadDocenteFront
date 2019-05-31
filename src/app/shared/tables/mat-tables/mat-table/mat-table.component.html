@@ -3,7 +3,7 @@
   </app-group-buttons>
 </div>
 
-<div class="table-header">
+<div class="table-header" *ngIf="buscador">
   <app-buscador-input [filterValue]="filterValue" [clase]="clase" [icono]="icono" [placeholder]="placeholder"
     (buscar)="applyFilter($event)" (otro_evento)="otro_evento.emit()"></app-buscador-input>
 </div>

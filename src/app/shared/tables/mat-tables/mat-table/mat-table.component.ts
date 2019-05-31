@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { MaterialTableC } from '../material-table-component';
-import { trigger, transition, style, stagger, animate,query } from '@angular/animations';
 
 export const tableAnimations = [
   trigger('agregar_eliminar', [
@@ -22,7 +23,7 @@ export const tableAnimations = [
     ]),
   ])
 ]
-  
+
 @Component({
   selector: 'app-mat-table',
   templateUrl: './mat-table.component.html',
@@ -34,7 +35,8 @@ export const tableAnimations = [
 export class MatTableComponent extends MaterialTableC {
   @Input() placeholder = 'Buscar'
   @Input() clase = ''
-  @Input() icono:string
+  @Input() icono:string;
+  @Input() buscador = true;
   @Input() comprimed_buttons = false
   @Output() otro_evento = new EventEmitter<any>()
   indice_mostrado
@@ -44,7 +46,7 @@ export class MatTableComponent extends MaterialTableC {
 
   clickEvent(data, numeroFila) {
     if (!data.isTrusted) {
-      
+
       this.click_interno.emit({
         numeroFila: numeroFila,
         data: data
@@ -54,13 +56,13 @@ export class MatTableComponent extends MaterialTableC {
 
   clickExterno(data) {
     if (!data.isTrusted) {
-      
+
       this.click_externo.emit(data);
     }
   }
 
   editar(row, column) {
-    
+
     this.edit.emit(
       {
         column: column,
@@ -73,22 +75,22 @@ export class MatTableComponent extends MaterialTableC {
   }
 
   onAnimationEvent ( event: AnimationEvent ) {
-    
+
     console.warn(`Animation Trigger: ${event.animationName}`);
 
-    
+
     console.warn(`Phase: ${event.eventPhase}`);
 
-    
+
     console.warn(`Total time: ${event.timeStamp}`);
 
-    
+
     console.warn(`From: ${event.currentTarget}`);
 
-    
+
     console.warn(`To: ${event.target}`);
 
-    
+
     console.warn(`Element: ${event.srcElement}`);
   }
 
