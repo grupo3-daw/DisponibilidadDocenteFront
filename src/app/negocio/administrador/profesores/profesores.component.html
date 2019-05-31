@@ -2,7 +2,7 @@
   <mat-tab label="Ingenieria de Software">
     <app-mat-table [data]="filtradoSoftware" [buttonsExt]="buttonsExt" [buttons]="buttons"
       [displayedColumns]="displayedColumns" (click_externo)="filtros($event,escuela.Software)">
-      <mat-chip-list #chipList>
+      <mat-chip-list >
         <ng-container *ngFor="let row of cursosSoftware">
           <mat-chip *ngIf="row.seleccionado" [selectable]="true" [removable]="true"
             (removed)="remove(true, row,escuela.Software)" color="accent" selected>
@@ -23,7 +23,7 @@
   <mat-tab label="Ingenieria de Sistemas">
     <app-mat-table [data]="filtradoSistemas" [buttonsExt]="buttonsExt" [buttons]="buttons"
       [displayedColumns]="displayedColumns" (click_externo)="filtros($event,escuela.Sistemas)">
-      <mat-chip-list #chipList>
+      <mat-chip-list >
         <ng-container *ngFor="let curso of cursosSistemas">
           <mat-chip *ngIf="curso.seleccionado" [selectable]="true" [removable]="true"
             (removed)="remove(true,curso,escuela.Sistemas)" color="accent" selected>
