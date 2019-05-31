@@ -15,7 +15,7 @@ export class LoginComponent extends Formulario {
 
   constructor(public loginService: LoginService, public router: Router) {
     super([
-      { name: 'id', validators: [Validators.required] },
+      { name: 'id', validators: [Validators.required, Validators.email] },
       { name: 'password', validators: [Validators.required] }
     ]);
   }
