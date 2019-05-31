@@ -4,6 +4,26 @@ import { Router } from '@angular/router';
 import { ApiService } from '@shared/api/api.service';
 import { Consulta } from '@shared/api/consulta.enum';
 
+
+export interface Usuario {
+  EMAIL: string;
+  CONTRASENA: string;
+}
+
+export interface Administrador extends Usuario{
+  IDADMINISTRADOR: number;
+  facultad_IDFACULTAD: number;
+}
+
+export interface Profesor extends Usuario{
+  IDPROFESOR: number;
+  IDCATEGORIA: number;
+  NOMBRE: string;
+  APPATERNO: string;
+  APMATERNO: string;
+  PERMISO: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,20 +31,25 @@ export class LoginService {
   constructor(
     private readonly api: ApiService,
     private readonly router: Router
-  ) {}
+  ) { }
 
   onSubmit(form: FormGroup): void {
     if (form.valid) {
       this.api
-        .operacion('auth/login', Consulta.POST, form.value)
-        .then(res => {
-          console.log(res);
+        .operacion('login', Consulta.POST, form.value)
+        .then(res   => {
+          let ruta = 'administrador';
+          if (res.user.IDPROFESOR) {
+            ruta = 'profesor';
+          }
+          localStorage.setItem('user', JSON.stringify(res.user));
           this.router
-            .navigate(['profesor'])
+            .navigate([ruta])
             .then(route => {
               console.log(route);
             })
             .catch();
+
         })
         .catch();
     }
