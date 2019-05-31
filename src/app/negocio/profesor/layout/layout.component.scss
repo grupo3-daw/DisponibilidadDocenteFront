@@ -1,28 +1,18 @@
-div.fondo > div {
-    display: flex;
-}
-
+app-informacion-perfil,
 app-seleccionar-curso {
-    padding:10px 20px 0;
-}
-
-app-informacion-perfil {
-    padding: 5% 20px;
-}
-
-app-informacion-perfil, app-seleccionar-curso {
-    width: 50%;
-    background-color: white;
+  background-color: white;
+   display: block;
+  padding: 20px;
 }
 
 @media all and (max-width: 576px) {
-    app-informacion-perfil {
-        width: calc(100% - 40px);
-    }
-    app-seleccionar-curso {
-        width: auto;
-    }
-    div.fondo > div {
-        display: grid;
-    }
+  app-informacion-perfil {
+    width: calc(100% - 40px);
   }
+  app-seleccionar-curso {
+    width: auto;
+  }
+  div.fondo > div {
+    display: grid;
+  }
+}

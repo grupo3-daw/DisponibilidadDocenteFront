@@ -1,8 +1,8 @@
 <app-toolbar></app-toolbar>
 <div class="fondo">
-  <div>
-    <app-informacion-perfil></app-informacion-perfil>
+  <!-- <div> -->
+    <app-informacion-perfil *ngIf="profesorDetalle" [perfil]="profesorDetalle"></app-informacion-perfil>
     <app-seleccionar-curso (cursosSeleccionados)="cursosSeleccionados = $event"></app-seleccionar-curso>
-  </div>
+  <!-- </div> -->
   <app-disponibilidad-semanal [cursosSeleccionados]="cursosSeleccionados"></app-disponibilidad-semanal>
 </div>
