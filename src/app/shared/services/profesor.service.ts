@@ -2,14 +2,11 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '@shared/services/api.service';
 import { Profesor } from 'app/login/login.service';
 
+import { Curso } from './curso';
+
 export interface Disponibilidad {
   DIA: number;
   HORAS: string;
-}
-
-export interface Curso {
-  IDCURSO: number;
-  NOMBRECURSO: string;
 }
 
 /**
@@ -27,7 +24,7 @@ export interface ProfesorDetalle extends Profesor {
   horas_minimas: number;
   horas_maximas: number;
   cursos?: Array<Curso>;
-  disponibilidad? : Array<Disponibilidad>;
+  disponibilidad?: Array<Disponibilidad>;
   solicitud?: any;
 }
 
@@ -35,7 +32,7 @@ export interface ProfesorDetalle extends Profesor {
     providedIn: 'root'
   })
 export class ProfesorService {
-  constructor(private readonly api : ApiService) {
+  constructor(private readonly api: ApiService) {
   }
 
   async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
