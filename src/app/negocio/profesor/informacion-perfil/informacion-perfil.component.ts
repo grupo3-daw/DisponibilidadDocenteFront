@@ -1,20 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-import { Perfil } from './perfil';
+import { ProfesorDetalle } from '../profesor.service';
 
 @Component({
   selector: 'app-informacion-perfil',
   templateUrl: './informacion-perfil.component.html',
   styleUrls: ['./informacion-perfil.component.scss']
 })
-export class InformacionPerfilComponent implements OnInit {
-  perfil: Perfil = {
-    nombre: 'Alarcón Loayza, Luis Alberto',
-    codigo: '091081',
-    categoria: 'Asociado TP 20 horas',
-    horas: 20
-  };
-  constructor() {}
+export class InformacionPerfilComponent {
+  horas: number;
+  @Input()
+  set perfil(profesor: ProfesorDetalle) {
+    let horas = 0;
+    if (profesor.disponibilidad) {
+      profesor.disponibilidad.forEach(
+        disponibilidad => horas += disponibilidad.HORAS.split(',').length
+      );
+    }
+    this.horas = horas;
+    this._perfil = profesor;
+  }
+  get perfil(): ProfesorDetalle {
+    return this._perfil;
+  }
+  private _perfil: ProfesorDetalle;
 
-  ngOnInit() {}
 }
