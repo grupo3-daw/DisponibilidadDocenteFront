@@ -13,4 +13,5 @@ export class CursoService {
   async listarCursos(): Promise<Array<CursoDetalle>> {
     return this.api.operacion('cursos');
   }
+
 }

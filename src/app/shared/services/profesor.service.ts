@@ -3,6 +3,7 @@ import { ProfesorVista } from '@negocio/administrador/profesores/profesores.comp
 import { ApiService } from '@shared/services/api.service';
 import { Profesor } from 'app/login/login.service';
 
+import { Consulta } from './consulta.enum';
 import { Curso } from './curso';
 
 export interface Disponibilidad {
@@ -45,8 +46,13 @@ export class ProfesorService {
     return this.api.operacion(`profesores/${id}`);
   }
 
+  async registrarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
+    return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.POST, { cursos: cursos.map(curso => curso.IDCURSO) });
+  }
 
-
+  async registrarDisponibilidad(idProfesor: number, dias: Array<number>, horas: Array<Array<number>>): Promise<any> {
+    return this.api.operacion(`profesores/${idProfesor}/disponibilidad`, Consulta.POST, { dia: dias, horas });
+  }
   async listarAdmin(): Promise<ProfesoresVistaAdmin> {
     return this.listar()
       .then(

@@ -3,7 +3,7 @@ import { TypeButton } from '@shared/buttons/type-button.enum';
 import { MatTablePadre } from '@shared/tables';
 
 export interface CursoSeleccionados {
-  id: string;
+  id: number;
   escuela: string;
   curso: string;
 }

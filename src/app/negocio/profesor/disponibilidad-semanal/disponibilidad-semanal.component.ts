@@ -1,7 +1,11 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog, MatTableDataSource } from '@angular/material';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
+import { Curso } from '@shared/services/curso';
+import { NotificationService } from '@shared/services/notification.service';
+import { ProfesorService } from '@shared/services/profesor.service';
 
+import { SeleccionarCursoService } from '../seleccionar-curso/seleccionar-curso.service';
 import { DiaLaborable } from './dia-laborable.type';
 import { EstadoHoras } from './estado-horas.enum';
 import { SemanaLaborable } from './semana-laborable';
@@ -25,17 +29,28 @@ export interface Disponibilidad {
   templateUrl: './disponibilidad-semanal.component.html',
   styleUrls: ['./disponibilidad-semanal.component.scss']
 })
-export class DisponibilidadSemanalComponent implements OnChanges{
-  @Input() cursosSeleccionados: any;
+export class DisponibilidadSemanalComponent implements OnChanges {
+  @Input() cursosSeleccionados: Array<Curso>;
   @Input() disponibilidadHoraria: Array<Disponibilidad>;
   disponibilidad;
-  @ViewChild('horario') horario;
-  horas = 20;
+  @ViewChild('horarioVista') horarioVista;
+  @Input() minimo: number;
+  @Input() maximo: number;
+  @Input() id: number;
+  horarioEnVista: { disponibilidad: any, cursos: Array<Curso> };
+  horario: Array<Array<number>>;
+  dias: Array<number>
+  horas = 0;
   diasNoSeleccionados = true;
   displayedColumns: Array<string>;
   dataSource: MatTableDataSource<SemanaLaborable>;
 
-  constructor(public dialog: MatDialog) {
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly seleccionarCursoService: SeleccionarCursoService,
+    private readonly profesorService: ProfesorService,
+    private readonly notificacionService: NotificationService
+  ) {
     this.displayedColumns = [
       'hora',
       'lunes',
@@ -61,12 +76,18 @@ export class DisponibilidadSemanalComponent implements OnChanges{
       new SemanaLaborable('20:00-21:00'),
       new SemanaLaborable('21:00-22:00')
     ]);
+    this.seleccionarCursoService.cursosSeleccionadosEvento.subscribe(
+      res => {
+        this.cursosSeleccionados = res.map(
+          curso => {
+            return { IDCURSO: curso.id, NOMBRECURSO: curso.curso }
+          });
+        console.log(this.cursosSeleccionados);
+      }
+    )
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
-    console.log(changes.cursosSeleccionados);
     if (changes.disponibilidad) {
       this.disponibilidadHoraria.forEach(
         disponibilidad => {
@@ -90,9 +111,6 @@ export class DisponibilidadSemanalComponent implements OnChanges{
     let anterior: EstadoHoras = 0;
     for (let index = 0; index < this.dataSource.data.length; index++) {
       const resultado = this.actualizarDisponibilidad(dia, index);
-      console.log(this.horas);
-      console.log(resultado);
-      console.log(anterior);
       if (
         resultado === EstadoHoras.Fin ||
         (anterior !== EstadoHoras.Fin && resultado !== anterior)
@@ -100,11 +118,11 @@ export class DisponibilidadSemanalComponent implements OnChanges{
         switch (resultado) {
           case EstadoHoras.Agregando:
             this.horas++;
-            this.dataSource.data[index][dia] = false;
+            this.dataSource.data[index][dia] = true;
             break;
           case EstadoHoras.Disminuyendo:
             this.horas--;
-            this.dataSource.data[index][dia] = true;
+            this.dataSource.data[index][dia] = false;
             break;
           default:
             break;
@@ -133,18 +151,21 @@ export class DisponibilidadSemanalComponent implements OnChanges{
 
   actualizarDisponibilidad(dia: DiaLaborable, numeroFila: number): EstadoHoras {
     if (this.dataSource.data[numeroFila][dia]) {
-      this.horas++;
-      this.diasNoSeleccionados = true;
+      this.horas--;
+      if (this.horas < this.minimo) {
+        this.diasNoSeleccionados = true;
+      }
+
       console.log('Desmarcando Celda');
       this.dataSource.data[numeroFila][dia] = false;
 
       return EstadoHoras.Disminuyendo;
     }
-    if (this.horas > 0) {
+    if (this.horas < this.maximo) {
       console.log('Marcando Celda');
-      this.horas--;
+      this.horas++;
       this.dataSource.data[numeroFila][dia] = true;
-      if (this.horas === 0) {
+      if (this.horas >= this.minimo) {
         this.diasNoSeleccionados = false;
       }
 
@@ -156,39 +177,63 @@ export class DisponibilidadSemanalComponent implements OnChanges{
 
   openDialog(): void {
     this.disponibilidad = this.generarHorario();
-    console.log(this.disponibilidad);
+    this.horarioEnVista = {
+      disponibilidad: this.disponibilidad,
+      cursos: this.cursosSeleccionados
+    };
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       width: '450px',
       data: {
         titulo: 'Disponibilidad',
         mensaje: '¿Esta seguro de registrar este horario?',
-        template: { element: this.horario, data: this.disponibilidad }
+        template: { element: this.horarioVista, data: this.horarioEnVista }
       }
     });
+    console.log(this.dias);
+    console.log(this.horario);
 
     dialogRef.afterClosed()
-    .subscribe(result => {
-      console.log(`The dialog was closed  ${result}`);
-    });
+      .subscribe(result => {
+        if (result === true) {
+          this.profesorService.registrarCursos(this.id, this.cursosSeleccionados)
+            .then(
+              res => {
+                this.profesorService.registrarDisponibilidad(this.id,this.dias,this.horario)
+                .then(
+                  res => {
+                    this.notificacionService.mostrarMensajeSuccess('Disponibilidad Registrada Exitosamente')
+                  }
+                )
+                .catch();
+              }
+            )
+            .catch();
+        }
+      });
   }
 
   private generarHorario(): Array<any> {
     const horario = [];
+    this.horario = []
+    this.dias = []
     for (
       let indexDia = 1;
       indexDia < this.displayedColumns.length;
       indexDia++
     ) {
       let horas = '';
-
+      let horasDia = []
       for (const row of this.dataSource.data) {
         console.log(row[this.displayedColumns[indexDia]]);
 
         if (row[this.displayedColumns[indexDia]]) {
           horas = sumarHora(horas, row.hora);
+          horasDia.push(parseInt(row.hora, 10));
         }
       }
       if (horas !== '') {
+        this.dias.push(indexDia);
+        this.horario.push(horasDia);
         horario.push({
           dia: this.displayedColumns[indexDia],
           horas: horas.replace('-', '')

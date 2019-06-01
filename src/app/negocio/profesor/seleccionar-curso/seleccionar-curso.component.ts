@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Escuela } from '@negocio/administrador/profesores/profesores.component';
 import { Formulario } from '@shared/formulario/formulario';
 import { Curso, CursoDetalle, CursoService } from '@shared/services/curso';
 
 import { CursoSeleccionados } from './cursos-escogidos/cursos-escogidos.component';
+import { SeleccionarCursoService } from './seleccionar-curso.service';
 
 export interface RowSelect {
   value: any;
@@ -26,7 +27,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
   // get cursosEscogidos(): Array<Curso> {
   //   return this._cursosEscogidos;
   // }
-  @Output() readonly cursosSeleccionadosEvento = new EventEmitter<any>();
+
   cursosSeleccionados: Array<CursoSeleccionados> = []
   cursos: Array<CursoDetalle>;
   escuelas: Array<RowSelect>;
@@ -34,7 +35,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
   searchValue = '';
   valido = true;
   temp = [];
-  constructor(private readonly cursoService: CursoService) {
+  constructor(private readonly cursoService: CursoService, private readonly seleccionarCurso: SeleccionarCursoService) {
     super([
       { name: 'cursos', validators: [Validators.required] }
     ]);
@@ -46,14 +47,6 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
     this.formGroup.valueChanges.subscribe(
       result => {
         this.actualizarCursosSeleccionados(result.cursos);
-      }
-    );
-    this.formGroup.statusChanges.subscribe(
-      result => {
-        console.log(result);
-        if (result === 'VALID') {
-          this.cursosSeleccionadosEvento.emit(this.formGroup.value);
-        }
       }
     );
   }
@@ -68,11 +61,11 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
         }
         const temp = this.cursosEscogidos.find(cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO);
         if (temp) {
-          this.cursosSeleccionados.push({ id: `${curso.IDESCUELA} - ${curso.IDCURSO}`, escuela: escuela, curso: curso.NOMBRECURSO })
+          this.cursosSeleccionados.push({ id: curso.IDCURSO,  escuela, curso: curso.NOMBRECURSO })
         }
         this.escuelasCursos.push(
           {
-            value: `${curso.IDESCUELA} - ${curso.IDCURSO}`,
+            value: curso.IDCURSO,
             viewValue: `${escuela} |  ${curso.NOMBRECURSO}`
           }
         );
@@ -108,7 +101,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
       const separado = row.viewValue.split('|');
       this.cursosSeleccionados.push({ id: row.value, escuela: separado[0], curso: separado[1] });
     });
-
+    this.seleccionarCurso.cursosSeleccionadosEvento.emit(this.cursosSeleccionados)
   }
 
 }

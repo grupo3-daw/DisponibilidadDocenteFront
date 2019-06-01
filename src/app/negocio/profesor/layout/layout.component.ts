@@ -8,7 +8,7 @@ import { Profesor } from 'app/login/login.service';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutProfesorComponent implements OnInit {
-  cursosSeleccionados: any;
+  cursosSeleccionados: { cursos: Array<number> } = { cursos: [] };
   user: Profesor;
   profesorDetalle: ProfesorDetalle;
   constructor(
@@ -17,7 +17,7 @@ export class LayoutProfesorComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('user'));
   }
 
-  async ngOnInit() : Promise<any> {
+  async ngOnInit(): Promise<any> {
     this.profesorDetalle = await this.profesorService.obtenerDetalle(this.user.IDPROFESOR);
   }
 }
