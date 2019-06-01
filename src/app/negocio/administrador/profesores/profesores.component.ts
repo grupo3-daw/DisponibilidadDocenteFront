@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { TypeButton } from '@shared/buttons/type-button.enum';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { ProfesorService } from '@shared/services/profesor.service';
+import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 import { MatTablePadre } from '@shared/tables';
 
 
@@ -20,11 +20,9 @@ export interface Dictado {
   cursos: string;
 }
 
-export interface ProfesorVista {
+export interface ProfesorVista extends ProfesorDetalle{
   nombre: string;
-  tipo: string;
-  cursos: string;
-  solicitud: string;
+  cursosEscogidos: string;
 }
 
 @Component({
@@ -75,11 +73,11 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
       },
       {
         header: 'Tipo',
-        columna: 'tipo'
+        columna: 'NOMBRECATEGORIA'
       },
       {
         header: 'Cursos',
-        columna: 'cursos'
+        columna: 'cursosEscogidos'
       }
     ];
     this.buttonsExt = [
@@ -116,7 +114,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
         toolTipPosition: 'above',
         type: TypeButton.Icon,
         disabled: false,
-        mostrar: data => data.cursos !== ''
+        mostrar: data => data.cursosEscogidos !== ''
       },
       {
         id: 'permisos',
@@ -139,7 +137,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     this.cursos = res.cursos;
     setTimeout(() => {
       this.loading = false;
-    }, 15);
+    }, 100);
 
   }
 
@@ -210,7 +208,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.tipo === sel
+        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel
         )
 
         if (seleccionado) {
@@ -256,7 +254,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.cursos.includes(sel)
+        const seleccionado = seleccionados.find(sel => profesor.cursosEscogidos.includes(sel)
         );
 
         if (seleccionado) {

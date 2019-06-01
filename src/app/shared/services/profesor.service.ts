@@ -35,8 +35,8 @@ export interface ProfesoresVistaAdmin {
 }
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 export class ProfesorService {
   constructor(private readonly api: ApiService) {
   }
@@ -49,45 +49,44 @@ export class ProfesorService {
 
   async listarAdmin(): Promise<ProfesoresVistaAdmin> {
     return this.listar()
-    .then(
-      lista => {
-        const profesores: Array<ProfesorVista> = [];
-        const cursos: Array<{ nombre: string, seleccionado: boolean }> = []
-        lista.forEach(
-          async profesor => {
-            const detalle = await this.obtenerDetalle(profesor.IDPROFESOR);
-            let cursosDetalle = ''
-            detalle.cursos.forEach(
-              (curso , index ) => {
-                let signo = ', ';
-                if(index === detalle.cursos.length - 1) {
-                  signo = '';
-                }
+      .then(
+        lista => {
+          const profesores: Array<ProfesorVista> = [];
+          const cursos: Array<{ nombre: string, seleccionado: boolean }> = []
+          lista.forEach(
+            async profesor => {
+              const detalle = await this.obtenerDetalle(profesor.IDPROFESOR);
+              let cursosDetalle = ''
+              detalle.cursos.forEach(
+                (curso, index) => {
+                  let signo = ', ';
+                  if (index === detalle.cursos.length - 1) {
+                    signo = '';
+                  }
 
-                if (!cursos.includes({ nombre: curso.NOMBRECURSO, seleccionado: false })) {
-                  cursos.push({ nombre: curso.NOMBRECURSO, seleccionado: false })
+                  if (!cursos.includes({ nombre: curso.NOMBRECURSO, seleccionado: false })) {
+                    cursos.push({ nombre: curso.NOMBRECURSO, seleccionado: false })
+                  }
+                  cursosDetalle += `${curso.NOMBRECURSO}${signo}`;
                 }
-                cursosDetalle += `${curso.NOMBRECURSO}${signo}`;
-              }
-            );
-            profesores.push(
-              {
-                nombre: detalle.NOMBRE,
-                tipo: detalle.NOMBRECATEGORIA,
-                cursos: cursosDetalle,
-                solicitud: detalle.solicitud
-              }
-            );
-          }
-        );
+              );
+              profesores.push(
+                {
+                  ...detalle,
+                  nombre: `${detalle.APPATERNO} ${detalle.APMATERNO},
+                ${detalle.NOMBRE}`,
+                  cursosEscogidos: cursosDetalle
+                });
+            }
+          );
 
-        return {
-          profesores,
-          cursos
-        };
-      }
-    )
-    .catch();
+          return {
+            profesores,
+            cursos
+          };
+        }
+      )
+      .catch();
   }
 
   private async listar(): Promise<Array<Profesor>> {
