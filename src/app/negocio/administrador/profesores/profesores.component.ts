@@ -47,18 +47,6 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     }
   ];
   loading = true;
-  // @ViewChild('cursosSistemasVista') cursosSistemasVista;
-  // @ViewChild('cursosSoftwareVista') cursosSoftwareVista;
-  // @ViewChild('tiposSoftwareVista') tiposSoftwareVista;
-  // @ViewChild('tiposSistemasVista') tiposSistemasVista;
-  // filtradoSistemas: Array<ProfesorVista> = [];
-  // filtradoSoftware: Array<ProfesorVista> = [];
-  // tiposSistemas: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // tiposSoftware: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // cursosSistemas: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // cursosSoftware: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // profesoresSoftware: Array<ProfesorVista> = [];
-  // profesoresSistema: Array<ProfesorVista> = [];
   profesores: Array<ProfesorVista> = [];
   constructor(public dialog: MatDialog, private readonly profesorService: ProfesorService) {
     super();
@@ -173,10 +161,10 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
       const index = data.indexOf(chip);
       if (index >= 0) {
         data.splice(index, 1);
-        this.buscarPorTipoProfesor(
-          data
-            .filter(row => row.seleccionado)
-            .map(row => row.nombre));
+        // this.buscarPorTipoProfesor(
+        //   data
+        //     .filter(row => row.seleccionado)
+        //     .map(row => row.nombre));
       }
     }
 
@@ -193,37 +181,37 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
         }
       }
     });
-    dialogRef.afterClosed()
-      .subscribe(result => {
-        console.log(`The dialog was closed  ${result}`);
-        this.buscarPorTipoProfesor(
-          tipos
-            .filter(curso => curso.seleccionado)
-            .map(curso => curso.nombre))
-      });
+    // dialogRef.afterClosed()
+    //   .subscribe(result => {
+    //     console.log(`The dialog was closed  ${result}`);
+    //     this.buscarPorTipoProfesor(
+    //       tipos
+    //         .filter(curso => curso.seleccionado)
+    //         .map(curso => curso.nombre))
+    //   });
   }
 
-  private buscarPorTipoProfesor(seleccionados: Array<string>): void {
-    const data = this.profesores;
-    let filtrado;
-    if (seleccionados.length > 0) {
-      filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel
-        )
+  // private buscarPorTipoProfesor(seleccionados: Array<string>): void {
+  //   const data = this.profesores;
+  //   let filtrado;
+  //   if (seleccionados.length > 0) {
+  //     filtrado = data.filter(profesor => {
+  //       const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel
+  //       )
 
-        if (seleccionado) {
-          return true;
-        }
+  //       if (seleccionado) {
+  //         return true;
+  //       }
 
-        return false;
+  //       return false;
 
-      })
-    } else {
-      filtrado = data;
-    }
-    console.log(filtrado);
-    this.data = filtrado;
-  }
+  //     })
+  //   } else {
+  //     filtrado = data;
+  //   }
+  //   console.log(filtrado);
+  //   this.data = filtrado;
+  // }
 
   private mostrarCursos(): void {
     const cursos = this.cursos;

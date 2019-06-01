@@ -16,8 +16,9 @@ export class LoginComponent extends Formulario {
   constructor(private readonly loginService: LoginService, public router: Router) {
     super([
       { name: 'email', validators: [Validators.required, Validators.email] },
-      { name: 'contrasena', validators: [Validators.required] }
+      { name: 'password', validators: [Validators.required] }
     ]);
+    localStorage.clear()
   }
 
   onSubmit(): void {

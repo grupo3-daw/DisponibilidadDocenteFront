@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Escuela } from '@negocio/administrador/profesores/profesores.component';
 import { Formulario } from '@shared/formulario/formulario';
-import { Curso, CursoDetalle, CursoService } from '@shared/services/curso';
+import { Curso, CursoService } from '@shared/services/curso';
 
 import { CursoSeleccionados } from './cursos-escogidos/cursos-escogidos.component';
 import { SeleccionarCursoService } from './seleccionar-curso.service';
@@ -20,7 +20,7 @@ export interface RowSelect {
 export class SeleccionarCursoComponent extends Formulario implements OnInit {
   @Input() cursosEscogidos: Array<Curso>;
   cursosSeleccionados: Array<CursoSeleccionados> = []
-  cursos: Array<CursoDetalle>;
+  cursos: Array<Curso>;
   escuelas: Array<RowSelect>;
   escuelasCursos: Array<RowSelect> = [];
   searchValue = '';
@@ -43,17 +43,35 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
   }
 
   async ngOnInit(): Promise<any> {
-    this.cursos = await this.cursoService.listarCursos();
+    this.cursos = [
+      { IDCURSO: 0, NOMBRECURSO: 'Arquitectura de Software' },
+      { IDCURSO: 1, NOMBRECURSO: 'Diseño de Software' },
+      { IDCURSO: 2, NOMBRECURSO: 'Calidad de Software' },
+      { IDCURSO: 3, NOMBRECURSO: 'Base de Datos 1' },
+      { IDCURSO: 4, NOMBRECURSO: 'Base de Datos 2' },
+      { IDCURSO: 5, NOMBRECURSO: 'Teoria General de Sistemas' },
+      { IDCURSO: 6, NOMBRECURSO: 'Programación 1' },
+      { IDCURSO: 7, NOMBRECURSO: 'Programación 2' },
+      { IDCURSO: 8, NOMBRECURSO: 'Redes Neuronales' },
+      { IDCURSO: 9, NOMBRECURSO: 'Planeamiento de Recursos Empresariales' },
+      { IDCURSO: 10, NOMBRECURSO: 'Estructura de Datos 1' },
+      { IDCURSO: 11, NOMBRECURSO: 'Estructura de Datos 2' },
+      { IDCURSO: 12, NOMBRECURSO: 'Sistemas Inteligentes' },
+      { IDCURSO: 13, NOMBRECURSO: 'Inteligencia Artificial' }
+    ];
     this.cursos.forEach(
       curso => {
         let escuela = Escuela.Sistemas;
-        if (curso.IDESCUELA === 3) {
-          escuela = Escuela.Software;
+        // if (curso.IDESCUELA === 3) {
+        //   escuela = Escuela.Software;
+        // }
+        if (this.cursosEscogidos) {
+          const temp = this.cursosEscogidos.find(cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO);
+          if (temp) {
+            this.cursosSeleccionados.push({ id: curso.IDCURSO, escuela, curso: curso.NOMBRECURSO })
+          }
         }
-        const temp = this.cursosEscogidos.find(cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO);
-        if (temp) {
-          this.cursosSeleccionados.push({ id: curso.IDCURSO,  escuela, curso: curso.NOMBRECURSO })
-        }
+
         this.escuelasCursos.push(
           {
             value: curso.IDCURSO,

@@ -6,14 +6,8 @@ export class WebAddress {
   private siguientes: string;
   private readonly queryParams: Array<any> = [];
   private readonly formData: Array<any> = [];
-  private readonly token : string = '';
   constructor(url: string) {
-    if (localStorage.getItem('token')) {
-      this.token = localStorage.getItem('token');
-      console.log(this.token);
-    }
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
-
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     this.dominio = url;
     this.siguientes = '';
     this.headers = headers;
@@ -35,13 +29,13 @@ export class WebAddress {
     }
   }
 
-  addHeaders(headers: { name; value }[]): void {
+  addHeaders(headers: Array<{ name: any; value: any }>): void {
     headers.forEach(header => {
       this.addHeader(header);
     });
   }
 
-  addQueryParams(query: { name; value }) : void{
+  addQueryParams(query: { name: any, value: any }): void {
     const indice = this.queryParams.indexOf(query);
     if (indice >= 0) {
       this.queryParams[indice] = query;
@@ -50,7 +44,7 @@ export class WebAddress {
     }
   }
 
-  addFormData(data: { name; value }): void {
+  addFormData(data: { name: any, value: any }): void {
     const indice = this.formData.indexOf(data);
     if (indice >= 0) {
       this.formData[indice] = data;
@@ -75,7 +69,7 @@ export class WebAddress {
     return this.headers.keys();
   }
 
-  private addHeader(header: { name; value }): void {
+  private addHeader(header: { name: any, value: any }): void {
     if (this.headers.has(header.name)) {
       this.headers.delete(header.name);
     }

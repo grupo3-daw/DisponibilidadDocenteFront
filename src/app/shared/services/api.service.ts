@@ -48,13 +48,22 @@ export class ApiService {
     ruta: string,
     tipo: Consulta = Consulta.GET,
     body: any = {},
-    headers: HttpHeaders = this.webAddress.getHeaders(),
+    headersOld: HttpHeaders = this.webAddress.getHeaders(),
     mostrarAlertaSuccess = false,
     mostrarAlertaError = true
   ): Promise<T> {
+    let headers = headersOld;
+    if (localStorage.getItem('token')) {
+      const token = localStorage.getItem('token');
+      headers = new HttpHeaders(
+        { 'Content-Type': 'application/json', 'Authorization': token }
+      )
+    }
+
     let consulta;
     this.webAddress.setSiguientes(ruta)
     console.log(this.webAddress.getUrl());
+    console.log(this.webAddress.getHeaders());
     console.log(body);
     switch (tipo) {
       case Consulta.POST:

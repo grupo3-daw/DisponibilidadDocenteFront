@@ -3,39 +3,12 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '@shared/services/api.service';
 import { Consulta } from '@shared/services/consulta.enum';
+import { UsuarioService } from '@shared/services/usuario';
 
-/**
- * @export
- * @var EMAIL: string
- * @var CONTRASENA: string
- */
-export interface Usuario {
-  EMAIL: string;
-  CONTRASENA: string;
-}
-
-export interface Administrador extends Usuario{
-  IDADMINISTRADOR: number;
-  facultad_IDFACULTAD: number;
-}
-
-/**
- * @export
- * @extends {Usuario}
- * @var IDPROFESOR: number
- * @var  IDCATEGORIA: number
- * @var   NOMBRE: string
- * @var   APPATERNO: string
- * @var   APMATERNO: string
- * @var   PERMISO: number
- */
-export interface Profesor extends Usuario{
-  IDPROFESOR: number;
-  IDCATEGORIA: number;
-  NOMBRE: string;
-  APPATERNO: string;
-  APMATERNO: string;
-  PERMISO: number;
+export interface LoginOutput {
+  access_token: string;
+  token_type: string;
+  expires_at: string;
 }
 
 @Injectable({
@@ -44,26 +17,33 @@ export interface Profesor extends Usuario{
 export class LoginService {
   constructor(
     private readonly api: ApiService,
+    private readonly userService: UsuarioService,
     private readonly router: Router
   ) { }
 
   onSubmit(form: FormGroup): void {
     if (form.valid) {
       this.api
-        .operacion('login', Consulta.POST, form.value)
-        .then(res   => {
+        .operacion('auth/login', Consulta.POST, form.value)
+        .then((res: LoginOutput) => {
           let ruta = 'administrador';
-          if (res.user.IDPROFESOR) {
-            ruta = 'profesor';
-          }
-          localStorage.setItem('user', JSON.stringify(res.user));
-          this.router
-            .navigate([ruta])
-            .then(route => {
-              console.log(route);
-            })
-            .catch();
-
+          localStorage.setItem('token', `${res.token_type} ${res.access_token}`);
+          this.userService.obtenerUsuario()
+            .then(
+              usuario => {
+                if (usuario.role_id !== 1) {
+                  ruta = 'profesor';
+                }
+                localStorage.setItem('user', JSON.stringify(usuario));
+                this.router
+                  .navigate([ruta])
+                  .then(route => {
+                    console.log(route);
+                  })
+                  .catch();
+              }
+            )
+            .catch()
         })
         .catch();
     }

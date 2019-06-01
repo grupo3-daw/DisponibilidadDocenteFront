@@ -33,19 +33,19 @@
       </mat-form-field>
       <mat-form-field>
         <input
-          id="contrasena"
+          id="password"
           matInput
           placeholder="Contraseña"
           [type]="hide ? 'password' : 'text'"
-          formControlName="contrasena"
+          formControlName="password"
           required
           (keyup.enter)="onSubmit()"
         />
         <mat-icon matSuffix (click)="hide = !hide">{{
           hide ? 'visibility_off' : 'visibility'
         }}</mat-icon>
-        <mat-error *ngIf="!getControl('contrasena').valid">{{
-          getErrorMessage('contrasena')
+        <mat-error *ngIf="!getControl('password').valid">{{
+          getErrorMessage('password')
         }}</mat-error>
       </mat-form-field>
       <div class="mt20">

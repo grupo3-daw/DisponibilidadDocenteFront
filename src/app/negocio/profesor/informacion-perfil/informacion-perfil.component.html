@@ -5,10 +5,9 @@
     <img fxFlex="10%" fxFlex.xs="20%" id="perfil" src="../../../../assets/img/logo.png" />
 
     <div fxFlex="50%" fxFlex.xs="80%" id="info">
-      <h3>{{ perfil.APPATERNO }} {{perfil.APMATERNO}}, {{perfil.NOMBRE}}</h3>
-      <p>Correo Electrónico: {{ perfil.EMAIL }}</p>
-      <p>Categoria: {{ perfil.NOMBRECATEGORIA }}</p>
-      <!-- <p>Minimo: {{perfil.horas_minimas}} | Maximo: {{perfil.horas_maximas}}</p> -->
+      <h3>{{ perfil.user_name }} </h3>
+      <p>Correo Electrónico: {{ perfil.user_email }}</p>
+      <p>Categoria: {{ perfil.category_name }}</p>
       <p>Horas: {{ horas }}</p>
     </div>
   </div>

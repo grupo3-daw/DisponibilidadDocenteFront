@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProfesorVista } from '@negocio/administrador/profesores/profesores.component';
 import { ApiService } from '@shared/services/api.service';
-import { Profesor } from 'app/login/login.service';
 
 import { Consulta } from './consulta.enum';
 import { Curso } from './curso';
@@ -11,23 +10,17 @@ export interface Disponibilidad {
   HORAS: string;
 }
 
-/**
- * @export
- * @extends {Profesor}
- * @var   NOMBRECATEGORIA: string;
- * @var   horas_minimas: number;
- * @var   horas_maximas: number;
- * @var   cursos?: Array<Curso>;
- * @var   disponibilidad? : Array<Disponibilidad>;
- * @var   solicitud?: any;
- */
-export interface ProfesorDetalle extends Profesor {
-  NOMBRECATEGORIA: string;
-  horas_minimas: number;
-  horas_maximas: number;
-  cursos?: Array<Curso>;
-  disponibilidad?: Array<Disponibilidad>;
-  solicitud?: any;
+export interface ProfesorDetalle {
+  id: number;
+  user_id: number;
+  user_name: string;
+  user_email: string;
+  user_role_id: number;
+  user_role_name: string;
+  category_id: number;
+  category_name: string;
+  cursos ?: Array<any>;
+  disponibilidad ?: Array<any>;
 }
 
 export interface ProfesoresVistaAdmin {
@@ -43,7 +36,7 @@ export class ProfesorService {
   }
 
   async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
-    return this.api.operacion(`profesores/${id}`);
+    return this.api.operacion('auth/teacher/get/1');
   }
 
   async registrarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
@@ -59,9 +52,9 @@ export class ProfesorService {
         lista => {
           const profesores: Array<ProfesorVista> = [];
           const cursos: Array<{ nombre: string, seleccionado: boolean }> = []
-          lista.forEach(
+          lista.teachers.forEach(
             async profesor => {
-              const detalle = await this.obtenerDetalle(profesor.IDPROFESOR);
+              const detalle = await this.obtenerDetalle(profesor.id);
               let cursosDetalle = ''
               detalle.cursos.forEach(
                 (curso, index) => {
@@ -79,8 +72,7 @@ export class ProfesorService {
               profesores.push(
                 {
                   ...detalle,
-                  nombre: `${detalle.APPATERNO} ${detalle.APMATERNO},
-                ${detalle.NOMBRE}`,
+                  nombre: detalle.user_name,
                   cursosEscogidos: cursosDetalle
                 });
             }
@@ -95,7 +87,7 @@ export class ProfesorService {
       .catch();
   }
 
-  private async listar(): Promise<Array<Profesor>> {
-    return this.api.operacion('profesores');
+  private async listar(): Promise<{teachers: Array<ProfesorDetalle>}> {
+    return this.api.operacion('auth/teachers');
   }
 }
