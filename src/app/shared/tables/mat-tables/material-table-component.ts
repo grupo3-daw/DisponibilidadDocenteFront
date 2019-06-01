@@ -1,19 +1,7 @@
-import {
-  EventEmitter,
-  Output,
-  ViewChild,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-  AfterViewInit
-} from '@angular/core'
-import { MatTablePadre } from './mat-table/mat-table'
-import {
-  MatSort,
-  MatPaginator,
-  MatTableDataSource,
-  MatTable
-} from '@angular/material'
+import { EventEmitter, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort, MatTable, MatTableDataSource } from '@angular/material';
+
+import { MatTablePadre } from './mat-table/mat-table';
 
 export interface EventoClickTabla<T = any> {
   numeroFila: number
@@ -26,7 +14,7 @@ export interface ContenidoFila<T = any> {
 }
 
 export class MaterialTableC<T = any> extends MatTablePadre<T>
-  implements OnInit, OnChanges, AfterViewInit {
+  implements OnInit, OnChanges {
   @ViewChild(MatTable) table: MatTable<T>
   @Output() click_interno = new EventEmitter<EventoClickTabla<T>>()
   @Output() click_externo = new EventEmitter<EventoClickTabla<T>>()
@@ -42,17 +30,18 @@ export class MaterialTableC<T = any> extends MatTablePadre<T>
     super()
   }
 
-  ngOnInit() {
-    this.inicializar()
+  ngOnInit(): void {
+    this.inicializar();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes.data);
     if (changes.data && !changes.data.isFirstChange()) {
       this.renderizarTabla()
     }
   }
 
-  renderizarTabla() {
+  renderizarTabla(): void {
     this.dataSource = new MatTableDataSource(this.data)
     this.dataSource.paginator = this.paginator
     this.dataSource.sort = this.sort
@@ -60,15 +49,13 @@ export class MaterialTableC<T = any> extends MatTablePadre<T>
     this.table.renderRows()
   }
 
-  ngAfterViewInit() {}
-
-  applyFilter(filterValue: string) {
+  applyFilter(filterValue: string): void {
     this.filterValue = filterValue.trim().toLowerCase()
     this.dataSource.filter = this.filterValue
     this.filterEvent.emit(filterValue)
   }
 
-  clickEvent(data, numeroFila) {
+  clickEvent(data, numeroFila): void {
     if (!data.isTrusted) {
       this.click_interno.emit({
         numeroFila: numeroFila,
@@ -77,36 +64,36 @@ export class MaterialTableC<T = any> extends MatTablePadre<T>
     }
   }
 
-  clickExterno(data) {
+  clickExterno(data): void {
     if (!data.isTrusted) {
       this.click_externo.emit(data)
     }
   }
 
-  editar(row, column) {
+  editar(row, column): void {
     this.edit.emit({
-      column: column,
-      row: row
-    })
+      column,
+      row
+    });
   }
 
-  protected inicializar() {
+  protected inicializar(): void {
     if (this.displayedColumns) {
       for (let index = 0; index < this.displayedColumns.length; index++) {
         const element = this.displayedColumns[index]
         this.columnsToDisplay.push(element.columna)
       }
 
-      this.dataSource = new MatTableDataSource(this.data)
-      this.loading = false
+      this.dataSource = new MatTableDataSource(this.data);
+      this.loading = false;
     }
     setTimeout(() => {
       if (this.paginator) {
-        this.dataSource.paginator = this.paginator
+        this.dataSource.paginator = this.paginator;
       }
       if (this.sort) {
-        this.dataSource.sort = this.sort
+        this.dataSource.sort = this.sort;
       }
-    }, 100)
+    }, 100);
   }
 }

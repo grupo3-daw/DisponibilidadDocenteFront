@@ -1,5 +1,7 @@
-.profesores::ng-deep .mat-tab-body-wrapper {
-  margin: 20px;
+app-mat-table {
+  display: block;
+  padding: 20px;
+  /* background: white; */
 }
 
 mat-chip-list {
