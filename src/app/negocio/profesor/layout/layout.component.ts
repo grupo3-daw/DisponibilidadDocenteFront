@@ -8,7 +8,6 @@ import { Profesor } from 'app/login/login.service';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutProfesorComponent implements OnInit {
-  cursosSeleccionados: { cursos: Array<number> } = { cursos: [] };
   user: Profesor;
   profesorDetalle: ProfesorDetalle;
   constructor(

@@ -37,10 +37,11 @@ export class DisponibilidadSemanalComponent implements OnChanges {
   @Input() minimo: number;
   @Input() maximo: number;
   @Input() id: number;
+  @Input() horas = 0;
   horarioEnVista: { disponibilidad: any, cursos: Array<Curso> };
   horario: Array<Array<number>>;
   dias: Array<number>
-  horas = 0;
+
   diasNoSeleccionados = true;
   displayedColumns: Array<string>;
   dataSource: MatTableDataSource<SemanaLaborable>;

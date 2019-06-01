@@ -19,15 +19,6 @@ export interface RowSelect {
 })
 export class SeleccionarCursoComponent extends Formulario implements OnInit {
   @Input() cursosEscogidos: Array<Curso>;
-  // set cursosEscogidos(cursos: Array<Curso>) {
-  //   console.log(cursos);
-  //   this._cursosEscogidos = cursos;
-  //   this.formGroup.setValue({ cursos: cursos.map( curso => curso.IDCURSO)})
-  // }
-  // get cursosEscogidos(): Array<Curso> {
-  //   return this._cursosEscogidos;
-  // }
-
   cursosSeleccionados: Array<CursoSeleccionados> = []
   cursos: Array<CursoDetalle>;
   escuelas: Array<RowSelect>;
