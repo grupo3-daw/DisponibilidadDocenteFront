@@ -32,22 +32,22 @@ table {
   min-width: 500px;
 }
 
-th.mat-header-cell:not(.mat-column-hora) {
+th.mat-header-cell:not(.mat-column-horaRango) {
   padding-bottom: 10px;
   text-align: center;
 }
 
-td.mat-cell:not(.mat-column-hora) {
+td.mat-cell:not(.mat-column-horaRango) {
   text-align: center;
 }
 
-th.mat-column-hora,
-td.mat-column-hora {
+th.mat-column-horaRango,
+td.mat-column-horaRango {
   width: 100px;
 }
 
-th.mat-column-hora,
-td.mat-column-hora,
+th.mat-column-horaRango,
+td.mat-column-horaRango,
 th.mat-column-lunes,
 td.mat-column-lunes {
   padding-left: 8px !important;

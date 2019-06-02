@@ -1,0 +1,15 @@
+<ng-template #modelo>
+  <hr>
+  <h4>Cursos Seleccionados</h4>
+  <br>
+  <div *ngFor="let row of horarioEnVista.cursos">
+    <span style="text-transform: capitalize;"> {{row.NOMBRECURSO}}</span>
+  </div>
+  <hr>
+  <h4>Horas</h4>
+  <br>
+  <div *ngFor="let row of horarioEnVista.disponibilidad">
+    <span style="text-transform: capitalize;">{{ row.dia }}</span>: <span>{{ row.horas }}</span>
+  </div>
+  <hr>
+</ng-template>

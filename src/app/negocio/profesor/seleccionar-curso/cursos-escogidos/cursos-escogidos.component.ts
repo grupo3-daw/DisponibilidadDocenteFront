@@ -17,7 +17,6 @@ export class CursosEscogidosComponent extends MatTablePadre<CursoSeleccionados> 
   constructor() {
     super()
     this.displayedColumns = [
-      { header: 'Eliminar', columna: 'acciones' },
       { header: 'Escuela', columna: 'escuela' },
       { header: 'Curso', columna: 'curso' }
     ]
@@ -31,7 +30,7 @@ export class CursosEscogidosComponent extends MatTablePadre<CursoSeleccionados> 
         toolTipPosition: 'above',
         type: TypeButton.Icon,
         disabled: false,
-        mostrar: () => true
+        mostrar: () => false
       }
     ]
   }

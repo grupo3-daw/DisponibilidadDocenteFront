@@ -4,6 +4,7 @@ import { Escuela } from '@negocio/administrador/profesores/profesores.component'
 import { Formulario } from '@shared/formulario/formulario';
 import { Curso, CursoDetalle, CursoService } from '@shared/services/curso';
 
+import { EstadoDisponibilidad } from '../disponibilidad-semanal/estado-disponibilidad.enum';
 import { CursoSeleccionados } from './cursos-escogidos/cursos-escogidos.component';
 import { SeleccionarCursoService } from './seleccionar-curso.service';
 
@@ -19,6 +20,9 @@ export interface RowSelect {
 })
 export class SeleccionarCursoComponent extends Formulario implements OnInit {
   @Input() cursosEscogidos: Array<Curso>;
+  @Input() permiso: number;
+  estado = EstadoDisponibilidad;
+  estadoDisponibilidad: EstadoDisponibilidad;
   cursosSeleccionados: Array<CursoSeleccionados> = []
   cursos: Array<CursoDetalle>;
   escuelas: Array<RowSelect>;
@@ -43,6 +47,11 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
   }
 
   async ngOnInit(): Promise<any> {
+    this.estadoDisponibilidad =
+    this.cursosEscogidos.length > 0 ?
+    this.permiso === 0 ? EstadoDisponibilidad.SOLICITAR : EstadoDisponibilidad.EDITAR
+    : EstadoDisponibilidad.REGISTRAR;
+
     this.cursos = await this.cursoService.listarCursos();
     this.cursos.forEach(
       curso => {
@@ -52,7 +61,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
         }
         const temp = this.cursosEscogidos.find(cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO);
         if (temp) {
-          this.cursosSeleccionados.push({ id: curso.IDCURSO,  escuela, curso: curso.NOMBRECURSO })
+          this.cursosSeleccionados.push({ id: curso.IDCURSO, escuela, curso: curso.NOMBRECURSO })
         }
         this.escuelasCursos.push(
           {

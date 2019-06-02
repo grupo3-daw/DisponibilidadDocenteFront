@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { ProfesorVista } from '@negocio/administrador/profesores/profesores.component';
 import { ApiService } from '@shared/services/api.service';
 import { Profesor } from 'app/login/login.service';
 
 import { Consulta } from './consulta.enum';
 import { Curso } from './curso';
+import { NotificationService } from './notification.service';
 
 export interface Disponibilidad {
   DIA: number;
@@ -39,7 +40,8 @@ export interface ProfesoresVistaAdmin {
   providedIn: 'root'
 })
 export class ProfesorService {
-  constructor(private readonly api: ApiService) {
+  @Output() readonly envioSolicitud = new EventEmitter<boolean>();
+  constructor(private readonly api: ApiService, private readonly notificacionService: NotificationService) {
   }
 
   async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
@@ -53,6 +55,34 @@ export class ProfesorService {
   async registrarDisponibilidad(idProfesor: number, dias: Array<number>, horas: Array<Array<number>>): Promise<any> {
     return this.api.operacion(`profesores/${idProfesor}/disponibilidad`, Consulta.POST, { dia: dias, horas });
   }
+
+  registrarDisponibilidadCursos(idProfesor: number, cursos: Array<Curso>, dias: Array<number>, horas: Array<Array<number>>): void {
+    const registrarCursos = this.registrarCursos(idProfesor, cursos);
+    const registrarDisponibilidad = this.registrarDisponibilidad(idProfesor, dias, horas);
+    Promise.all([
+      registrarCursos,
+      registrarDisponibilidad
+    ])
+      .then(
+        res => {
+          this.notificacionService.mostrarMensajeSuccess('Disponibilidad Registrada Exitosamente');
+          this.envioSolicitud.emit(true);
+        }
+      )
+      .catch(
+        error => {
+          this.envioSolicitud.emit(false);
+        }
+      );
+
+  }
+
+  solicitarEdicion(idProfesor: number, solicitud: string): void {
+    this.api.operacion(`profesores/${idProfesor}/permiso`, Consulta.POST, { solicitud })
+      .then(res => { this.notificacionService.mostrarMensajeSuccess('Solicitud Enviada Exitosamente'); this.envioSolicitud.emit(true); })
+      .catch(error => { this.envioSolicitud.emit(false); });
+  }
+
   async listarAdmin(): Promise<ProfesoresVistaAdmin> {
     return this.listar()
       .then(
