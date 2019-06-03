@@ -2,11 +2,11 @@
   <div id="informacion">
     <h3>Disponibilidad Semanal</h3>
     <div fxLayout fxLayout.xs="column" id="indicaciones">
-      <h5 fxFlex="50%" fxFlex.xs="100%">
+      <h5 fxFlex="40%" fxFlex.xs="100%">
         Estimado profesor presione los <b>dias</b> y <b>horas</b>
       </h5>
-      <h4 fxFlex="50%" fxFlex.xs="100%" class="txright">
-        Minimo de Horas <b>{{ minimo }}</b> | Maximo de Horas <b>{{ maximo }}</b> | Horas Tomadas
+      <h4 fxFlex="60%" fxFlex.xs="100%" class="txright">
+        Minimo de Horas <b>{{ profesor.horas_minimas }}</b> | Maximo de Horas <b>{{ profesor.horas_maximas }}</b> | Horas Tomadas
         <b>{{ horas }}</b>
       </h4>
     </div>
@@ -158,7 +158,7 @@
   <div id="footer" *ngIf="estadoDisponibilidad">
     <button
      mat-button
-      [disabled]="diasNoSeleccionados || cursosSeleccionados.length < 4"
+      [disabled]="diasNoSeleccionados || profesor.cursos.length < 4 ||  estadoDisponibilidad === estado.PROCESANDO_SOLICITUD"
       color="accent"
       (click)="openDialog()"
     >
@@ -168,6 +168,9 @@
         </p>
         <p *ngSwitchCase="estado.SOLICITAR">
           Solicitar Permisos de Edición
+        </p>
+        <p *ngSwitchCase="estado.PROCESANDO_SOLICITUD">
+          Solicitud en proceso de evaluación
         </p>
         <p *ngSwitchDefault>
           Registrar
@@ -180,13 +183,12 @@
 <ng-container *ngIf="abriendoPopUp">
   <app-solicitar-permisos-edicion
     *ngIf="estadoDisponibilidad === estado.SOLICITAR"
-    [id]="id"
+    [id]="profesor.IDPROFESOR"
   ></app-solicitar-permisos-edicion>
   <app-registrar-disponibilidad
-    *ngIf="estadoDisponibilidad !== estado.SOLICITAR"
-    [id]="id"
+    *ngIf="estadoDisponibilidad === estado.REGISTRAR || estadoDisponibilidad === estado.EDITAR"
+    [profesor]="profesor"
     [data]="dataSource.data"
-    [displayedColumns]="displayedColumns"
     [estadoDisponibilidad]="estadoDisponibilidad"
   ></app-registrar-disponibilidad>
 </ng-container>

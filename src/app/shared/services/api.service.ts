@@ -87,8 +87,7 @@ export class ApiService {
         if (resultados !== undefined) {
           return this.validacionMensajes(
             resultados,
-            mostrarAlertaSuccess,
-            mostrarAlertaError
+            mostrarAlertaSuccess
           );
         }
         this.notificationService.mostrarMensajeError(resultados.msg);
@@ -156,8 +155,7 @@ export class ApiService {
 
   private validacionMensajes(
     resultados: any,
-    mostrarSucces: boolean,
-    mostrarError: boolean
+    mostrarSucces: boolean
   ): any {
     let msg = '';
 
@@ -168,10 +166,6 @@ export class ApiService {
     if (resultados.success) {
       if (mostrarSucces) {
         this.notificationService.mostrarMensajeInfo(msg);
-      }
-    } else {
-      if (mostrarError) {
-        this.notificationService.mostrarMensajeError(msg);
       }
     }
 

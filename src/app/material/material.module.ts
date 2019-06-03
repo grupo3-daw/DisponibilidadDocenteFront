@@ -1,31 +1,32 @@
-import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import {
-  MatDividerModule,
-  MatInputModule,
-  MatFormFieldModule,
-  MatButtonModule,
-  MatIconModule,
-  MatSelectModule,
-  MatListModule,
-  MatDialogModule,
   MatAutocompleteModule,
-  MatTableModule,
-  MatSortModule,
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatExpansionModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
   MatOptionModule,
   MatPaginatorModule,
-  MatCheckboxModule,
-  MatRippleModule,
   MatProgressBarModule,
-  MatTooltipModule,
-  MatCardModule,
+  MatProgressSpinnerModule,
+  MatRippleModule,
+  MatSelectModule,
+  MatSidenavModule,
+  MatSnackBarModule,
+  MatSortModule,
+  MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatSidenavModule,
-  MatProgressSpinnerModule,
-  MatExpansionModule,
-  MatChipsModule
-} from '@angular/material'
+  MatTooltipModule,
+} from '@angular/material';
 
 @NgModule({
   imports: [CommonModule],
@@ -54,6 +55,7 @@ import {
     MatDividerModule,
     MatChipsModule,
     MatOptionModule,
+    MatSnackBarModule
   ],
   declarations: []
 })

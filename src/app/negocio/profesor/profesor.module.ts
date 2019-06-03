@@ -38,6 +38,6 @@ import { SeleccionarCursoComponent } from './seleccionar-curso/seleccionar-curso
     MaterialTablesModule,
     ModalsModule
   ],
-  exports: [DisponibilidadSemanalComponent]
+  exports: [RegistrarDisponibilidadComponent]
 })
 export class ProfesorModule { }

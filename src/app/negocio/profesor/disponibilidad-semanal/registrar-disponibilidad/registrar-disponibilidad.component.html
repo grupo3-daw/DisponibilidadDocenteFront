@@ -1,5 +1,5 @@
 <ng-template #modelo>
-  <hr>
+  <hr *ngIf="profesorVista">
   <h4>Cursos Seleccionados</h4>
   <br>
   <div *ngFor="let row of horarioEnVista.cursos">

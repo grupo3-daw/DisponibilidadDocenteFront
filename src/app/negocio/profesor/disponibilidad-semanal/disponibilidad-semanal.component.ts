@@ -1,18 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { Curso } from '@shared/services/curso';
-import { ProfesorService } from '@shared/services/profesor.service';
+import { Disponibilidad, ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 
 import { SeleccionarCursoService } from '../seleccionar-curso/seleccionar-curso.service';
 import { DiaLaborable } from './dia-laborable.type';
 import { EstadoDisponibilidad } from './estado-disponibilidad.enum';
 import { EstadoHoras } from './estado-horas.enum';
-import { DiaLaborableEnum, SemanaLaborable } from './semana-laborable';
-
-export interface Disponibilidad {
-  DIA: number;
-  HORAS: string;
-}
+import { SemanaLaborable, toStringDia } from './semana-laborable';
 
 @Component({
   selector: 'app-disponibilidad-semanal',
@@ -20,12 +14,7 @@ export interface Disponibilidad {
   styleUrls: ['./disponibilidad-semanal.component.scss']
 })
 export class DisponibilidadSemanalComponent implements OnInit {
-  @Input() cursosSeleccionados: Array<Curso>;
-  @Input() disponibilidadHoraria: Array<Disponibilidad>;
-  @Input() minimo: number;
-  @Input() maximo: number;
-  @Input() id: number;
-  @Input() permiso: number;
+  @Input() profesor: ProfesorDetalle;
   estado = EstadoDisponibilidad;
   abriendoPopUp = false;
   horas = 0;
@@ -65,31 +54,19 @@ export class DisponibilidadSemanalComponent implements OnInit {
     ]);
     this.seleccionarCursoService.cursosSeleccionadosEvento.subscribe(
       res => {
-        this.cursosSeleccionados = res.map(
+        this.profesor.cursos = res.map(
           curso => {
             return { IDCURSO: curso.id, NOMBRECURSO: curso.curso }
           });
       }
     );
-    this.profesorService.envioSolicitud.subscribe(
-      res => this.abriendoPopUp = res
+    this.profesorService.exitoEnProceso.subscribe(
+      (estado: EstadoDisponibilidad) => { this.abriendoPopUp = false; this.estadoDisponibilidad = estado; }
     );
   }
 
   ngOnInit(): void {
-    this.inicializarDisponibilidad(this.disponibilidadHoraria, this.permiso);
-  }
-
-  toStringDia(dia: DiaLaborableEnum): DiaLaborable {
-    switch (dia) {
-      case DiaLaborableEnum.LUNES: return 'lunes';
-      case DiaLaborableEnum.MARTES: return 'martes';
-      case DiaLaborableEnum.MIERCOLES: return 'miercoles';
-      case DiaLaborableEnum.JUEVES: return 'jueves';
-      case DiaLaborableEnum.VIERNES: return 'viernes';
-      default:
-        return 'sabado';
-    }
+    this.inicializarDisponibilidad(this.profesor.disponibilidad, this.profesor.PERMISO);
   }
 
   inicializarDisponibilidad(disponibilidad: Array<Disponibilidad>, permiso: number): void {
@@ -97,7 +74,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
       const horas = element.HORAS.split(',');
       horas.forEach(hora => {
         const indice = this.dataSource.data.findIndex(semanaLaborable => semanaLaborable.hora === parseInt(hora, 10));
-        const dia = this.toStringDia(element.DIA);
+        const dia = toStringDia(element.DIA);
         this.horas++;
         this.dataSource.data[indice][dia] = true;
       });
@@ -105,7 +82,11 @@ export class DisponibilidadSemanalComponent implements OnInit {
         this.estadoDisponibilidad = EstadoDisponibilidad.REGISTRAR;
       } else {
         this.diasNoSeleccionados = false;
-        this.estadoDisponibilidad = permiso === 0 ? EstadoDisponibilidad.SOLICITAR : EstadoDisponibilidad.EDITAR;
+        this.estadoDisponibilidad = permiso === 0 ?
+          (
+            this.profesor.solicitud === null ?
+              EstadoDisponibilidad.SOLICITAR : EstadoDisponibilidad.PROCESANDO_SOLICITUD
+          ) : EstadoDisponibilidad.EDITAR;
       }
     });
   }
@@ -139,12 +120,16 @@ export class DisponibilidadSemanalComponent implements OnInit {
 
   desactivarHeader(dia: DiaLaborable): boolean {
     return (
-      !this.tieneElementosSeleccionados(dia) && this.horas >= this.maximo
-    ) || this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR;
+      !this.tieneElementosSeleccionados(dia) && this.horas >= this.profesor.horas_maximas
+    )
+      || this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR
+      || this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD;
   }
 
   desactivarCelda(element, dia: DiaLaborable): boolean {
-    return (!element[dia] && this.horas >= this.maximo) || this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR;
+    return (!element[dia] && this.horas >= this.profesor.horas_maximas)
+      || this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR
+      || this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD;
   }
 
   isAllSelected(dia: DiaLaborable): boolean {
@@ -165,7 +150,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
   actualizarDisponibilidad(dia: DiaLaborable, numeroFila: number): EstadoHoras {
     if (this.dataSource.data[numeroFila][dia]) {
       this.horas--;
-      if (this.horas < this.minimo) {
+      if (this.horas < this.profesor.horas_minimas) {
         this.diasNoSeleccionados = true;
       }
 
@@ -174,11 +159,11 @@ export class DisponibilidadSemanalComponent implements OnInit {
 
       return EstadoHoras.Disminuyendo;
     }
-    if (this.horas < this.maximo) {
+    if (this.horas < this.profesor.horas_maximas) {
       console.log('Marcando Celda');
       this.horas++;
       this.dataSource.data[numeroFila][dia] = true;
-      if (this.horas >= this.minimo) {
+      if (this.horas >= this.profesor.horas_minimas) {
         this.diasNoSeleccionados = false;
       }
 

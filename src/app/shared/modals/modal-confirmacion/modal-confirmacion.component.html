@@ -1,25 +1,19 @@
-<h1 mat-dialog-title class="txcenter">{{ data.titulo }}</h1>
+<h1 mat-dialog-title class="txcenter">
+  {{ data.titulo }}
+  <button id="exit" mat-icon-button color="error" [mat-dialog-close]="false">
+    <mat-icon>close</mat-icon>
+  </button>
+</h1>
 <div mat-dialog-content>
   <p>{{ data.mensaje }}</p>
   <ng-container *ngIf="data.template">
-    <ng-container *ngTemplateOutlet="
-         data.template.element
-          context: data.template.data
-        ">
+    <ng-container *ngTemplateOutlet="data.template.element; context: data.template.data">
     </ng-container>
   </ng-container>
-
-
 </div>
-<div mat-dialog-actions>
-  <button
-    mat-raised-button
-    color="accent"
-    [mat-dialog-close]="true"
-    cdkFocusInitial
-  >
+<div mat-dialog-actions *ngIf="!data.soloLectura">
+  <button mat-raised-button color="accent" [mat-dialog-close]="true" cdkFocusInitial>
     Si
   </button>
   <button mat-raised-button color="warn" [mat-dialog-close]="false">No</button>
 </div>
-

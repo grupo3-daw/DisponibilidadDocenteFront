@@ -1,11 +1,20 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { ProfesorVista } from '@negocio/administrador/profesores/profesores.component';
+import { EstadoDisponibilidad } from '@negocio/profesor/disponibilidad-semanal/estado-disponibilidad.enum';
 import { ApiService } from '@shared/services/api.service';
 import { Profesor } from 'app/login/login.service';
 
 import { Consulta } from './consulta.enum';
 import { Curso } from './curso';
 import { NotificationService } from './notification.service';
+
+export interface Solicitud {
+  idpermiso: number;
+  IDPROFESOR: number;
+  estado: string;
+  solicitud: string;
+  motivo?: any;
+}
+
 
 export interface Disponibilidad {
   DIA: number;
@@ -20,7 +29,7 @@ export interface Disponibilidad {
  * @var   horas_maximas: number;
  * @var   cursos?: Array<Curso>;
  * @var   disponibilidad? : Array<Disponibilidad>;
- * @var   solicitud?: any;
+ * @var   solicitud?: Solicitud;
  */
 export interface ProfesorDetalle extends Profesor {
   NOMBRECATEGORIA: string;
@@ -31,16 +40,11 @@ export interface ProfesorDetalle extends Profesor {
   solicitud?: any;
 }
 
-export interface ProfesoresVistaAdmin {
-  profesores: Array<ProfesorVista>;
-  cursos: Array<{ nombre: string, seleccionado: boolean }>;
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class ProfesorService {
-  @Output() readonly envioSolicitud = new EventEmitter<boolean>();
+  @Output() readonly exitoEnProceso = new EventEmitter<EstadoDisponibilidad>();
   constructor(private readonly api: ApiService, private readonly notificacionService: NotificationService) {
   }
 
@@ -52,26 +56,65 @@ export class ProfesorService {
     return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.POST, { cursos: cursos.map(curso => curso.IDCURSO) });
   }
 
+  async editarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
+    console.log(cursos);
+    return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.PUT, { cursos: cursos.map(curso => curso.IDCURSO) });
+  }
+
   async registrarDisponibilidad(idProfesor: number, dias: Array<number>, horas: Array<Array<number>>): Promise<any> {
     return this.api.operacion(`profesores/${idProfesor}/disponibilidad`, Consulta.POST, { dia: dias, horas });
   }
 
+  async editarDisponibilidad(idProfesor: number, dias: Array<number>, horas: Array<Array<number>>): Promise<any> {
+    return this.api.operacion(`profesores/${idProfesor}/disponibilidad`, Consulta.PUT, { dia: dias, horas });
+  }
+
   registrarDisponibilidadCursos(idProfesor: number, cursos: Array<Curso>, dias: Array<number>, horas: Array<Array<number>>): void {
-    const registrarCursos = this.registrarCursos(idProfesor, cursos);
-    const registrarDisponibilidad = this.registrarDisponibilidad(idProfesor, dias, horas);
-    Promise.all([
-      registrarCursos,
-      registrarDisponibilidad
-    ])
+    this.registrarCursos(idProfesor, cursos)
       .then(
-        res => {
-          this.notificacionService.mostrarMensajeSuccess('Disponibilidad Registrada Exitosamente');
-          this.envioSolicitud.emit(true);
+        cursosRes => {
+          this.registrarDisponibilidad(idProfesor, dias, horas)
+            .then(
+              res => {
+                this.notificacionService.mostrarMensajeSuccess('Disponibilidad Registrada Exitosamente');
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            )
+            .catch(
+              error => {
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            );
         }
       )
       .catch(
         error => {
-          this.envioSolicitud.emit(false);
+          this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+        }
+      );
+  }
+
+  editarDisponibilidadCursos(idProfesor: number, cursos: Array<Curso>, dias: Array<number>, horas: Array<Array<number>>): void {
+    this.editarCursos(idProfesor, cursos)
+      .then(
+        cursosRes => {
+          this.editarDisponibilidad(idProfesor, dias, horas)
+            .then(
+              res => {
+                this.notificacionService.mostrarMensajeSuccess('Disponibilidad Actualizada Exitosamente');
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            )
+            .catch(
+              error => {
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            );
+        }
+      )
+      .catch(
+        error => {
+          this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
         }
       );
 
@@ -79,53 +122,12 @@ export class ProfesorService {
 
   solicitarEdicion(idProfesor: number, solicitud: string): void {
     this.api.operacion(`profesores/${idProfesor}/permiso`, Consulta.POST, { solicitud })
-      .then(res => { this.notificacionService.mostrarMensajeSuccess('Solicitud Enviada Exitosamente'); this.envioSolicitud.emit(true); })
-      .catch(error => { this.envioSolicitud.emit(false); });
+      .then(res => {
+        this.notificacionService.mostrarMensajeSuccess('Solicitud Enviada Exitosamente');
+        this.exitoEnProceso.emit(EstadoDisponibilidad.PROCESANDO_SOLICITUD);
+      })
+      .catch(error => { this.exitoEnProceso.emit(EstadoDisponibilidad.PROCESANDO_SOLICITUD); });
   }
 
-  async listarAdmin(): Promise<ProfesoresVistaAdmin> {
-    return this.listar()
-      .then(
-        lista => {
-          const profesores: Array<ProfesorVista> = [];
-          const cursos: Array<{ nombre: string, seleccionado: boolean }> = []
-          lista.forEach(
-            async profesor => {
-              const detalle = await this.obtenerDetalle(profesor.IDPROFESOR);
-              let cursosDetalle = ''
-              detalle.cursos.forEach(
-                (curso, index) => {
-                  let signo = ', ';
-                  if (index === detalle.cursos.length - 1) {
-                    signo = '';
-                  }
 
-                  if (!cursos.includes({ nombre: curso.NOMBRECURSO, seleccionado: false })) {
-                    cursos.push({ nombre: curso.NOMBRECURSO, seleccionado: false })
-                  }
-                  cursosDetalle += `${curso.NOMBRECURSO}${signo}`;
-                }
-              );
-              profesores.push(
-                {
-                  ...detalle,
-                  nombre: `${detalle.APPATERNO} ${detalle.APMATERNO},
-                ${detalle.NOMBRE}`,
-                  cursosEscogidos: cursosDetalle
-                });
-            }
-          );
-
-          return {
-            profesores,
-            cursos
-          };
-        }
-      )
-      .catch();
-  }
-
-  private async listar(): Promise<Array<Profesor>> {
-    return this.api.operacion('profesores');
-  }
 }

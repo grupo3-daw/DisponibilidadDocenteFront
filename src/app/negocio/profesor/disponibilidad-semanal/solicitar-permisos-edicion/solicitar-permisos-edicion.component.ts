@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 import { ProfesorService } from '@shared/services/profesor.service';
 
+import { EstadoDisponibilidad } from '../estado-disponibilidad.enum';
+
 @Component({
   selector: 'app-solicitar-permisos-edicion',
   templateUrl: './solicitar-permisos-edicion.component.html',
@@ -11,7 +13,7 @@ import { ProfesorService } from '@shared/services/profesor.service';
 export class SolicitarPermisosEdicionComponent implements AfterViewInit {
   @Input() id: number;
   @ViewChild('modelo') modelo;
-  solicitud: string;
+  solicitud = '';
   constructor(
     private readonly dialog: MatDialog,
     private readonly profesorService: ProfesorService
@@ -31,9 +33,9 @@ export class SolicitarPermisosEdicionComponent implements AfterViewInit {
         .subscribe(
           result => {
             if (result === true && this.solicitud.trim().length > 0) {
-              this.profesorService.solicitarEdicion(this.id, this.solicitud)
+              this.profesorService.solicitarEdicion(this.id, this.solicitud);
             } else {
-              this.profesorService.envioSolicitud.emit(false);
+              this.profesorService.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
             }
           }
         );

@@ -56,6 +56,17 @@ div.fondo {
   text-align: right;
 }
 
+.primary-snackbar, .accent-snackbar {
+  background: $primary;
+  color: white;
+}
+
+.error-snackbar {
+  background: $warn;
+  color: white;
+}
+
+
 .grid {
   display: grid;
 }

@@ -2,9 +2,11 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { TypeButton } from '@shared/buttons/type-button.enum';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
+import { AdministradorService } from '@shared/services/administrador.service';
 import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 import { MatTablePadre } from '@shared/tables';
 
+import { AprobarSolicitudComponent } from './aprobar-solicitud/aprobar-solicitud.component';
 
 export enum Escuela {
   Software = 'Ingenieria de Software',
@@ -20,7 +22,7 @@ export interface Dictado {
   cursos: string;
 }
 
-export interface ProfesorVista extends ProfesorDetalle{
+export interface ProfesorVista extends ProfesorDetalle {
   nombre: string;
   cursosEscogidos: string;
 }
@@ -35,6 +37,8 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
   @Input() user;
   @ViewChild('cursosVista') cursosVista;
   @ViewChild('tiposVista') tiposVista;
+  profesor: ProfesorDetalle;
+  abriendoPopUp = false;
   cursos: Array<{ nombre: string, seleccionado: boolean }> = [];
   tipos: Array<{ nombre: string, seleccionado: boolean }> = [
     {
@@ -47,20 +51,12 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     }
   ];
   loading = true;
-  // @ViewChild('cursosSistemasVista') cursosSistemasVista;
-  // @ViewChild('cursosSoftwareVista') cursosSoftwareVista;
-  // @ViewChild('tiposSoftwareVista') tiposSoftwareVista;
-  // @ViewChild('tiposSistemasVista') tiposSistemasVista;
-  // filtradoSistemas: Array<ProfesorVista> = [];
-  // filtradoSoftware: Array<ProfesorVista> = [];
-  // tiposSistemas: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // tiposSoftware: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // cursosSistemas: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // cursosSoftware: Array<{ nombre: string, seleccionado: boolean }> = [];
-  // profesoresSoftware: Array<ProfesorVista> = [];
-  // profesoresSistema: Array<ProfesorVista> = [];
   profesores: Array<ProfesorVista> = [];
-  constructor(public dialog: MatDialog, private readonly profesorService: ProfesorService) {
+  constructor(
+    public dialog: MatDialog,
+    private readonly administradorService: AdministradorService,
+    private readonly profesorService: ProfesorService
+  ) {
     super();
     this.displayedColumns = [
       {
@@ -128,10 +124,25 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
         mostrar: data => data.solicitud !== null
       }
     ];
+    this.profesorService.exitoEnProceso.subscribe(
+      res => this.abriendoPopUp = false
+    );
+    this.administradorService.exitoEnProceso.subscribe(
+      res => {
+        this.dialog.closeAll();
+        this.data.forEach(
+          (profesor,index) => {
+            if(profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
+              this.data[index]['solicitud'] = null;
+            }
+          }
+        )
+        }
+    );
   }
 
   async ngOnInit(): Promise<any> {
-    const res = await this.profesorService.listarAdmin();
+    const res = await this.administradorService.listarAdmin();
     this.profesores = res.profesores;
     this.data = res.profesores;
     this.cursos = res.cursos;
@@ -139,6 +150,15 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
       this.loading = false;
     }, 100);
 
+  }
+
+  operaciones(event: { numeroFila: number, data: { id: string, data: ProfesorDetalle } }): void {
+    this.profesor = event.data.data;
+    if (event.data.id === 'disponibilidad') {
+      this.abriendoPopUp = true;
+    } else {
+      this.dialog.open(AprobarSolicitudComponent, { width: '450px', data: {profesor: this.profesor} });
+    }
   }
 
   actualizar(esCurso: boolean, numeroFila: number): void {
