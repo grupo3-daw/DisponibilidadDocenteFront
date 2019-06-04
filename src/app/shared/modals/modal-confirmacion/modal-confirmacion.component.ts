@@ -14,6 +14,7 @@ export class ModalConfirmacionComponent implements OnInit {
       titulo: string;
       mensaje: string;
       template?: { element: TemplateRef<any>; data: Array<any> };
+      soloLectura?: boolean;
     }
   ) {}
 

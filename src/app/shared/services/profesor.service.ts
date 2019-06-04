@@ -1,9 +1,13 @@
-import { Injectable } from '@angular/core';
-import { ProfesorVista } from '@negocio/administrador/profesores/profesores.component';
-import { ApiService } from '@shared/services/api.service';
+import { EstadoDisponibilidad } from '@negocio/profesor/disponibilidad-semanal/estado-disponibilidad.enum';
 
-import { Consulta } from './consulta.enum';
-import { Curso } from './curso';
+export interface Solicitud {
+  idpermiso: number;
+  IDPROFESOR: number;
+  estado: string;
+  solicitud: string;
+  motivo?: any;
+}
+
 
 export interface Disponibilidad {
   DIA: number;
@@ -21,18 +25,31 @@ export interface ProfesorDetalle {
   category_name: string;
   cursos ?: Array<any>;
   disponibilidad ?: Array<any>;
-}
-
-export interface ProfesoresVistaAdmin {
-  profesores: Array<ProfesorVista>;
-  cursos: Array<{ nombre: string, seleccionado: boolean }>;
+/**
+ * @export
+ * @extends {Profesor}
+ * @var   NOMBRECATEGORIA: string;
+ * @var   horas_minimas: number;
+ * @var   horas_maximas: number;
+ * @var   cursos?: Array<Curso>;
+ * @var   disponibilidad? : Array<Disponibilidad>;
+ * @var   solicitud?: Solicitud;
+ */
+export interface ProfesorDetalle extends Profesor {
+  NOMBRECATEGORIA: string;
+  horas_minimas: number;
+  horas_maximas: number;
+  cursos?: Array<Curso>;
+  disponibilidad?: Array<Disponibilidad>;
+  solicitud?: any;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfesorService {
-  constructor(private readonly api: ApiService) {
+  @Output() readonly exitoEnProceso = new EventEmitter<EstadoDisponibilidad>();
+  constructor(private readonly api: ApiService, private readonly notificacionService: NotificationService) {
   }
 
   async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
@@ -43,51 +60,78 @@ export class ProfesorService {
     return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.POST, { cursos: cursos.map(curso => curso.IDCURSO) });
   }
 
+  async editarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
+    console.log(cursos);
+    return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.PUT, { cursos: cursos.map(curso => curso.IDCURSO) });
+  }
+
   async registrarDisponibilidad(idProfesor: number, dias: Array<number>, horas: Array<Array<number>>): Promise<any> {
     return this.api.operacion(`profesores/${idProfesor}/disponibilidad`, Consulta.POST, { dia: dias, horas });
   }
-  async listarAdmin(): Promise<ProfesoresVistaAdmin> {
-    return this.listar()
+
+  async editarDisponibilidad(idProfesor: number, dias: Array<number>, horas: Array<Array<number>>): Promise<any> {
+    return this.api.operacion(`profesores/${idProfesor}/disponibilidad`, Consulta.PUT, { dia: dias, horas });
+  }
+
+  registrarDisponibilidadCursos(idProfesor: number, cursos: Array<Curso>, dias: Array<number>, horas: Array<Array<number>>): void {
+    this.registrarCursos(idProfesor, cursos)
       .then(
-        lista => {
-          const profesores: Array<ProfesorVista> = [];
-          const cursos: Array<{ nombre: string, seleccionado: boolean }> = []
-          lista.teachers.forEach(
-            async profesor => {
-              const detalle = await this.obtenerDetalle(profesor.id);
-              let cursosDetalle = ''
-              detalle.cursos.forEach(
-                (curso, index) => {
-                  let signo = ', ';
-                  if (index === detalle.cursos.length - 1) {
-                    signo = '';
-                  }
-
-                  if (!cursos.includes({ nombre: curso.NOMBRECURSO, seleccionado: false })) {
-                    cursos.push({ nombre: curso.NOMBRECURSO, seleccionado: false })
-                  }
-                  cursosDetalle += `${curso.NOMBRECURSO}${signo}`;
-                }
-              );
-              profesores.push(
-                {
-                  ...detalle,
-                  nombre: detalle.user_name,
-                  cursosEscogidos: cursosDetalle
-                });
-            }
-          );
-
-          return {
-            profesores,
-            cursos
-          };
+        cursosRes => {
+          this.registrarDisponibilidad(idProfesor, dias, horas)
+            .then(
+              res => {
+                this.notificacionService.mostrarMensajeSuccess('Disponibilidad Registrada Exitosamente');
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            )
+            .catch(
+              error => {
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            );
         }
       )
-      .catch();
+      .catch(
+        error => {
+          this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+        }
+      );
   }
 
-  private async listar(): Promise<{teachers: Array<ProfesorDetalle>}> {
-    return this.api.operacion('auth/teachers');
+  editarDisponibilidadCursos(idProfesor: number, cursos: Array<Curso>, dias: Array<number>, horas: Array<Array<number>>): void {
+    this.editarCursos(idProfesor, cursos)
+      .then(
+        cursosRes => {
+          this.editarDisponibilidad(idProfesor, dias, horas)
+            .then(
+              res => {
+                this.notificacionService.mostrarMensajeSuccess('Disponibilidad Actualizada Exitosamente');
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            )
+            .catch(
+              error => {
+                this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+              }
+            );
+        }
+      )
+      .catch(
+        error => {
+          this.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
+        }
+      );
+
   }
+
+  solicitarEdicion(idProfesor: number, solicitud: string): void {
+    this.api.operacion(`profesores/${idProfesor}/permiso`, Consulta.POST, { solicitud })
+      .then(res => {
+        this.notificacionService.mostrarMensajeSuccess('Solicitud Enviada Exitosamente');
+        this.exitoEnProceso.emit(EstadoDisponibilidad.PROCESANDO_SOLICITUD);
+      })
+      .catch(error => { this.exitoEnProceso.emit(EstadoDisponibilidad.PROCESANDO_SOLICITUD); });
+  }
+
+
 }

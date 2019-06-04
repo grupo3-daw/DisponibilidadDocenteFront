@@ -1,0 +1,31 @@
+<h1 mat-dialog-title class="txcenter">
+  Solicitud de Edición
+  <button id="exit" mat-icon-button color="error" [mat-dialog-close]="false">
+    <mat-icon>close</mat-icon>
+  </button>
+</h1>
+<div mat-dialog-content>
+  <p>Profesor: {{ data.profesor.APPATERNO}}  {{data.profesor.APMATERNO}}, {{data.profesor.NOMBRE}}</p>
+  <p>Solicitud: {{ data.profesor.solicitud.solicitud }}</p>
+</div>
+<div mat-dialog-actions >
+  <button mat-raised-button color="accent" (click)="aprobar()">
+    Aprobar
+  </button>
+  <button mat-raised-button color="warn" (click)="rechazar()">Rechazar</button>
+</div>
+
+
+<ng-template #rechazarModelo>
+  <form>
+    <mat-form-field>
+      <mat-label>Escriba el motivo</mat-label>
+      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="5"  [(ngModel)]="motivo" [ngModelOptions]="{standalone: true}"></textarea>
+        <button mat-button *ngIf="motivo.length > 0"  matSuffix mat-icon-button aria-label="Clear" (click)="motivo=''">
+          <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+  </form>
+</ng-template>
+

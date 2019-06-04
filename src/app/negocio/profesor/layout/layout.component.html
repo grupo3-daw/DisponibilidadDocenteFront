@@ -3,11 +3,9 @@
   <app-informacion-perfil [perfil]="profesorDetalle"></app-informacion-perfil>
   <app-seleccionar-curso
     [cursosEscogidos]="profesorDetalle.cursos"
+    [permiso]="profesorDetalle.PERMISO"
   ></app-seleccionar-curso>
   <app-disponibilidad-semanal
-    [minimo]="profesorDetalle.horas_minimas"
-    [maximo]="profesorDetalle.horas_maximas"
-    [id]="profesorDetalle.IDPROFESOR"
-    [cursosSeleccionados]="profesorDetalle.cursos"
+    [profesor]="profesorDetalle"
   ></app-disponibilidad-semanal>
 </div>

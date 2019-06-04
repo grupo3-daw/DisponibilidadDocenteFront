@@ -1,16 +1,35 @@
-<app-mat-table *ngIf="!loading"  [data]="data" [buttonsExt]="buttonsExt" [buttons]="buttons"
-  [displayedColumns]="displayedColumns" (click_externo)="filtros($event)">
+<app-mat-table
+  *ngIf="!loading"
+  [data]="data"
+  [buttonsExt]="buttonsExt"
+  [buttons]="buttons"
+  [displayedColumns]="displayedColumns"
+  (click_externo)="filtros($event)"
+  (click_interno)="operaciones($event)"
+>
   <mat-chip-list>
     <ng-container *ngFor="let row of cursos">
-      <mat-chip *ngIf="row.seleccionado" [selectable]="true" [removable]="true"
-        (removed)="remove(true, row)" color="accent" selected>
+      <mat-chip
+        *ngIf="row.seleccionado"
+        [selectable]="true"
+        [removable]="true"
+        (removed)="remove(true, row)"
+        color="accent"
+        selected
+      >
         {{ row.nombre }}
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
     </ng-container>
     <ng-container *ngFor="let row of tipos">
-      <mat-chip *ngIf="row.seleccionado" [selectable]="true" [removable]="true"
-        (removed)="remove(false, row)" color="primary" selected>
+      <mat-chip
+        *ngIf="row.seleccionado"
+        [selectable]="true"
+        [removable]="true"
+        (removed)="remove(false, row)"
+        color="primary"
+        selected
+      >
         {{ row.nombre }}
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
@@ -19,18 +38,23 @@
 </app-mat-table>
 
 <ng-template #cursosVista>
-  <div *ngFor="let curso of cursos;let i = index">
-    <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true,i):null">
-      {{curso.nombre}}
+  <div *ngFor="let curso of cursos; let i = index">
+    <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true, i) : null">
+      {{ curso.nombre }}
     </mat-checkbox>
   </div>
 </ng-template>
-
 
 <ng-template #tiposVista>
-  <div *ngFor="let tipo of tipos;let i = index">
-    <mat-checkbox [checked]="tipo.seleccionado" (change)="$event ? actualizar(false,i):null">
-      {{tipo.nombre}}
+  <div *ngFor="let tipo of tipos; let i = index">
+    <mat-checkbox [checked]="tipo.seleccionado" (change)="$event ? actualizar(false, i) : null">
+      {{ tipo.nombre }}
     </mat-checkbox>
   </div>
 </ng-template>
+
+<app-registrar-disponibilidad
+  *ngIf="abriendoPopUp"
+  [profesorVista]="false"
+  [profesor]="profesor"
+></app-registrar-disponibilidad>

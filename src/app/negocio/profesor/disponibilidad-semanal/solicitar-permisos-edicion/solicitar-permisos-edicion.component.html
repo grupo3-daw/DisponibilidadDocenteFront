@@ -1,0 +1,13 @@
+
+<ng-template #modelo>
+  <form>
+    <mat-form-field>
+      <mat-label>Escriba el motivo de su solicitud</mat-label>
+      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="5"  [(ngModel)]="solicitud" [ngModelOptions]="{standalone: true}"></textarea>
+        <button mat-button *ngIf="solicitud.length > 0"  matSuffix mat-icon-button aria-label="Clear" (click)="solicitud=''">
+          <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+  </form>
+</ng-template>

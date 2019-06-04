@@ -1,11 +1,11 @@
-<mat-card>
+<mat-card *ngIf="estadoDisponibilidad">
   <mat-card-header>
     <mat-card-title class="txcenter">
       Escuelas | Cursos
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form [formGroup]="formGroup">
+    <form [formGroup]="formGroup" *ngIf="estadoDisponibilidad !== estado.SOLICITAR">
       <mat-form-field>
         <mat-select
           placeholder="Escoja hasta 4 elementos"
@@ -38,6 +38,6 @@
         <mat-error *ngIf="!getControl('cursos').valid">{{ getErrorMessage('cursos') }}</mat-error>
       </mat-form-field>
     </form>
-    <app-cursos-escogidos [data]="cursosSeleccionados"></app-cursos-escogidos>
+    <app-cursos-escogidos [data]="cursosSeleccionados" ></app-cursos-escogidos>
   </mat-card-content>
 </mat-card>
