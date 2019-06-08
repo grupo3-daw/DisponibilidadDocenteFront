@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { By } from '@angular/platform-browser';
-import { MaterialModule } from '@material';
+import { MaterialModule } from '@shared/material';
 import { ModalsModule } from '@shared/modals/modals.module';
 
 import { ToolbarComponent } from './toolbar.component';
 
 describe('ToolbarComponent', () => {
-  let component:ToolbarComponent;
+  let component: ToolbarComponent;
   let fixture: ComponentFixture<ToolbarComponent>;
 
   beforeEach(() =>{
@@ -33,6 +33,6 @@ describe('ToolbarComponent', () => {
       .toBeTruthy();
   });
 
-  
+
 
 });
