@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Formulario } from '@shared/formulario/formulario';
 
 import { LoginService } from './login.service';
@@ -13,7 +12,7 @@ import { LoginService } from './login.service';
 export class LoginComponent extends Formulario {
   hide = true;
 
-  constructor(private readonly loginService: LoginService, public router: Router) {
+  constructor(private readonly loginService: LoginService) {
     super([
       { name: 'email', validators: [Validators.required, Validators.email] },
       { name: 'contrasena', validators: [Validators.required] }
@@ -21,12 +20,8 @@ export class LoginComponent extends Formulario {
   }
 
   onSubmit(): void {
-    this.loginService.onSubmit(this.formGroup);
-    // if (this.formGroup.valid) {
-    //   this.router
-    //     .navigate(['profesor'])
-    //     .then()
-    //     .catch();
-    // }
+    if (this.formGroup.valid) {
+      this.loginService.onSubmit(this.formGroup.value);
+    }
   }
 }

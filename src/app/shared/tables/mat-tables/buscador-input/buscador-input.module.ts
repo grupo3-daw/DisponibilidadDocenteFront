@@ -1,7 +1,8 @@
-import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { BuscadorInputComponent } from './buscador-input.component'
-import { MaterialFormsModule } from '@material'
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { MaterialFormsModule } from '@shared/material';
+
+import { BuscadorInputComponent } from './buscador-input.component';
 
 @NgModule({
   imports: [CommonModule, MaterialFormsModule],

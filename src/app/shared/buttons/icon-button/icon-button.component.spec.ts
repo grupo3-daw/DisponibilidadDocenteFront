@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MaterialFormsModule } from '@material';
 
 import { IconButtonComponent } from './icon-button.component';
 
@@ -8,7 +9,10 @@ describe('IconButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IconButtonComponent ]
+      declarations: [ IconButtonComponent ],
+      imports: [
+        MaterialFormsModule
+      ]
     })
     .compileComponents();
   }));
@@ -20,6 +24,7 @@ describe('IconButtonComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component)
+    .toBeTruthy();
   });
 });

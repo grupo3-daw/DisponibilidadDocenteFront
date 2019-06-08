@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
-import { Profesor } from 'app/login/login.service';
+
+import { Profesor, ProfesorDetalle } from '../profesor';
+import { ProfesorService } from '../services/profesor.service';
 
 @Component({
   selector: 'app-layout-profesor',

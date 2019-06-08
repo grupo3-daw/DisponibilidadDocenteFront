@@ -1,44 +1,11 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Curso } from '@negocio/cursos';
 import { EstadoDisponibilidad } from '@negocio/profesor/disponibilidad-semanal/estado-disponibilidad.enum';
 import { ApiService } from '@shared/services/api.service';
-import { Profesor } from 'app/login/login.service';
+import { Consulta } from '@shared/services/consulta.enum';
+import { NotificationService } from '@shared/services/notification.service';
 
-import { Consulta } from './consulta.enum';
-import { Curso } from './curso';
-import { NotificationService } from './notification.service';
-
-export interface Solicitud {
-  idpermiso: number;
-  IDPROFESOR: number;
-  estado: string;
-  solicitud: string;
-  motivo?: any;
-}
-
-
-export interface Disponibilidad {
-  DIA: number;
-  HORAS: string;
-}
-
-/**
- * @export
- * @extends {Profesor}
- * @var   NOMBRECATEGORIA: string;
- * @var   horas_minimas: number;
- * @var   horas_maximas: number;
- * @var   cursos?: Array<Curso>;
- * @var   disponibilidad? : Array<Disponibilidad>;
- * @var   solicitud?: Solicitud;
- */
-export interface ProfesorDetalle extends Profesor {
-  NOMBRECATEGORIA: string;
-  horas_minimas: number;
-  horas_maximas: number;
-  cursos?: Array<Curso>;
-  disponibilidad?: Array<Disponibilidad>;
-  solicitud?: any;
-}
+import { ProfesorDetalle } from '../profesor';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +95,5 @@ export class ProfesorService {
       })
       .catch(error => { this.exitoEnProceso.emit(EstadoDisponibilidad.PROCESANDO_SOLICITUD); });
   }
-
 
 }

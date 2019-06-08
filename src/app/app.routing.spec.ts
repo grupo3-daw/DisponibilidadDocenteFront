@@ -1,5 +1,4 @@
 import { routes } from './app.routing';
-import { LoginComponent } from './login/login.component';
 
 // tslint:disable
 describe('Rutas principales', () => {
@@ -11,10 +10,7 @@ describe('Rutas principales', () => {
     });
   });
   it('Debe de existir la ruta auth', () => {
-    expect(routes).toContain({
-      path: 'auth',
-      component: LoginComponent
-    });
+    expect(routes).toContain({ path: 'auth', loadChildren: './negocio/auth/auth.module#AuthModule' });
   });
   it('Debe de existir la ruta administrador', () => {
     expect(routes).toContain({

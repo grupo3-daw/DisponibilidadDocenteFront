@@ -1,11 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { TypeButton } from '@shared/buttons/type-button.enum';
+import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { ProfesorService } from '@negocio/profesor/services/profesor.service';
+import { FabButton, IconButton } from '@shared/buttons';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { AdministradorService } from '@shared/services/administrador.service';
-import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 import { MatTablePadre } from '@shared/tables';
 
+import { AdministradorService } from '../services/administrador.service';
 import { AprobarSolicitudComponent } from './aprobar-solicitud/aprobar-solicitud.component';
 
 export enum Escuela {
@@ -22,7 +23,7 @@ export interface Dictado {
   cursos: string;
 }
 
-export interface ProfesorVista extends ProfesorDetalle {
+export interface ProfesorVistaAdmin extends ProfesorDetalle {
   nombre: string;
   cursosEscogidos: string;
 }
@@ -32,7 +33,7 @@ export interface ProfesorVista extends ProfesorDetalle {
   templateUrl: './profesores.component.html',
   styleUrls: ['./profesores.component.css']
 })
-export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements OnInit {
+export class ProfesoresComponent extends MatTablePadre<ProfesorVistaAdmin> implements OnInit {
   escuela = Escuela;
   @Input() user;
   @ViewChild('cursosVista') cursosVista;
@@ -51,7 +52,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     }
   ];
   loading = true;
-  profesores: Array<ProfesorVista> = [];
+  profesores: Array<ProfesorVistaAdmin> = [];
   constructor(
     public dialog: MatDialog,
     private readonly administradorService: AdministradorService,
@@ -76,53 +77,29 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
         columna: 'cursosEscogidos'
       }
     ];
+    const filtrarCursos = new FabButton('filtrar_cursos', 'Filtrar por Cursos', 'bookmarks','primary');
+    const filtrarTipos = new FabButton('filtrar_tipos', 'Filtrar por Tipo de Profesor', 'school','primary');
     this.buttonsExt = [
-      {
-        id: 'filtrar_cursos',
-        class: '',
-        titulo: '',
-        tooltipTitulo: 'Filtrar por Cursos',
-        imagen: 'bookmarks',
-        toolTipPosition: 'above',
-        type: TypeButton.Fab,
-        disabled: false,
-        mostrar: () => true
-      },
-      {
-        id: 'filtrar_tipos',
-        class: '',
-        titulo: '',
-        tooltipTitulo: 'Filtrar por Tipo de Profesor',
-        imagen: 'school',
-        toolTipPosition: 'above',
-        type: TypeButton.Fab,
-        disabled: false,
-        mostrar: () => true
-      }
+      filtrarCursos,
+      filtrarTipos
     ];
+    const disponibilidad = new IconButton(
+      'disponibilidad',
+      'Ver Disponibilidad',
+      'assignment',
+      data => data.cursosEscogidos !== '',
+      'primary'
+    );
+    disponibilidad.mostrar = data => data.cursosEscogidos !== '';
+    const permisos = new IconButton(
+      'permisos',
+      'Otorgar permisos de edición',
+      'https',
+      data => data.solicitud !== null,
+      'primary');
     this.buttons = [
-      {
-        id: 'disponibilidad',
-        class: '',
-        titulo: 'Ver Disponibilidad',
-        tooltipTitulo: 'Ver Disponibilidad',
-        imagen: 'assignment',
-        toolTipPosition: 'above',
-        type: TypeButton.Icon,
-        disabled: false,
-        mostrar: data => data.cursosEscogidos !== ''
-      },
-      {
-        id: 'permisos',
-        class: '',
-        titulo: 'Otorgar permisos',
-        tooltipTitulo: 'Otorgar permisos de edición',
-        imagen: 'https',
-        toolTipPosition: 'above',
-        type: TypeButton.Icon,
-        disabled: false,
-        mostrar: data => data.solicitud !== null
-      }
+      disponibilidad,
+      permisos
     ];
     this.profesorService.exitoEnProceso.subscribe(
       res => this.abriendoPopUp = false
@@ -131,13 +108,13 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
       res => {
         this.dialog.closeAll();
         this.data.forEach(
-          (profesor,index) => {
-            if(profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
-              this.data[index]['solicitud'] = null;
+          (profesor, index) => {
+            if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
+              this.data[index].solicitud = null;
             }
           }
         )
-        }
+      }
     );
   }
 
@@ -157,7 +134,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     if (event.data.id === 'disponibilidad') {
       this.abriendoPopUp = true;
     } else {
-      this.dialog.open(AprobarSolicitudComponent, { width: '450px', data: {profesor: this.profesor} });
+      this.dialog.open(AprobarSolicitudComponent, { width: '450px', data: { profesor: this.profesor } });
     }
   }
 
@@ -219,7 +196,7 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
         this.buscarPorTipoProfesor(
           tipos
             .filter(curso => curso.seleccionado)
-            .map(curso => curso.nombre))
+            .map(curso => curso.nombre));
       });
   }
 
@@ -229,15 +206,13 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
         const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel
-        )
-
+        );
         if (seleccionado) {
           return true;
         }
 
         return false;
-
-      })
+      });
     } else {
       filtrado = data;
     }
@@ -259,15 +234,12 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
 
     dialogRef.afterClosed()
       .subscribe(result => {
-        console.log('The dialog was closed' + result);
         this.buscarPorCursos(
           cursos
             .filter(curso => curso.seleccionado)
-            .map(curso => curso.nombre))
+            .map(curso => curso.nombre));
       });
   }
-
-
 
   private buscarPorCursos(seleccionados: Array<string>): void {
     const data = this.profesores;
@@ -276,7 +248,6 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
       filtrado = data.filter(profesor => {
         const seleccionado = seleccionados.find(sel => profesor.cursosEscogidos.includes(sel)
         );
-
         if (seleccionado) {
           return true;
         }

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Escuela } from '@negocio/administrador/profesores/profesores.component';
+import { Curso, CursoDetalle, CursoService } from '@negocio/cursos';
 import { Formulario } from '@shared/formulario/formulario';
-import { Curso, CursoDetalle, CursoService } from '@shared/services/curso';
 
 import { EstadoDisponibilidad } from '../disponibilidad-semanal/estado-disponibilidad.enum';
 import { CursoSeleccionados } from './cursos-escogidos/cursos-escogidos.component';

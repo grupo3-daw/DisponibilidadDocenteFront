@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { Disponibilidad, ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 
+import { Disponibilidad, ProfesorDetalle } from '../profesor';
 import { SeleccionarCursoService } from '../seleccionar-curso/seleccionar-curso.service';
+import { ProfesorService } from '../services/profesor.service';
 import { DiaLaborable } from './dia-laborable.type';
 import { EstadoDisponibilidad } from './estado-disponibilidad.enum';
 import { EstadoHoras } from './estado-horas.enum';

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MaterialModule } from '@shared/material';
 
 import { InformacionPerfilComponent } from './informacion-perfil.component';
 
@@ -8,7 +9,10 @@ describe('InformacionPerfilComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InformacionPerfilComponent ]
+      declarations: [ InformacionPerfilComponent ],
+      imports: [
+        MaterialModule
+      ]
     })
     .compileComponents();
   }));
@@ -20,6 +24,7 @@ describe('InformacionPerfilComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component)
+    .toBeTruthy();
   });
 });

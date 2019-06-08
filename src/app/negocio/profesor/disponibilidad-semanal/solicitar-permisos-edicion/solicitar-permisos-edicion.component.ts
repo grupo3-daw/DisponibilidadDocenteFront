@@ -1,9 +1,10 @@
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { ProfesorService } from '@shared/services/profesor.service';
 
 import { EstadoDisponibilidad } from '../estado-disponibilidad.enum';
+
 
 @Component({
   selector: 'app-solicitar-permisos-edicion',
@@ -42,8 +43,5 @@ export class SolicitarPermisosEdicionComponent implements AfterViewInit {
     }, 10);
 
   }
-
-
-
 
 }

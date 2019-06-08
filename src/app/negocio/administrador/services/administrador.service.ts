@@ -1,14 +1,13 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { ProfesorVista } from '@negocio/administrador/profesores/profesores.component';
-import { Profesor } from 'app/login/login.service';
+import { ProfesorVistaAdmin } from '@negocio/administrador/profesores/profesores.component';
+import { Profesor, ProfesorDetalle } from '@negocio/profesor/profesor';
+import { ProfesorService } from '@negocio/profesor/services/profesor.service';
+import { ApiService } from '@shared/services/api.service';
+import { Consulta } from '@shared/services/consulta.enum';
+import { NotificationService } from '@shared/services/notification.service';
 
-import { ApiService } from './api.service';
-import { Consulta } from './consulta.enum';
-import { NotificationService } from './notification.service';
-import { ProfesorDetalle, ProfesorService } from './profesor.service';
-
-export interface ProfesoresVistaAdmin {
-  profesores: Array<ProfesorVista>;
+export interface ProfesoresCursosVistaAdmin {
+  profesores: Array<ProfesorVistaAdmin>;
   cursos: Array<{ nombre: string, seleccionado: boolean }>;
 }
 
@@ -43,11 +42,11 @@ export class AdministradorService {
       );
   }
 
-  async listarAdmin(): Promise<ProfesoresVistaAdmin> {
+  async listarAdmin(): Promise<ProfesoresCursosVistaAdmin> {
     return this.listar()
       .then(
         lista => {
-          const profesores: Array<ProfesorVista> = [];
+          const profesores: Array<ProfesorVistaAdmin> = [];
           const cursos: Array<{ nombre: string, seleccionado: boolean }> = []
           lista.forEach(
             async profesor => {

@@ -1,26 +1,13 @@
-<ng-container *ngIf="position != null">
-    <button
-        mat-mini-fab
-        matTooltip="{{data.tooltipTitulo}}"
-        [matTooltipPosition]="position.value"
-        appClickStopPropagation
-        (click)="click(data.id)"
-        [disabled]="data.disabled"
-        id="{{data.id}}"
-        color="primary"
-    >
-        <mat-icon>{{data.imagen}}</mat-icon>
-    </button>
-</ng-container>
-<ng-container *ngIf="position == null">
-    <button
-        mat-mini-fab
-        appClickStopPropagation
-        [disabled]="data.disabled"
-        (click)="click(data.id)"
-        id="{{data.id}}"
-        color="primary"
-    >
-        <mat-icon>{{data.imagen}}</mat-icon>
-    </button>
-</ng-container>
+<button
+  *ngIf="data"
+   mat-mini-fab
+  matTooltip="{{ data.tooltipTitulo }}"
+  [matTooltipPosition]="position.value"
+  appClickStopPropagation
+  (click)="click(data.id)"
+  [disabled]="data.disabled"
+  id="{{ data.id }}"
+  color="{{data.color}}"
+>
+  <mat-icon>{{ data.imagen }}</mat-icon>
+</button>

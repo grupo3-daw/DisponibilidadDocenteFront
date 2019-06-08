@@ -1,11 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { Curso } from '@negocio/cursos';
+import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { Curso } from '@shared/services/curso';
-import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 
 import { EstadoDisponibilidad } from '../estado-disponibilidad.enum';
 import { SemanaLaborable, toStringDia } from '../semana-laborable';
+
 
 function sumarHora(horaActual: string, horaNueva: string): string {
   const inicioFinNuevo = horaNueva.split('-');
@@ -42,7 +44,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
   private dias: Array<number>;
   constructor(
     private readonly dialog: MatDialog,
-    private readonly profesorService: ProfesorService,
+    private readonly profesorService: ProfesorService
 
   ) { }
 
@@ -100,7 +102,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
       dialogRef.afterClosed()
         .subscribe(result => {
           if (result === true && this.profesorVista) {
-            if(this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
+            if (this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
               this.profesorService.registrarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
             } else {
               this.profesorService.editarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);

@@ -82,7 +82,7 @@ export class ApiService {
         break;
     }
 
-    const resultado = this.evaluate(consulta)
+    const resultado = this.evaluate(consulta, mostrarAlertaError)
       .then(resultados => {
         if (resultados !== undefined) {
           return this.validacionMensajes(
@@ -94,18 +94,13 @@ export class ApiService {
 
         return undefined;
       })
-      .catch(async error => {
-        if (mostrarAlertaError) {
-          this.notificationService.mostrarMensajeErrorServidor();
-        }
-
-        return Promise.reject(new Error(''));
-      });
+      .catch(error => Promise.reject(new Error(''))
+      );
 
     return resultado;
   }
 
-  async evaluate(promise, mostrarError = false): Promise<any> {
+  async evaluate(promise, mostrarError = true): Promise<any> {
     const router = this.router;
 
     return promise
@@ -117,6 +112,8 @@ export class ApiService {
         return Promise.resolve(res);
       })
       .catch(async error => {
+        console.log(error);
+
         let message = 'Ocurrió un problema al procesar su solicitud';
         switch (error.status || 500) {
           case 400:
@@ -144,6 +141,7 @@ export class ApiService {
             break;
         }
         message = error.error.msg || message;
+        console.log(message);
         if (mostrarError) {
           this.notificationService.mostrarMensajeError(message);
         }
