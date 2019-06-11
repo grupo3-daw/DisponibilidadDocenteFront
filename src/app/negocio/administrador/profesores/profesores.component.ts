@@ -4,7 +4,7 @@ import { ProfesorDetalle } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { FabButton, IconButton } from '@shared/buttons';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { MatTablePadre } from '@shared/tables';
+import { MatTableData } from '@shared/tables/mat-tables/mat-table/mat-table-data';
 
 import { AdministradorService } from '../services/administrador.service';
 import { AprobarSolicitudComponent } from './aprobar-solicitud/aprobar-solicitud.component';
@@ -33,7 +33,7 @@ export interface ProfesorVistaAdmin extends ProfesorDetalle {
   templateUrl: './profesores.component.html',
   styleUrls: ['./profesores.component.css']
 })
-export class ProfesoresComponent extends MatTablePadre<ProfesorVistaAdmin> implements OnInit {
+export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implements OnInit {
   escuela = Escuela;
   @Input() user;
   @ViewChild('cursosVista') cursosVista;

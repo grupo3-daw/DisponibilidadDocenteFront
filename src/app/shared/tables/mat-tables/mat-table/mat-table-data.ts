@@ -7,7 +7,7 @@ export interface ColumnaMaterialTable {
   editable?: true;
 }
 
-export class MatTablePadre<T = any> implements OnDestroy {
+export class MatTableData<T = any> implements OnDestroy{
   @Input() data: Array<T> = [];
   @Input() filterValue: string;
   @Input() displayedColumns: Array<ColumnaMaterialTable>;
@@ -17,12 +17,6 @@ export class MatTablePadre<T = any> implements OnDestroy {
   filaEscogida: T;
   activo = true;
   loading = true;
-
-  mantenerFiltro(filtro: string): void {
-    setTimeout(() => {
-      this.filterValue = filtro;
-    }, 1);
-  }
 
   actualizarFilaTabla(id: string, nuevoElemento: T, parametros: Array<string> = []): void {
     let fila: T;
@@ -45,16 +39,10 @@ export class MatTablePadre<T = any> implements OnDestroy {
     }
   }
 
-  async desactivarBotonesInternos(): Promise<any> {
-    const promise = await new Promise((resolve, reject) => {
-      for (const button of this.buttons) {
+  desactivarBotonesInternos(): void {
+    for (const button of this.buttons) {
         button.disabled = true;
       }
-      resolve(true);
-      reject(false);
-    });
-
-    return promise;
   }
 
   activarBotonesInternos(): void {

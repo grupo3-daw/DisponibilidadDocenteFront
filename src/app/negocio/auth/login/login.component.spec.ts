@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { MaterialFormsModule } from '@material';
+import { MaterialFormsModule } from '@shared/material';
 import { ApiService } from '@shared/services/api.service';
 
 import { LoginComponent } from './login.component';

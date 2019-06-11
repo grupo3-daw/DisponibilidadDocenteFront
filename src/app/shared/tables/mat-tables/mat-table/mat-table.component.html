@@ -1,11 +1,11 @@
 <div id="botones_superiores" *ngIf="!loading && buttonsExt && buttonsExt.length > 0">
-  <app-group-buttons [buttons]="buttonsExt" [row]="{}" (clickEvent)="clickExterno($event)">
+  <app-group-buttons [buttons]="buttonsExt" [row]="{}" (clickEvent)="clickEventExterno($event)">
   </app-group-buttons>
 </div>
 
 <div class="table-header" *ngIf="buscador">
   <app-buscador-input [filterValue]="filterValue" [clase]="clase" [icono]="icono" [placeholder]="placeholder"
-    (buscar)="applyFilter($event)" (otro_evento)="otro_evento.emit()"></app-buscador-input>
+    (buscar)="applyFilter($event)" (otro_evento)="otroEvento.emit()"></app-buscador-input>
 </div>
 <ng-content></ng-content>
 <div class="mat-elevation-z8" *ngIf="!loading">
@@ -33,10 +33,10 @@
             {{ column.header }}
           </th>
           <td mat-cell *matCellDef="let row; let i = index">
-            <app-comprimed-buttons *ngIf="comprimed_buttons; else no_comprimed" [buttons]="buttons" [row]="row"
-              [hide_buttons]="indice_mostrado !== i" (hide_other_buttons)="hide_other_buttons(i)"
+            <app-comprimed-buttons *ngIf="comprimedButtons; else noComprimed" [buttons]="buttons" [row]="row"
+              [hide_buttons]="indiceMostrado !== i" (hide_other_buttons)="indiceMostrado = i"
               (clickEvent)="clickEvent($event, i)"></app-comprimed-buttons>
-            <ng-template #no_comprimed>
+            <ng-template #noComprimed>
               <app-group-buttons [buttons]="buttons" [row]="row" (clickEvent)="clickEvent($event, i)">
               </app-group-buttons>
             </ng-template>

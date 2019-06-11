@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MaterialFormsModule } from '@material';
+import { MaterialFormsModule } from '@shared/material';
 
 import { IconButtonComponent } from './icon-button.component';
 

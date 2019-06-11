@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, TemplateRef } from '@angular/core';
+import { Component, Inject, TemplateRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 @Component({
@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
   templateUrl: './modal-confirmacion.component.html',
   styleUrls: ['./modal-confirmacion.component.scss']
 })
-export class ModalConfirmacionComponent implements OnInit {
+export class ModalConfirmacionComponent {
   constructor(
     public thisDialogRef: MatDialogRef<ModalConfirmacionComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -18,5 +18,4 @@ export class ModalConfirmacionComponent implements OnInit {
     }
   ) {}
 
-  ngOnInit() {}
 }
