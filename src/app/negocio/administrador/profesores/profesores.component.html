@@ -1,11 +1,10 @@
 <app-mat-table
-  *ngIf="!loading"
   [data]="data"
   [buttonsExt]="buttonsExt"
   [buttons]="buttons"
   [displayedColumns]="displayedColumns"
-  (click_externo)="filtros($event)"
-  (click_interno)="operaciones($event)"
+  (clickExterno)="filtros($event)"
+  (clickInterno)="operaciones($event)"
 >
   <mat-chip-list>
     <ng-container *ngFor="let row of cursos">

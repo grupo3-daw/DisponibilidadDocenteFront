@@ -1,5 +1,7 @@
 import { EventEmitter, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTable, MatTableDataSource } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 
 import { MatTableData } from './mat-table-data';
 
@@ -22,35 +24,51 @@ export class MatTablePadre<T = any> extends MatTableData<T> implements OnInit, O
   sortedData: T;
   columnsToDisplay: Array<string> = [];
   resultsLength = 0;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<T>;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild('table', {static: false}) table: MatTable<T>;
   constructor() {
     super();
   }
 
   ngOnInit(): void {
+    console.log('onInit');
     this.inicializar();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes.data);
+    console.log(changes.data.currentValue);
+    console.log(this.data);
     if (changes.data && !changes.data.isFirstChange()) {
       this.renderizarTabla();
     }
   }
 
+  inicializar(): void {
+    if (this.displayedColumns) {
+      for (const element of this.displayedColumns) {
+        this.columnsToDisplay.push(element.columna);
+      }
+      this.dataSource = new MatTableDataSource(this.data);
+    }
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
+  }
+
   renderizarTabla(): void {
-    this.dataSource = new MatTableDataSource(this.data);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.dataSource.filter = this.filterValue;
-    this.table.renderRows();
+    this.dataSource.data = this.data;
+    setTimeout(() => {
+      this.table.renderRows();
+    }, 100);
   }
 
   applyFilter(filterValue: string): void {
-    this.filterValue = filterValue.trim()
-    .toLowerCase();
+    console.log(filterValue);
+    this.filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = this.filterValue;
     this.filterEvent.emit(filterValue);
   }
@@ -77,22 +95,5 @@ export class MatTablePadre<T = any> extends MatTableData<T> implements OnInit, O
     });
   }
 
-  inicializar(): void {
-    if (this.displayedColumns) {
-      for (const element of this.displayedColumns) {
-        this.columnsToDisplay.push(element.columna);
-      }
 
-      this.dataSource = new MatTableDataSource(this.data);
-      this.loading = false;
-    }
-    setTimeout(() => {
-      if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
-      }
-      if (this.sort) {
-        this.dataSource.sort = this.sort;
-      }
-    }, 100);
-  }
 }

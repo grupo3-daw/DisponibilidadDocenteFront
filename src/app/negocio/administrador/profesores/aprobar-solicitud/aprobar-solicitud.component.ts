@@ -1,5 +1,5 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AdministradorService } from '@negocio/administrador/services/administrador.service';
 import { ProfesorDetalle } from '@negocio/profesor/profesor';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
@@ -10,7 +10,7 @@ import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/mo
   styleUrls: ['./aprobar-solicitud.component.scss']
 })
 export class AprobarSolicitudComponent {
-  @ViewChild('rechazarModelo') rechazarModelo;
+  @ViewChild('rechazarModelo', {static: false}) rechazarModelo;
   motivo = '';
   constructor(
     public dialog: MatDialog,

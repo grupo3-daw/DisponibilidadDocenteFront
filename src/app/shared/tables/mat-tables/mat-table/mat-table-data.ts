@@ -7,16 +7,15 @@ export interface ColumnaMaterialTable {
   editable?: true;
 }
 
-export class MatTableData<T = any> implements OnDestroy{
+export class MatTableData<T = any> implements OnDestroy {
   @Input() data: Array<T> = [];
   @Input() filterValue: string;
-  @Input() displayedColumns: Array<ColumnaMaterialTable>;
+  @Input() displayedColumns: Array<ColumnaMaterialTable> = [];
   @Input() buttons: Array<MyButton>;
   @Input() buttonsExt: Array<MyButton>;
   @Input() pageSize = 10;
   filaEscogida: T;
   activo = true;
-  loading = true;
 
   actualizarFilaTabla(id: string, nuevoElemento: T, parametros: Array<string> = []): void {
     let fila: T;

@@ -43,7 +43,7 @@ export class MatTableComponent extends MatTablePadre {
   }
 
   onAnimationEvent(event): void {
-    console.log(event);
+    // console.log(event);
   }
 
 }

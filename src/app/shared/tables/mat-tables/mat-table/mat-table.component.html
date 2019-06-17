@@ -1,4 +1,4 @@
-<div id="botones_superiores" *ngIf="!loading && buttonsExt && buttonsExt.length > 0">
+<div id="botones_superiores" *ngIf="buttonsExt && buttonsExt.length > 0">
   <app-group-buttons [buttons]="buttonsExt" [row]="{}" (clickEvent)="clickEventExterno($event)">
   </app-group-buttons>
 </div>
@@ -8,9 +8,9 @@
     (buscar)="applyFilter($event)" (otro_evento)="otroEvento.emit()"></app-buscador-input>
 </div>
 <ng-content></ng-content>
-<div class="mat-elevation-z8" *ngIf="!loading">
+<div class="mat-elevation-z8" >
   <div class="table-container">
-    <table mat-table [dataSource]="dataSource" [@agregar_eliminar]="dataSource.data.length"
+    <table #table mat-table [dataSource]="dataSource" [@agregar_eliminar]="dataSource.data.length"
       (@agregar_eliminar.start)="onAnimationEvent($event)" (@agregar_eliminar.done)="onAnimationEvent($event)" matSort>
       <ng-container *ngFor="let column of displayedColumns">
         <ng-container [matColumnDef]="column.columna" *ngIf="column.columna !== 'acciones'">

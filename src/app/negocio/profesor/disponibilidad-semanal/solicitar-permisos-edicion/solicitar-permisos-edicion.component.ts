@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 
@@ -13,7 +13,7 @@ import { EstadoDisponibilidad } from '../estado-disponibilidad.enum';
 })
 export class SolicitarPermisosEdicionComponent implements AfterViewInit {
   @Input() id: number;
-  @ViewChild('modelo') modelo;
+  @ViewChild('modelo', {static:false}) modelo;
   solicitud = '';
   constructor(
     private readonly dialog: MatDialog,

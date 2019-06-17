@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ProfesorDetalle } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { FabButton, IconButton } from '@shared/buttons';
@@ -36,12 +36,12 @@ export interface ProfesorVistaAdmin extends ProfesorDetalle {
 export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implements OnInit {
   escuela = Escuela;
   @Input() user;
-  @ViewChild('cursosVista') cursosVista;
-  @ViewChild('tiposVista') tiposVista;
+  @ViewChild('cursosVista', {static: true}) cursosVista;
+  @ViewChild('tiposVista', {static: true}) tiposVista;
   profesor: ProfesorDetalle;
   abriendoPopUp = false;
-  cursos: Array<{ nombre: string, seleccionado: boolean }> = [];
-  tipos: Array<{ nombre: string, seleccionado: boolean }> = [
+  cursos: Array<{nombre: string; seleccionado: boolean}> = [];
+  tipos: Array<{nombre: string; seleccionado: boolean}> = [
     {
       nombre: 'Completo',
       seleccionado: false
@@ -77,12 +77,19 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
         columna: 'cursosEscogidos'
       }
     ];
-    const filtrarCursos = new FabButton('filtrar_cursos', 'Filtrar por Cursos', 'bookmarks','primary');
-    const filtrarTipos = new FabButton('filtrar_tipos', 'Filtrar por Tipo de Profesor', 'school','primary');
-    this.buttonsExt = [
-      filtrarCursos,
-      filtrarTipos
-    ];
+    const filtrarCursos = new FabButton(
+      'filtrar_cursos',
+      'Filtrar por Cursos',
+      'bookmarks',
+      'primary'
+    );
+    const filtrarTipos = new FabButton(
+      'filtrar_tipos',
+      'Filtrar por Tipo de Profesor',
+      'school',
+      'primary'
+    );
+    this.buttonsExt = [filtrarCursos, filtrarTipos];
     const disponibilidad = new IconButton(
       'disponibilidad',
       'Ver Disponibilidad',
@@ -90,32 +97,30 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
       data => data.cursosEscogidos !== '',
       'primary'
     );
-    disponibilidad.mostrar = data => data.cursosEscogidos !== '';
     const permisos = new IconButton(
       'permisos',
       'Otorgar permisos de edición',
       'https',
       data => data.solicitud !== null,
-      'primary');
-    this.buttons = [
-      disponibilidad,
-      permisos
-    ];
-    this.profesorService.exitoEnProceso.subscribe(
-      res => this.abriendoPopUp = false
+      'primary'
     );
-    this.administradorService.exitoEnProceso.subscribe(
-      res => {
-        this.dialog.closeAll();
-        this.data.forEach(
-          (profesor, index) => {
-            if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
-              this.data[index].solicitud = null;
-            }
-          }
-        )
-      }
+    const reporte = new IconButton(
+      'reporte',
+      'Descargar reporte de disponibilidad',
+      'archive',
+      data => data.cursosEscogidos !== '',
+      'primary'
     );
+    this.buttons = [disponibilidad, permisos, reporte];
+    this.profesorService.exitoEnProceso.subscribe(res => (this.abriendoPopUp = false));
+    this.administradorService.exitoEnProceso.subscribe(res => {
+      this.dialog.closeAll();
+      this.data.forEach((profesor, index) => {
+        if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
+          this.data[index].solicitud = null;
+        }
+      });
+    });
   }
 
   async ngOnInit(): Promise<any> {
@@ -123,18 +128,25 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     this.profesores = res.profesores;
     this.data = res.profesores;
     this.cursos = res.cursos;
-    setTimeout(() => {
-      this.loading = false;
-    }, 100);
-
+    this.loading = false;
   }
 
-  operaciones(event: { numeroFila: number, data: { id: string, data: ProfesorDetalle } }): void {
+  operaciones(event: {numeroFila: number; data: {id: string; data: ProfesorDetalle}}): void {
+    console.log(event);
     this.profesor = event.data.data;
-    if (event.data.id === 'disponibilidad') {
-      this.abriendoPopUp = true;
-    } else {
-      this.dialog.open(AprobarSolicitudComponent, { width: '450px', data: { profesor: this.profesor } });
+    switch (event.data.id) {
+      case 'disponibilidad':
+        this.abriendoPopUp = true;
+        break;
+      case 'permisos':
+        this.dialog.open(AprobarSolicitudComponent, {
+          width: '450px',
+          data: {profesor: this.profesor}
+        });
+        break;
+      default:
+        this.profesorService.descargarReporte(event.data.data.IDPROFESOR);
+        break;
     }
   }
 
@@ -146,7 +158,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     }
   }
 
-  filtros(event: { id: string, data: any }): void {
+  filtros(event: {id: string; data: any}): void {
     if (event.id === 'filtrar_cursos') {
       this.mostrarCursos();
     } else {
@@ -160,23 +172,16 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
       const index = data.indexOf(chip);
       if (index >= 0) {
         data.splice(index, 1);
-        this.buscarPorCursos(
-          data
-            .filter(row => row.seleccionado)
-            .map(row => row.nombre));
+        this.buscarPorCursos(data.filter(row => row.seleccionado).map(row => row.nombre));
       }
     } else {
       const data = this.tipos;
       const index = data.indexOf(chip);
       if (index >= 0) {
         data.splice(index, 1);
-        this.buscarPorTipoProfesor(
-          data
-            .filter(row => row.seleccionado)
-            .map(row => row.nombre));
+        this.buscarPorTipoProfesor(data.filter(row => row.seleccionado).map(row => row.nombre));
       }
     }
-
   }
 
   private mostrarTipos(): void {
@@ -185,19 +190,20 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       width: '450px',
       data: {
-        titulo: 'Filtrar por Tipos de Profesor', mensaje: '', template: {
-          element: vista, data: tipos
+        titulo: 'Filtrar por Tipos de Profesor',
+        mensaje: '',
+        template: {
+          element: vista,
+          data: tipos
         }
       }
     });
-    dialogRef.afterClosed()
-      .subscribe(result => {
-        console.log(`The dialog was closed  ${result}`);
-        this.buscarPorTipoProfesor(
-          tipos
-            .filter(curso => curso.seleccionado)
-            .map(curso => curso.nombre));
-      });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`The dialog was closed  ${result}`);
+      this.buscarPorTipoProfesor(
+        tipos.filter(curso => curso.seleccionado).map(curso => curso.nombre)
+      );
+    });
   }
 
   private buscarPorTipoProfesor(seleccionados: Array<string>): void {
@@ -205,8 +211,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel
-        );
+        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel);
         if (seleccionado) {
           return true;
         }
@@ -226,19 +231,18 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       width: '450px',
       data: {
-        titulo: 'Filtrar por Cursos', mensaje: '', template: {
-          element: vista, data: cursos
+        titulo: 'Filtrar por Cursos',
+        mensaje: '',
+        template: {
+          element: vista,
+          data: cursos
         }
       }
     });
 
-    dialogRef.afterClosed()
-      .subscribe(result => {
-        this.buscarPorCursos(
-          cursos
-            .filter(curso => curso.seleccionado)
-            .map(curso => curso.nombre));
-      });
+    dialogRef.afterClosed().subscribe(result => {
+      this.buscarPorCursos(cursos.filter(curso => curso.seleccionado).map(curso => curso.nombre));
+    });
   }
 
   private buscarPorCursos(seleccionados: Array<string>): void {
@@ -246,8 +250,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.cursosEscogidos.includes(sel)
-        );
+        const seleccionado = seleccionados.find(sel => profesor.cursosEscogidos.includes(sel));
         if (seleccionado) {
           return true;
         }

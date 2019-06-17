@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Curso } from '@negocio/cursos';
 import { ProfesorDetalle } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
@@ -28,7 +28,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
   @Input() profesor: ProfesorDetalle;
   @Input() data: Array<SemanaLaborable>;
   @Input() estadoDisponibilidad: EstadoDisponibilidad;
-  @ViewChild('modelo') modelo;
+  @ViewChild('modelo', {static:false}) modelo;
   displayedColumns: Array<string> = [
     'horaRango',
     'lunes',

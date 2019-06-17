@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { Disponibilidad, ProfesorDetalle } from '../profesor';
 import { SeleccionarCursoService } from '../seleccionar-curso/seleccionar-curso.service';

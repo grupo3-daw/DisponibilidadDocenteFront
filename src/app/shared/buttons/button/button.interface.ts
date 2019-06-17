@@ -1,4 +1,4 @@
-import { TooltipPosition } from '@angular/material';
+import { TooltipPosition } from '@angular/material/tooltip';
 
 import { TypeButton } from '../type-button.enum';
 
@@ -15,6 +15,7 @@ export class MyButton {
     public imagen = '',
     public disabled = false,
     public clase = '') {
+      this.tooltipTitulo = titulo;
   }
 
 }
