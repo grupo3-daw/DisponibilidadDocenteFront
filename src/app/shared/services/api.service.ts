@@ -53,9 +53,7 @@ export class ApiService {
     mostrarAlertaError = true
   ): Promise<T> {
     let consulta;
-    this.webAddress.setSiguientes(ruta)
-    console.log(this.webAddress.getUrl());
-    console.log(body);
+    this.webAddress.setSiguientes(ruta);
     switch (tipo) {
       case Consulta.POST:
         consulta = this.http
@@ -112,8 +110,6 @@ export class ApiService {
         return Promise.resolve(res);
       })
       .catch(async error => {
-        console.log(error);
-
         let message = 'Ocurrió un problema al procesar su solicitud';
         switch (error.status || 500) {
           case 400:
@@ -141,7 +137,6 @@ export class ApiService {
             break;
         }
         message = error.error.msg || message;
-        console.log(message);
         if (mostrarError) {
           this.notificationService.mostrarMensajeError(message);
         }

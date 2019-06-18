@@ -28,7 +28,6 @@ export class ProfesorService {
   }
 
   async editarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
-    console.log(cursos);
     return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.PUT, {
       cursos: cursos.map(curso => curso.IDCURSO)
     });

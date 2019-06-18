@@ -127,8 +127,6 @@ export class RegistrarDisponibilidadComponent implements OnInit {
       let horas = '';
       const horasDia = [];
       for (const row of this.data) {
-        console.log(row[this.displayedColumns[indexDia]]);
-
         if (row[this.displayedColumns[indexDia]]) {
           horas = sumarHora(horas, row.horaRango);
           horasDia.push(parseInt(row.horaRango, 10));

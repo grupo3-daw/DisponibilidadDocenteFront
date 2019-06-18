@@ -154,14 +154,11 @@ export class DisponibilidadSemanalComponent implements OnInit {
       if (this.horas < this.profesor.horas_minimas) {
         this.diasNoSeleccionados = true;
       }
-
-      console.log('Desmarcando Celda');
       this.dataSource.data[numeroFila][dia] = false;
 
       return EstadoHoras.Disminuyendo;
     }
     if (this.horas < this.profesor.horas_maximas) {
-      console.log('Marcando Celda');
       this.horas++;
       this.dataSource.data[numeroFila][dia] = true;
       if (this.horas >= this.profesor.horas_minimas) {

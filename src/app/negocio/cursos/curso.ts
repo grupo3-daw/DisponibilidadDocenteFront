@@ -1,9 +1,8 @@
 export interface Curso {
   IDCURSO: number;
   NOMBRECURSO: string;
+  IDESCUELA?: number;
+  NOMBREESCUELA?: string;
+  NHORAS?: number;
 }
 
-export interface CursoDetalle extends Curso {
-  IDESCUELA: number;
-  NHORAS: number;
-}

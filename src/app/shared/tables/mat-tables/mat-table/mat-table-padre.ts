@@ -32,13 +32,10 @@ export class MatTablePadre<T = any> extends MatTableData<T> implements OnInit, O
   }
 
   ngOnInit(): void {
-    console.log('onInit');
     this.inicializar();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes.data.currentValue);
-    console.log(this.data);
     if (changes.data && !changes.data.isFirstChange()) {
       this.renderizarTabla();
     }
@@ -62,12 +59,13 @@ export class MatTablePadre<T = any> extends MatTableData<T> implements OnInit, O
   renderizarTabla(): void {
     this.dataSource.data = this.data;
     setTimeout(() => {
-      this.table.renderRows();
+      if (this.table) {
+        this.table.renderRows();
+      }
     }, 100);
   }
 
   applyFilter(filterValue: string): void {
-    console.log(filterValue);
     this.filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = this.filterValue;
     this.filterEvent.emit(filterValue);
@@ -94,6 +92,4 @@ export class MatTablePadre<T = any> extends MatTableData<T> implements OnInit, O
       row
     });
   }
-
-
 }

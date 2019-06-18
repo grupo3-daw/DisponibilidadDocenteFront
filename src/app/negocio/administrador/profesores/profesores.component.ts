@@ -28,6 +28,36 @@ export interface ProfesorVistaAdmin extends ProfesorDetalle {
   cursosEscogidos: string;
 }
 
+export interface Seleccion {
+  nombre: string;
+  seleccionado: boolean;
+}
+
+export interface SeleccionEscuela extends Seleccion {
+  escuela: number;
+}
+
+export class Selecciones {
+  constructor(public data: Array<Seleccion> = []) {}
+
+  eliminar(seleccion: Seleccion): boolean {
+    const index = this.data.indexOf(seleccion);
+    if (index >= 0) {
+      this.data.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  deseleccionar(seleccion: Seleccion) {
+    const index = this.data.indexOf(seleccion);
+    this.data[index].seleccionado = false;
+  }
+  devolverSoloNombre(): Array<string> {
+    return this.data.filter(row => row.seleccionado).map(row => row.nombre);
+  }
+}
+
 @Component({
   selector: 'app-profesores',
   templateUrl: './profesores.component.html',
@@ -40,8 +70,9 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
   @ViewChild('tiposVista', {static: true}) tiposVista;
   profesor: ProfesorDetalle;
   abriendoPopUp = false;
-  cursos: Array<{nombre: string; seleccionado: boolean}> = [];
-  tipos: Array<{nombre: string; seleccionado: boolean}> = [
+  cursosEnModal: Selecciones = new Selecciones();
+  cursos: Selecciones = new Selecciones();
+  tiposEnModal: Selecciones = new Selecciones([
     {
       nombre: 'Completo',
       seleccionado: false
@@ -50,7 +81,8 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
       nombre: 'Parcial',
       seleccionado: false
     }
-  ];
+  ]);
+  tipos: Selecciones = new Selecciones();
   loading = true;
   profesores: Array<ProfesorVistaAdmin> = [];
   constructor(
@@ -127,12 +159,11 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     const res = await this.administradorService.listarAdmin();
     this.profesores = res.profesores;
     this.data = res.profesores;
-    this.cursos = res.cursos;
+    this.cursosEnModal = new Selecciones(res.cursos);
     this.loading = false;
   }
 
   operaciones(event: {numeroFila: number; data: {id: string; data: ProfesorDetalle}}): void {
-    console.log(event);
     this.profesor = event.data.data;
     switch (event.data.id) {
       case 'disponibilidad':
@@ -152,9 +183,11 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
 
   actualizar(esCurso: boolean, numeroFila: number): void {
     if (esCurso) {
-      this.cursos[numeroFila].seleccionado = !this.cursos[numeroFila].seleccionado;
+      this.cursosEnModal.data[numeroFila].seleccionado = !this.cursosEnModal.data[numeroFila]
+        .seleccionado;
     } else {
-      this.tipos[numeroFila].seleccionado = !this.tipos[numeroFila].seleccionado;
+      this.tiposEnModal.data[numeroFila].seleccionado = !this.tiposEnModal.data[numeroFila]
+        .seleccionado;
     }
   }
 
@@ -166,26 +199,29 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     }
   }
 
-  remove(esCursos: boolean, chip: any): void {
+  mostrarCursosSoftware(): Array<Seleccion> {
+    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === 2);
+  }
+
+  mostrarCursosSistema(): Array<Seleccion> {
+    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === 3);
+  }
+
+  remove(esCursos: boolean, chip: Seleccion): void {
     if (esCursos) {
-      const data = this.cursos;
-      const index = data.indexOf(chip);
-      if (index >= 0) {
-        data.splice(index, 1);
-        this.buscarPorCursos(data.filter(row => row.seleccionado).map(row => row.nombre));
+      this.cursosEnModal.deseleccionar(chip);
+      if (this.cursos.eliminar(chip)) {
+        this.buscarPorCursos(this.cursos.devolverSoloNombre());
       }
     } else {
-      const data = this.tipos;
-      const index = data.indexOf(chip);
-      if (index >= 0) {
-        data.splice(index, 1);
-        this.buscarPorTipoProfesor(data.filter(row => row.seleccionado).map(row => row.nombre));
+      this.tiposEnModal.deseleccionar(chip);
+      if (this.tipos.eliminar(chip)) {
+        this.buscarPorTipoProfesor(this.tipos.devolverSoloNombre());
       }
     }
   }
 
   private mostrarTipos(): void {
-    const tipos = this.tipos;
     const vista = this.tiposVista;
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       width: '450px',
@@ -194,15 +230,15 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
         mensaje: '',
         template: {
           element: vista,
-          data: tipos
+          data: this.tipos
         }
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`The dialog was closed  ${result}`);
-      this.buscarPorTipoProfesor(
-        tipos.filter(curso => curso.seleccionado).map(curso => curso.nombre)
-      );
+      if (result === true) {
+        this.tipos = new Selecciones(this.tiposEnModal.data.filter(row => row.seleccionado));
+        this.buscarPorTipoProfesor(this.tipos.devolverSoloNombre());
+      }
     });
   }
 
@@ -221,12 +257,10 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     } else {
       filtrado = data;
     }
-    console.log(filtrado);
     this.data = filtrado;
   }
 
   private mostrarCursos(): void {
-    const cursos = this.cursos;
     const vista = this.cursosVista;
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       width: '450px',
@@ -235,13 +269,16 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
         mensaje: '',
         template: {
           element: vista,
-          data: cursos
+          data: this.cursos
         }
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.buscarPorCursos(cursos.filter(curso => curso.seleccionado).map(curso => curso.nombre));
+      if (result === true) {
+        this.cursos = new Selecciones(this.cursosEnModal.data.filter(row => row.seleccionado));
+        this.buscarPorCursos(this.cursos.devolverSoloNombre());
+      }
     });
   }
 
@@ -260,7 +297,6 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     } else {
       filtrado = data;
     }
-    console.log(filtrado);
     this.data = filtrado;
   }
 }

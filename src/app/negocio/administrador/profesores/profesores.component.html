@@ -7,7 +7,7 @@
   (clickInterno)="operaciones($event)"
 >
   <mat-chip-list>
-    <ng-container *ngFor="let row of cursos">
+    <ng-container *ngFor="let row of cursos.data">
       <mat-chip
         *ngIf="row.seleccionado"
         [selectable]="true"
@@ -20,9 +20,8 @@
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
     </ng-container>
-    <ng-container *ngFor="let row of tipos">
+    <ng-container *ngFor="let row of tipos.data">
       <mat-chip
-        *ngIf="row.seleccionado"
         [selectable]="true"
         [removable]="true"
         (removed)="remove(false, row)"
@@ -37,15 +36,30 @@
 </app-mat-table>
 
 <ng-template #cursosVista>
-  <div *ngFor="let curso of cursos; let i = index">
-    <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true, i) : null">
-      {{ curso.nombre }}
-    </mat-checkbox>
-  </div>
+  <mat-tab-group>
+    <mat-tab label="Ingenieria de Software">
+      <div
+        *ngFor="let curso of mostrarCursosSoftware(); let i = index"
+      >
+        <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true, i) : null">
+          {{ curso.nombre }}
+        </mat-checkbox>
+      </div>
+    </mat-tab>
+    <mat-tab label="Ingenieria de Sistemas">
+      <div
+        *ngFor="let curso of mostrarCursosSistema(); let i = index"
+      >
+        <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true, i) : null">
+          {{ curso.nombre }}
+        </mat-checkbox>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </ng-template>
 
 <ng-template #tiposVista>
-  <div *ngFor="let tipo of tipos; let i = index">
+  <div *ngFor="let tipo of tiposEnModal.data; let i = index">
     <mat-checkbox [checked]="tipo.seleccionado" (change)="$event ? actualizar(false, i) : null">
       {{ tipo.nombre }}
     </mat-checkbox>

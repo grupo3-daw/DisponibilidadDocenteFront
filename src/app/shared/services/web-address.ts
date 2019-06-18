@@ -10,7 +10,6 @@ export class WebAddress {
   constructor(url: string) {
     if (localStorage.getItem('token')) {
       this.token = localStorage.getItem('token');
-      console.log(this.token);
     }
     const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
 

@@ -77,9 +77,6 @@ describe('MatTableComponent', () => {
       const buttons: GroupButtonsComponent = fixture.debugElement.query(
         By.directive(GroupButtonsComponent)
       ).nativeElement;
-      console.log('Buttons');
-      console.log(buttons);
-
       expect(buttons).toBeUndefined();
     });
   });

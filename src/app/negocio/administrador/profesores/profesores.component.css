@@ -1,10 +1,14 @@
 app-mat-table {
   display: block;
   padding: 20px;
-  /* background: white; */
 }
 
 mat-chip-list {
   display: block;
   margin-bottom: 20px;
+}
+
+mat-tab-group::ng-deep .mat-tab-body.mat-tab-body-active {
+  padding: 20px 0 0;
+  min-height: 60px;
 }

@@ -40,7 +40,7 @@ describe('ModalConfirmacionComponent', () => {
   it('Debe tener titulo', () => {
     component.data.titulo = 'Salir';
     fixture.detectChanges();
-    const elem: HTMLHeadingElement = fixture.debugElement.query(By.css('h1')).nativeElement;
+    const elem: HTMLHeadingElement = fixture.debugElement.query(By.css('h3')).nativeElement;
     expect(elem.innerText)
     .toBe('Salir');
   });

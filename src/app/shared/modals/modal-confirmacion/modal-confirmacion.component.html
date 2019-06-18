@@ -1,11 +1,11 @@
 <div mat-dialog-title class="txcenter">
-  <h1>{{ data.titulo }}</h1>
+  <h3>{{ data.titulo }}</h3>
   <button id="exit" mat-icon-button color="error" [mat-dialog-close]="false">
     <mat-icon>close</mat-icon>
   </button>
 </div>
 <div mat-dialog-content>
-  <p>{{ data.mensaje }}</p>
+  <p *ngIf="data.mensaje">{{ data.mensaje }}</p>
   <ng-container *ngIf="data.template">
     <ng-container *ngTemplateOutlet="data.template.element; context: data.template.data">
     </ng-container>
