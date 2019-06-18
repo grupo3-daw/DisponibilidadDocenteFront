@@ -143,7 +143,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
       data => data.cursosEscogidos !== '',
       'primary'
     );
-    this.buttons = [disponibilidad, permisos, reporte];
+    this.buttons = [disponibilidad, permisos];
     this.profesorService.exitoEnProceso.subscribe(res => (this.abriendoPopUp = false));
     this.administradorService.exitoEnProceso.subscribe(res => {
       this.dialog.closeAll();
