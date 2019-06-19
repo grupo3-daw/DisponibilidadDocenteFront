@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterOutlet } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MaterialFormsModule } from '@shared/material';
 
 import { AppComponent } from './app.component';
 
@@ -14,7 +15,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      imports: [BrowserAnimationsModule, RouterTestingModule.withRoutes([])]
+      imports: [BrowserAnimationsModule, MaterialFormsModule, RouterTestingModule.withRoutes([])]
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;

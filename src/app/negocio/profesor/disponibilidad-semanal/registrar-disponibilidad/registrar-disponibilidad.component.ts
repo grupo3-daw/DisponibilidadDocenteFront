@@ -1,11 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { Curso } from '@negocio/cursos';
+import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { Curso } from '@shared/services/curso';
-import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
 
 import { EstadoDisponibilidad } from '../estado-disponibilidad.enum';
 import { SemanaLaborable, toStringDia } from '../semana-laborable';
+
 
 function sumarHora(horaActual: string, horaNueva: string): string {
   const inicioFinNuevo = horaNueva.split('-');
@@ -26,7 +28,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
   @Input() profesor: ProfesorDetalle;
   @Input() data: Array<SemanaLaborable>;
   @Input() estadoDisponibilidad: EstadoDisponibilidad;
-  @ViewChild('modelo') modelo;
+  @ViewChild('modelo', {static:false}) modelo;
   displayedColumns: Array<string> = [
     'horaRango',
     'lunes',
@@ -42,7 +44,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
   private dias: Array<number>;
   constructor(
     private readonly dialog: MatDialog,
-    private readonly profesorService: ProfesorService,
+    private readonly profesorService: ProfesorService
 
   ) { }
 
@@ -100,7 +102,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
       dialogRef.afterClosed()
         .subscribe(result => {
           if (result === true && this.profesorVista) {
-            if(this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
+            if (this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
               this.profesorService.registrarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
             } else {
               this.profesorService.editarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
@@ -125,8 +127,6 @@ export class RegistrarDisponibilidadComponent implements OnInit {
       let horas = '';
       const horasDia = [];
       for (const row of this.data) {
-        console.log(row[this.displayedColumns[indexDia]]);
-
         if (row[this.displayedColumns[indexDia]]) {
           horas = sumarHora(horas, row.horaRango);
           horasDia.push(parseInt(row.horaRango, 10));

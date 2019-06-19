@@ -1,4 +1,4 @@
-<mat-card *ngIf="estadoDisponibilidad">
+<mat-card>
   <mat-card-header>
     <mat-card-title class="txcenter">
       Escuelas | Cursos
@@ -38,6 +38,6 @@
         <mat-error *ngIf="!getControl('cursos').valid">{{ getErrorMessage('cursos') }}</mat-error>
       </mat-form-field>
     </form>
-    <app-cursos-escogidos [data]="cursosSeleccionados" ></app-cursos-escogidos>
+    <app-cursos-escogidos [data]="cursosSeleccionados"></app-cursos-escogidos>
   </mat-card-content>
 </mat-card>

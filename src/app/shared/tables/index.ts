@@ -1,2 +1,1 @@
-export * from './tables.module'
-export * from './mat-tables'
+export * from './mat-tables';

@@ -61,10 +61,7 @@ export class ApiService {
     }
 
     let consulta;
-    this.webAddress.setSiguientes(ruta)
-    console.log(this.webAddress.getUrl());
-    console.log(this.webAddress.getHeaders());
-    console.log(body);
+    this.webAddress.setSiguientes(ruta);
     switch (tipo) {
       case Consulta.POST:
         consulta = this.http
@@ -91,7 +88,7 @@ export class ApiService {
         break;
     }
 
-    const resultado = this.evaluate(consulta)
+    const resultado = this.evaluate(consulta, mostrarAlertaError)
       .then(resultados => {
         if (resultados !== undefined) {
           return this.validacionMensajes(
@@ -103,18 +100,13 @@ export class ApiService {
 
         return undefined;
       })
-      .catch(async error => {
-        if (mostrarAlertaError) {
-          this.notificationService.mostrarMensajeErrorServidor();
-        }
-
-        return Promise.reject(new Error(''));
-      });
+      .catch(error => Promise.reject(new Error(''))
+      );
 
     return resultado;
   }
 
-  async evaluate(promise, mostrarError = false): Promise<any> {
+  async evaluate(promise, mostrarError = true): Promise<any> {
     const router = this.router;
 
     return promise

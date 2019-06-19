@@ -1,0 +1,15 @@
+@import 'custom-theme.scss';
+
+.mat-dialog-title {
+  color: $primary;
+}
+
+button#exit {
+ top: -15px;
+    right: -15px;
+    float: right;
+}
+
+mat-form-field {
+  width: 100%;
+}

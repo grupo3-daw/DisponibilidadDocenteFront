@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
-import { Disponibilidad, ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
+import { MatTableDataSource } from '@angular/material/table';
 
+import { Disponibilidad, ProfesorDetalle } from '../profesor';
 import { SeleccionarCursoService } from '../seleccionar-curso/seleccionar-curso.service';
+import { ProfesorService } from '../services/profesor.service';
 import { DiaLaborable } from './dia-laborable.type';
 import { EstadoDisponibilidad } from './estado-disponibilidad.enum';
 import { EstadoHoras } from './estado-horas.enum';
@@ -153,14 +154,11 @@ export class DisponibilidadSemanalComponent implements OnInit {
       if (this.horas < this.profesor.horas_minimas) {
         this.diasNoSeleccionados = true;
       }
-
-      console.log('Desmarcando Celda');
       this.dataSource.data[numeroFila][dia] = false;
 
       return EstadoHoras.Disminuyendo;
     }
     if (this.horas < this.profesor.horas_maximas) {
-      console.log('Marcando Celda');
       this.horas++;
       this.dataSource.data[numeroFila][dia] = true;
       if (this.horas >= this.profesor.horas_minimas) {

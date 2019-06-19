@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MaterialModule } from '@material';
+import { MaterialModule } from '@shared/material';
 
 import { ModalConfirmacionComponent } from './modal-confirmacion/modal-confirmacion.component';
 

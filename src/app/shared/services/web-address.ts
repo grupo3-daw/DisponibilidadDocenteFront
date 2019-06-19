@@ -7,7 +7,11 @@ export class WebAddress {
   private readonly queryParams: Array<any> = [];
   private readonly formData: Array<any> = [];
   constructor(url: string) {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    if (localStorage.getItem('token')) {
+      this.token = localStorage.getItem('token');
+    }
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
+
     this.dominio = url;
     this.siguientes = '';
     this.headers = headers;

@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { Administrador } from '../administrador';
 
 @Component({
   selector: 'app-layout-administrador',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css']
 })
-export class LayoutAdministradorComponent implements OnInit {
-  user;
+export class LayoutAdministradorComponent {
+  user: Administrador;
   constructor() {
-    this.user = localStorage.getItem('user');
-  }
-
-  ngOnInit() {
+    this.user = JSON.parse(localStorage.getItem('user'));
   }
 
 }

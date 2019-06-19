@@ -17,7 +17,7 @@
     class="mat-elevation-z12 p30"
   >
     <h3 fxFlex="10%" class="txcenter">Sistema de Disponibilidad Docente</h3>
-    <img fxFlex="20%" id="logo" src="../../assets/img/logo.png" />
+    <img fxFlex="20%" id="logo" [src]="'assets/img/logo.png'" />
     <form fxLayout="column" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
       <mat-form-field>
         <input

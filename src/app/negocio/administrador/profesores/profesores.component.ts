@@ -1,11 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { TypeButton } from '@shared/buttons/type-button.enum';
+import { MatDialog } from '@angular/material/dialog';
+import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { ProfesorService } from '@negocio/profesor/services/profesor.service';
+import { FabButton, IconButton } from '@shared/buttons';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { AdministradorService } from '@shared/services/administrador.service';
-import { ProfesorDetalle, ProfesorService } from '@shared/services/profesor.service';
-import { MatTablePadre } from '@shared/tables';
+import { MatTableData } from '@shared/tables/mat-tables/mat-table/mat-table-data';
 
+import { AdministradorService } from '../services/administrador.service';
 import { AprobarSolicitudComponent } from './aprobar-solicitud/aprobar-solicitud.component';
 
 export enum Escuela {
@@ -22,9 +23,39 @@ export interface Dictado {
   cursos: string;
 }
 
-export interface ProfesorVista extends ProfesorDetalle {
+export interface ProfesorVistaAdmin extends ProfesorDetalle {
   nombre: string;
   cursosEscogidos: string;
+}
+
+export interface Seleccion {
+  nombre: string;
+  seleccionado: boolean;
+}
+
+export interface SeleccionEscuela extends Seleccion {
+  escuela: number;
+}
+
+export class Selecciones {
+  constructor(public data: Array<Seleccion> = []) {}
+
+  eliminar(seleccion: Seleccion): boolean {
+    const index = this.data.indexOf(seleccion);
+    if (index >= 0) {
+      this.data.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  deseleccionar(seleccion: Seleccion) {
+    const index = this.data.indexOf(seleccion);
+    this.data[index].seleccionado = false;
+  }
+  devolverSoloNombre(): Array<string> {
+    return this.data.filter(row => row.seleccionado).map(row => row.nombre);
+  }
 }
 
 @Component({
@@ -32,15 +63,16 @@ export interface ProfesorVista extends ProfesorDetalle {
   templateUrl: './profesores.component.html',
   styleUrls: ['./profesores.component.css']
 })
-export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements OnInit {
+export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implements OnInit {
   escuela = Escuela;
   @Input() user;
-  @ViewChild('cursosVista') cursosVista;
-  @ViewChild('tiposVista') tiposVista;
+  @ViewChild('cursosVista', {static: true}) cursosVista;
+  @ViewChild('tiposVista', {static: true}) tiposVista;
   profesor: ProfesorDetalle;
   abriendoPopUp = false;
-  cursos: Array<{ nombre: string, seleccionado: boolean }> = [];
-  tipos: Array<{ nombre: string, seleccionado: boolean }> = [
+  cursosEnModal: Selecciones = new Selecciones();
+  cursos: Selecciones = new Selecciones();
+  tiposEnModal: Selecciones = new Selecciones([
     {
       nombre: 'Completo',
       seleccionado: false
@@ -49,9 +81,10 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
       nombre: 'Parcial',
       seleccionado: false
     }
-  ];
+  ]);
+  tipos: Selecciones = new Selecciones();
   loading = true;
-  profesores: Array<ProfesorVista> = [];
+  profesores: Array<ProfesorVistaAdmin> = [];
   constructor(
     public dialog: MatDialog,
     private readonly administradorService: AdministradorService,
@@ -76,100 +109,89 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
         columna: 'cursosEscogidos'
       }
     ];
-    this.buttonsExt = [
-      {
-        id: 'filtrar_cursos',
-        class: '',
-        titulo: '',
-        tooltipTitulo: 'Filtrar por Cursos',
-        imagen: 'bookmarks',
-        toolTipPosition: 'above',
-        type: TypeButton.Fab,
-        disabled: false,
-        mostrar: () => true
-      },
-      {
-        id: 'filtrar_tipos',
-        class: '',
-        titulo: '',
-        tooltipTitulo: 'Filtrar por Tipo de Profesor',
-        imagen: 'school',
-        toolTipPosition: 'above',
-        type: TypeButton.Fab,
-        disabled: false,
-        mostrar: () => true
-      }
-    ];
-    this.buttons = [
-      {
-        id: 'disponibilidad',
-        class: '',
-        titulo: 'Ver Disponibilidad',
-        tooltipTitulo: 'Ver Disponibilidad',
-        imagen: 'assignment',
-        toolTipPosition: 'above',
-        type: TypeButton.Icon,
-        disabled: false,
-        mostrar: data => data.cursosEscogidos !== ''
-      },
-      {
-        id: 'permisos',
-        class: '',
-        titulo: 'Otorgar permisos',
-        tooltipTitulo: 'Otorgar permisos de edición',
-        imagen: 'https',
-        toolTipPosition: 'above',
-        type: TypeButton.Icon,
-        disabled: false,
-        mostrar: data => data.solicitud !== null
-      }
-    ];
-    this.profesorService.exitoEnProceso.subscribe(
-      res => this.abriendoPopUp = false
+    const filtrarCursos = new FabButton(
+      'filtrar_cursos',
+      'Filtrar por Cursos',
+      'bookmarks',
+      'primary'
     );
-    this.administradorService.exitoEnProceso.subscribe(
-      res => {
-        this.dialog.closeAll();
-        this.data.forEach(
-          (profesor,index) => {
-            if(profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
-              this.data[index]['solicitud'] = null;
-            }
-          }
-        )
+    const filtrarTipos = new FabButton(
+      'filtrar_tipos',
+      'Filtrar por Tipo de Profesor',
+      'school',
+      'primary'
+    );
+    this.buttonsExt = [filtrarCursos, filtrarTipos];
+    const disponibilidad = new IconButton(
+      'disponibilidad',
+      'Ver Disponibilidad',
+      'assignment',
+      data => data.cursosEscogidos !== '',
+      'primary'
+    );
+    const permisos = new IconButton(
+      'permisos',
+      'Otorgar permisos de edición',
+      'https',
+      data => data.solicitud !== null,
+      'primary'
+    );
+    const reporte = new IconButton(
+      'reporte',
+      'Descargar reporte de disponibilidad',
+      'archive',
+      data => data.cursosEscogidos !== '',
+      'primary'
+    );
+    this.buttons = [disponibilidad, permisos];
+    this.profesorService.exitoEnProceso.subscribe(res => (this.abriendoPopUp = false));
+    this.administradorService.exitoEnProceso.subscribe(res => {
+      this.dialog.closeAll();
+      this.data.forEach((profesor, index) => {
+        if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
+          this.data[index].solicitud = null;
         }
-    );
+      });
+    });
   }
 
   async ngOnInit(): Promise<any> {
     const res = await this.administradorService.listarAdmin();
     this.profesores = res.profesores;
     this.data = res.profesores;
-    this.cursos = res.cursos;
-    setTimeout(() => {
-      this.loading = false;
-    }, 100);
-
+    this.cursosEnModal = new Selecciones(res.cursos);
+    this.loading = false;
   }
 
-  operaciones(event: { numeroFila: number, data: { id: string, data: ProfesorDetalle } }): void {
+  operaciones(event: {numeroFila: number; data: {id: string; data: ProfesorDetalle}}): void {
     this.profesor = event.data.data;
-    if (event.data.id === 'disponibilidad') {
-      this.abriendoPopUp = true;
-    } else {
-      this.dialog.open(AprobarSolicitudComponent, { width: '450px', data: {profesor: this.profesor} });
+    switch (event.data.id) {
+      case 'disponibilidad':
+        this.abriendoPopUp = true;
+        break;
+      case 'permisos':
+        this.dialog.open(AprobarSolicitudComponent, {
+          width: '450px',
+          data: {profesor: this.profesor}
+        });
+        break;
+      default:
+        this.profesorService.descargarReporte(event.data.data.IDPROFESOR);
+        break;
     }
   }
 
   actualizar(esCurso: boolean, numeroFila: number): void {
     if (esCurso) {
-      this.cursos[numeroFila].seleccionado = !this.cursos[numeroFila].seleccionado;
+      this.cursosEnModal.data[numeroFila].seleccionado = !this.cursosEnModal.data[numeroFila]
+        .seleccionado;
     } else {
-      this.tipos[numeroFila].seleccionado = !this.tipos[numeroFila].seleccionado;
+      this.tiposEnModal.data[numeroFila].seleccionado = !this.tiposEnModal.data[numeroFila]
+        .seleccionado;
     }
   }
 
-  filtros(event: { id: string, data: any }): void {
+  filtros(event: {id: string; data: any}): void {
     if (event.id === 'filtrar_cursos') {
       this.mostrarCursos();
     } else {
@@ -177,106 +199,55 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     }
   }
 
-  remove(esCursos: boolean, chip: any): void {
+  mostrarCursosSoftware(): Array<Seleccion> {
+    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === 2);
+  }
+
+  mostrarCursosSistema(): Array<Seleccion> {
+    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === 3);
+  }
+
+  remove(esCursos: boolean, chip: Seleccion): void {
     if (esCursos) {
-      const data = this.cursos;
-      const index = data.indexOf(chip);
-      if (index >= 0) {
-        data.splice(index, 1);
-        this.buscarPorCursos(
-          data
-            .filter(row => row.seleccionado)
-            .map(row => row.nombre));
+      this.cursosEnModal.deseleccionar(chip);
+      if (this.cursos.eliminar(chip)) {
+        this.buscarPorCursos(this.cursos.devolverSoloNombre());
       }
     } else {
-      const data = this.tipos;
-      const index = data.indexOf(chip);
-      if (index >= 0) {
-        data.splice(index, 1);
-        // this.buscarPorTipoProfesor(
-        //   data
-        //     .filter(row => row.seleccionado)
-        //     .map(row => row.nombre));
+      this.tiposEnModal.deseleccionar(chip);
+      if (this.tipos.eliminar(chip)) {
+        this.buscarPorTipoProfesor(this.tipos.devolverSoloNombre());
       }
     }
-
   }
 
   private mostrarTipos(): void {
-    const tipos = this.tipos;
     const vista = this.tiposVista;
     const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
       width: '450px',
       data: {
-        titulo: 'Filtrar por Tipos de Profesor', mensaje: '', template: {
-          element: vista, data: tipos
+        titulo: 'Filtrar por Tipos de Profesor',
+        mensaje: '',
+        template: {
+          element: vista,
+          data: this.tipos
         }
       }
     });
-    // dialogRef.afterClosed()
-    //   .subscribe(result => {
-    //     console.log(`The dialog was closed  ${result}`);
-    //     this.buscarPorTipoProfesor(
-    //       tipos
-    //         .filter(curso => curso.seleccionado)
-    //         .map(curso => curso.nombre))
-    //   });
-  }
-
-  // private buscarPorTipoProfesor(seleccionados: Array<string>): void {
-  //   const data = this.profesores;
-  //   let filtrado;
-  //   if (seleccionados.length > 0) {
-  //     filtrado = data.filter(profesor => {
-  //       const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel
-  //       )
-
-  //       if (seleccionado) {
-  //         return true;
-  //       }
-
-  //       return false;
-
-  //     })
-  //   } else {
-  //     filtrado = data;
-  //   }
-  //   console.log(filtrado);
-  //   this.data = filtrado;
-  // }
-
-  private mostrarCursos(): void {
-    const cursos = this.cursos;
-    const vista = this.cursosVista;
-    const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
-      width: '450px',
-      data: {
-        titulo: 'Filtrar por Cursos', mensaje: '', template: {
-          element: vista, data: cursos
-        }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.tipos = new Selecciones(this.tiposEnModal.data.filter(row => row.seleccionado));
+        this.buscarPorTipoProfesor(this.tipos.devolverSoloNombre());
       }
     });
-
-    dialogRef.afterClosed()
-      .subscribe(result => {
-        console.log('The dialog was closed' + result);
-        this.buscarPorCursos(
-          cursos
-            .filter(curso => curso.seleccionado)
-            .map(curso => curso.nombre))
-      });
   }
 
-
-
-  private buscarPorCursos(seleccionados: Array<string>): void {
+  private buscarPorTipoProfesor(seleccionados: Array<string>): void {
     const data = this.profesores;
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.cursosEscogidos.includes(sel)
-        );
-
+        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel);
         if (seleccionado) {
           return true;
         }
@@ -286,7 +257,46 @@ export class ProfesoresComponent extends MatTablePadre<ProfesorVista> implements
     } else {
       filtrado = data;
     }
-    console.log(filtrado);
+    this.data = filtrado;
+  }
+
+  private mostrarCursos(): void {
+    const vista = this.cursosVista;
+    const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
+      width: '450px',
+      data: {
+        titulo: 'Filtrar por Cursos',
+        mensaje: '',
+        template: {
+          element: vista,
+          data: this.cursos
+        }
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.cursos = new Selecciones(this.cursosEnModal.data.filter(row => row.seleccionado));
+        this.buscarPorCursos(this.cursos.devolverSoloNombre());
+      }
+    });
+  }
+
+  private buscarPorCursos(seleccionados: Array<string>): void {
+    const data = this.profesores;
+    let filtrado;
+    if (seleccionados.length > 0) {
+      filtrado = data.filter(profesor => {
+        const seleccionado = seleccionados.find(sel => profesor.cursosEscogidos.includes(sel));
+        if (seleccionado) {
+          return true;
+        }
+
+        return false;
+      });
+    } else {
+      filtrado = data;
+    }
     this.data = filtrado;
   }
 }

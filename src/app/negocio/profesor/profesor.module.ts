@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MaterialFormsModule } from '@material';
+import { MaterialFormsModule } from '@shared/material';
 import { ModalsModule } from '@shared/modals/modals.module';
 import { MaterialTablesModule } from '@shared/tables/mat-tables/material-tables.module';
 import { ToolbarSharedModule } from '@shared/toolbar/toolbar.module';
