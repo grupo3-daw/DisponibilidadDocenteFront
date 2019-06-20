@@ -1,5 +1,5 @@
-<div id="contenedor">
-  <div id="informacion">
+<div id="contenedor" >
+  <div id="informacion" [ngClass]="{'informacioFlotante': flotando}">
     <h3>Disponibilidad Semanal</h3>
     <div fxLayout fxLayout.xs="column" id="indicaciones">
       <h5 fxFlex="40%" fxFlex.xs="100%">
@@ -15,7 +15,7 @@
     <table mat-table [dataSource]="dataSource" >
       <ng-container matColumnDef="horaRango" sticky>
         <th mat-header-cell *matHeaderCellDef>Hora/ Dia</th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" (mouseover)='over()'>
           {{ element.horaRango }}
         </td>
       </ng-container>
@@ -23,131 +23,45 @@
       <ng-container matColumnDef="lunes">
         <th mat-header-cell *matHeaderCellDef>
           <p>Lunes</p>
-          <mat-checkbox
-            (change)="$event ? masterToggle('lunes') : null"
-            [checked]="isAllSelected('lunes')"
-            [indeterminate]="tieneElementosSeleccionados('lunes') && !isAllSelected('lunes')"
-            [disabled]="desactivarHeader('lunes')"
-          >
-          </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? actualizarDisponibilidad('lunes', i) : null"
-            [checked]="element.lunes"
-            [disabled]="desactivarCelda(element, 'lunes')"
-          >
-          </mat-checkbox>
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['lunes'],'bloqueado': !this.dataSource.data[i]['lunes'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'lunes')">
         </td>
       </ng-container>
 
       <ng-container matColumnDef="martes">
         <th mat-header-cell *matHeaderCellDef>
           <p>Martes</p>
-          <mat-checkbox
-            (change)="$event ? masterToggle('martes') : null"
-            [checked]="isAllSelected('martes')"
-            [indeterminate]="tieneElementosSeleccionados('martes') && !isAllSelected('martes')"
-            [disabled]="desactivarHeader('martes')"
-          >
-          </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? actualizarDisponibilidad('martes', i) : null"
-            [checked]="element.martes"
-            [disabled]="desactivarCelda(element, 'martes')"
-          >
-          </mat-checkbox>
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['martes'],'bloqueado': !this.dataSource.data[i]['martes'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'martes')">
         </td>
       </ng-container>
 
       <ng-container matColumnDef="miercoles">
         <th mat-header-cell *matHeaderCellDef>
           <p>Miercoles</p>
-          <mat-checkbox
-            (change)="$event ? masterToggle('miercoles') : null"
-            [checked]="isAllSelected('miercoles')"
-            [indeterminate]="
-              tieneElementosSeleccionados('miercoles') && !isAllSelected('miercoles')
-            "
-            [disabled]="desactivarHeader('miercoles')"
-          >
-          </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? actualizarDisponibilidad('miercoles', i) : null"
-            [checked]="element.miercoles"
-            [disabled]="desactivarCelda(element, 'miercoles')"
-          >
-          </mat-checkbox>
+       <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['miercoles'],'bloqueado': !this.dataSource.data[i]['miercoles'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'miercoles')">
         </td>
       </ng-container>
       <ng-container matColumnDef="jueves">
         <th mat-header-cell *matHeaderCellDef>
           <p>Jueves</p>
-          <mat-checkbox
-            (change)="$event ? masterToggle('jueves') : null"
-            [checked]="isAllSelected('jueves')"
-            [indeterminate]="tieneElementosSeleccionados('jueves') && !isAllSelected('jueves')"
-            [disabled]="desactivarHeader('jueves')"
-          >
-          </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? actualizarDisponibilidad('jueves', i) : null"
-            [checked]="element.jueves"
-            [disabled]="desactivarCelda(element, 'jueves')"
-          >
-          </mat-checkbox>
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['jueves'],'bloqueado': !this.dataSource.data[i]['jueves'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'jueves')">
         </td>
       </ng-container>
       <ng-container matColumnDef="viernes">
         <th mat-header-cell *matHeaderCellDef>
           <p>Viernes</p>
-          <mat-checkbox
-            (change)="$event ? masterToggle('viernes') : null"
-            [checked]="isAllSelected('viernes')"
-            [indeterminate]="tieneElementosSeleccionados('viernes') && !isAllSelected('viernes')"
-            [disabled]="desactivarHeader('viernes')"
-          >
-          </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? actualizarDisponibilidad('viernes', i) : null"
-            [checked]="element.viernes"
-            [disabled]="desactivarCelda(element, 'viernes')"
-          >
-          </mat-checkbox>
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['viernes'],'bloqueado': !this.dataSource.data[i]['viernes'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'viernes')">
         </td>
       </ng-container>
       <ng-container matColumnDef="sabado">
         <th mat-header-cell *matHeaderCellDef>
           <p>Sabado</p>
-          <mat-checkbox
-            (change)="$event ? masterToggle('sabado') : null"
-            [checked]="isAllSelected('sabado')"
-            [indeterminate]="tieneElementosSeleccionados('sabado') && !isAllSelected('sabado')"
-            [disabled]="desactivarHeader('sabado')"
-          >
-          </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <mat-checkbox
-            (click)="$event.stopPropagation()"
-            (change)="$event ? actualizarDisponibilidad('sabado', i) : null"
-            [checked]="element.sabado"
-            [disabled]="desactivarCelda(element, 'sabado')"
-          >
-          </mat-checkbox>
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['sabado'],'bloqueado': !this.dataSource.data[i]['sabado'] && this.horas >= this.profesor.horas_maximas }" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'sabado')">
         </td>
       </ng-container>
 
