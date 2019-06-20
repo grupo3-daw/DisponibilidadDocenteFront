@@ -22,7 +22,7 @@ export class LoginComponent extends Formulario {
 
   onSubmit(): void {
     if (this.formGroup.valid) {
-      this.loginService.onSubmit(this.formGroup.value);
+      this.loginService.login(this.formGroup.value);
     }
   }
 }

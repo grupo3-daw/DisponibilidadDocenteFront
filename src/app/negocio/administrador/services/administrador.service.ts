@@ -25,14 +25,12 @@ export class AdministradorService {
   evaluarSolicitud(profesor: ProfesorDetalle, estado: 'APROBADO' | 'RECHAZADO', motivo = ''): void {
     this.api
       .operacion(
-        `profesores/${profesor.IDPROFESOR}/permiso/${profesor.solicitud.idpermiso}`,
+        `profesores/${profesor.id}/permiso/${profesor.solicitud.idpermiso}`,
         Consulta.PATCH,
         {estado, motivo}
       )
       .then(res => {
-        let mensaje = `Solicitud de ${profesor.APPATERNO}${profesor.APMATERNO},  ${
-          profesor.NOMBRE
-        } `;
+        let mensaje = `Solicitud de ${profesor.user.name}`;
         if (estado === 'APROBADO') {
           mensaje += 'aprobada';
         } else {
@@ -53,7 +51,7 @@ export class AdministradorService {
         const cursos: Array<SeleccionEscuela> = [];
         const ids: Array<number> = [];
         lista.forEach(async profesor => {
-          const detalle = await this.profesorService.obtenerDetalle(profesor.IDPROFESOR);
+          const detalle = await this.profesorService.obtenerDetalle(profesor.id);
           let cursosDetalle = '';
           detalle.cursos.forEach((curso, index) => {
             let signo = ', ';
@@ -73,12 +71,12 @@ export class AdministradorService {
           if (detalle.disponibilidad.length > 0) {
             profesores.push({
               ...detalle,
-              nombre: `${detalle.APPATERNO} ${detalle.APMATERNO},
-                ${detalle.NOMBRE}`,
+              nombre: `${detalle.user.name}`,
               cursosEscogidos: cursosDetalle
             });
           }
         });
+
         return {
           profesores,
           cursos

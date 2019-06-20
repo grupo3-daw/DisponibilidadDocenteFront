@@ -7,10 +7,17 @@ export class WebAddress {
   private readonly queryParams: Array<any> = [];
   private readonly formData: Array<any> = [];
   constructor(url: string) {
+    let headers;
     if (localStorage.getItem('token')) {
-      this.token = localStorage.getItem('token');
+      headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: localStorage.getItem('token')
+      });
+    } else {
+      headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
     }
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
 
     this.dominio = url;
     this.siguientes = '';
@@ -77,6 +84,6 @@ export class WebAddress {
     if (this.headers.has(header.name)) {
       this.headers.delete(header.name);
     }
-    this.headers.append(header.name, header.value)
+    this.headers.append(header.name, header.value);
   }
 }

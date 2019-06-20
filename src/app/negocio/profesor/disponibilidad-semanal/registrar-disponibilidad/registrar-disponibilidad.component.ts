@@ -103,9 +103,9 @@ export class RegistrarDisponibilidadComponent implements OnInit {
         .subscribe(result => {
           if (result === true && this.profesorVista) {
             if (this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
-              this.profesorService.registrarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
+              this.profesorService.registrarDisponibilidadCursos(this.profesor.id, this.profesor.cursos, this.dias, this.horario);
             } else {
-              this.profesorService.editarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
+              this.profesorService.editarDisponibilidadCursos(this.profesor.id, this.profesor.cursos, this.dias, this.horario);
             }
           } else {
             this.profesorService.exitoEnProceso.emit(this.estadoDisponibilidad);

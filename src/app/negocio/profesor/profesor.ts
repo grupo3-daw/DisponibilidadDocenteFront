@@ -3,21 +3,16 @@ import { Usuario } from '@negocio/usuario';
 
 /**
  * @export
- * @extends {Usuario}
- * @var IDPROFESOR: number
- * @var IDCATEGORIA: number
- * @var NOMBRE: string
- * @var APPATERNO: string
- * @var APMATERNO: string
- * @var PERMISO: number
+ * @var id: number
+ * @var category_id: number
+ * @var category_name: string
+ * @var user: Usuario
  */
-export interface Profesor extends Usuario {
-  IDPROFESOR: number;
-  IDCATEGORIA: number;
-  NOMBRE: string;
-  APPATERNO: string;
-  APMATERNO: string;
-  PERMISO: number;
+export interface Profesor {
+  id: number;
+  category_id: number;
+  category_name: string;
+  user: Usuario;
 }
 
 export interface Solicitud {

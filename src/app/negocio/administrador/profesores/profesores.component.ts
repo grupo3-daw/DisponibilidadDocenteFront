@@ -148,7 +148,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     this.administradorService.exitoEnProceso.subscribe(res => {
       this.dialog.closeAll();
       this.data.forEach((profesor, index) => {
-        if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
+        if (profesor.id === this.profesor.id) {
           this.data[index].solicitud = null;
         }
       });
@@ -176,7 +176,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
         });
         break;
       default:
-        this.profesorService.descargarReporte(event.data.data.IDPROFESOR);
+        this.profesorService.descargarReporte(event.data.data.id);
         break;
     }
   }

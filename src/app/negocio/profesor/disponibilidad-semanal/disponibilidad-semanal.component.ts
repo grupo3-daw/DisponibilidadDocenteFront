@@ -67,7 +67,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.inicializarDisponibilidad(this.profesor.disponibilidad, this.profesor.PERMISO);
+    this.inicializarDisponibilidad(this.profesor.disponibilidad, 0);
   }
 
   inicializarDisponibilidad(disponibilidad: Array<Disponibilidad>, permiso: number): void {

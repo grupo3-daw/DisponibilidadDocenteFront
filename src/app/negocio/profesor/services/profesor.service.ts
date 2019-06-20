@@ -18,7 +18,7 @@ export class ProfesorService {
   ) {}
 
   async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
-    return this.api.operacion(`profesores/${id}`);
+    return this.api.operacion(`auth/teacher/get/${id}`);
   }
 
   async registrarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
