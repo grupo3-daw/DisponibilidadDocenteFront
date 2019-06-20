@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Disponibilidad, ProfesorDetalle } from '../profesor';
@@ -19,11 +19,11 @@ export class DisponibilidadSemanalComponent implements OnInit {
   estado = EstadoDisponibilidad;
   abriendoPopUp = false;
   horas = 0;
-  estadoDisponibilidad: EstadoDisponibilidad;
+  estadoDisponibilidad: EstadoDisponibilidad = EstadoDisponibilidad.REGISTRAR;
   diasNoSeleccionados = true;
   displayedColumns: Array<string>;
   dataSource: MatTableDataSource<SemanaLaborable>;
-
+  flotando = false;
   constructor(
     private readonly seleccionarCursoService: SeleccionarCursoService,
     private readonly profesorService: ProfesorService
@@ -53,41 +53,46 @@ export class DisponibilidadSemanalComponent implements OnInit {
       new SemanaLaborable(20),
       new SemanaLaborable(21)
     ]);
-    this.seleccionarCursoService.cursosSeleccionadosEvento.subscribe(
-      res => {
-        this.profesor.cursos = res.map(
-          curso => {
-            return { IDCURSO: curso.id, NOMBRECURSO: curso.curso }
-          });
-      }
-    );
-    this.profesorService.exitoEnProceso.subscribe(
-      (estado: EstadoDisponibilidad) => { this.abriendoPopUp = false; this.estadoDisponibilidad = estado; }
-    );
+    this.seleccionarCursoService.cursosSeleccionadosEvento.subscribe(res => {
+      this.profesor.cursos = res.map(curso => ({IDCURSO: curso.id, NOMBRECURSO: curso.curso}));
+    });
+    this.profesorService.exitoEnProceso.subscribe((estado: EstadoDisponibilidad) => {
+      this.abriendoPopUp = false;
+      this.estadoDisponibilidad = estado;
+    });
   }
 
   ngOnInit(): void {
     this.inicializarDisponibilidad(this.profesor.disponibilidad, this.profesor.PERMISO);
   }
 
+  @HostListener('window:scroll', ['$event']) scroll($event: any): void {
+    const algo = document.getElementsByTagName('html')[0];
+    this.flotando = algo.scrollTop >= 947;
+  }
+
   inicializarDisponibilidad(disponibilidad: Array<Disponibilidad>, permiso: number): void {
     disponibilidad.forEach(element => {
       const horas = element.HORAS.split(',');
       horas.forEach(hora => {
-        const indice = this.dataSource.data.findIndex(semanaLaborable => semanaLaborable.hora === parseInt(hora, 10));
+        const indice = this.dataSource.data.findIndex(
+          semanaLaborable => semanaLaborable.hora === parseInt(hora, 10)
+        );
         const dia = toStringDia(element.DIA);
         this.horas++;
         this.dataSource.data[indice][dia] = true;
       });
+      console.log(this.horas);
       if (this.horas === 0) {
         this.estadoDisponibilidad = EstadoDisponibilidad.REGISTRAR;
       } else {
         this.diasNoSeleccionados = false;
-        this.estadoDisponibilidad = permiso === 0 ?
-          (
-            this.profesor.solicitud === null ?
-              EstadoDisponibilidad.SOLICITAR : EstadoDisponibilidad.PROCESANDO_SOLICITUD
-          ) : EstadoDisponibilidad.EDITAR;
+        this.estadoDisponibilidad =
+          permiso === 0
+            ? this.profesor.solicitud === null
+              ? EstadoDisponibilidad.SOLICITAR
+              : EstadoDisponibilidad.PROCESANDO_SOLICITUD
+            : EstadoDisponibilidad.EDITAR;
       }
     });
   }
@@ -95,7 +100,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
   masterToggle(dia: DiaLaborable): void {
     let anterior: EstadoHoras = 0;
     for (let index = 0; index < this.dataSource.data.length; index++) {
-      const resultado = this.actualizarDisponibilidad(dia, index);
+      const resultado = this.actualizarDisponibilidad(index, dia);
       if (
         resultado === EstadoHoras.Fin ||
         (anterior !== EstadoHoras.Fin && resultado !== anterior)
@@ -121,16 +126,18 @@ export class DisponibilidadSemanalComponent implements OnInit {
 
   desactivarHeader(dia: DiaLaborable): boolean {
     return (
-      !this.tieneElementosSeleccionados(dia) && this.horas >= this.profesor.horas_maximas
-    )
-      || this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR
-      || this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD;
+      (!this.tieneElementosSeleccionados(dia) && this.horas >= this.profesor.horas_maximas) ||
+      this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR ||
+      this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD
+    );
   }
 
   desactivarCelda(element, dia: DiaLaborable): boolean {
-    return (!element[dia] && this.horas >= this.profesor.horas_maximas)
-      || this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR
-      || this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD;
+    return (
+      (!element[dia] && this.horas >= this.profesor.horas_maximas) ||
+      this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR ||
+      this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD
+    );
   }
 
   isAllSelected(dia: DiaLaborable): boolean {
@@ -148,7 +155,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
     return this.dataSource.data.findIndex(row => row[dia]) > -1;
   }
 
-  actualizarDisponibilidad(dia: DiaLaborable, numeroFila: number): EstadoHoras {
+  actualizarDisponibilidad(numeroFila: number, dia: DiaLaborable): EstadoHoras {
     if (this.dataSource.data[numeroFila][dia]) {
       this.horas--;
       if (this.horas < this.profesor.horas_minimas) {
@@ -173,6 +180,6 @@ export class DisponibilidadSemanalComponent implements OnInit {
 
   openDialog(): void {
     this.abriendoPopUp = true;
+    console.log(this.estadoDisponibilidad);
   }
-
 }

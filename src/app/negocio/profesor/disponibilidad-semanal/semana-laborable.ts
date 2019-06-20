@@ -19,7 +19,7 @@ export class SemanaLaborable {
     public jueves = false,
     public viernes = false,
     public sabado = false) {
-    this.horaRango = `${hora}:00 - ${hora + 1}:00 `;
+    this.horaRango = `${hora}:00 `;
   }
 }
 
