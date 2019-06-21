@@ -3,6 +3,18 @@ import { Usuario } from '@negocio/usuario';
 
 /**
  * @export
+ * @var id:number
+ * @var name: string
+ * @var hours: number
+ */
+export interface Categoria {
+  id: number;
+  name: string;
+  hours: number;
+}
+
+/**
+ * @export
  * @var id: number
  * @var category_id: number
  * @var category_name: string
@@ -10,8 +22,7 @@ import { Usuario } from '@negocio/usuario';
  */
 export interface Profesor {
   id: number;
-  category_id: number;
-  category_name: string;
+  category: Categoria;
   user: Usuario;
 }
 
@@ -39,7 +50,6 @@ export interface Disponibilidad {
  * @var   solicitud?: Solicitud;
  */
 export interface ProfesorDetalle extends Profesor {
-  NOMBRECATEGORIA: string;
   horas_minimas: number;
   horas_maximas: number;
   cursos?: Array<Curso>;

@@ -1,15 +1,23 @@
 /**
  * @export
+ * @var id:number
+*  @var name:string
+ */
+export interface Rol {
+  id:number;
+  name:string;
+}
+
+/**
+ * @export
  * @var id: number
  * @var name: string
  *  @var email: string
- * @var role_id: number
- * @var role_name: number
+ * @var rol: Rol
  */
 export interface Usuario {
   id: number;
   name: string;
   email: string;
-  role_id: number;
-  role_name: string;
+  role:Rol
 }

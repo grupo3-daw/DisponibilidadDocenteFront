@@ -247,7 +247,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel);
+        const seleccionado = seleccionados.find(sel => profesor.category.name === sel);
         if (seleccionado) {
           return true;
         }
