@@ -1,9 +1,13 @@
+
 /**
  * @export
- * @var EMAIL: string
- * @var CONTRASENA: string
+ * @interface Usuario
  */
 export interface Usuario {
-  EMAIL: string;
-  CONTRASENA: string;
+  idUsuario:number;
+  nombre: string;
+  apPaterno: string;
+  apMaterno:string;
+  email:string;
+  contrasena:string;
 }

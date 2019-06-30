@@ -5,7 +5,7 @@ import { ApiService } from '@shared/services/api.service';
 import { Consulta } from '@shared/services/consulta.enum';
 import { NotificationService } from '@shared/services/notification.service';
 
-import { ProfesorDetalle } from '../profesor';
+import { Profesor } from '../profesor';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +17,12 @@ export class ProfesorService {
     private readonly notificacionService: NotificationService
   ) {}
 
-  async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
+  async obtenerDetalle(id: number): Promise<Profesor> {
     return this.api.operacion(`profesores/${id}`);
   }
 
   async registrarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
-    return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.POST, {
+    return this.api.operacion(`profesores/${idProfesor}/registrarCursos`, Consulta.POST, {
       cursos: cursos.map(curso => curso.IDCURSO)
     });
   }
