@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Profesor, ProfesorDetalle } from '../profesor';
+import { Profesor } from '../profesor';
 import { ProfesorService } from '../services/profesor.service';
 
 @Component({
@@ -9,15 +9,15 @@ import { ProfesorService } from '../services/profesor.service';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutProfesorComponent implements OnInit {
-  user: Profesor;
-  profesorDetalle: ProfesorDetalle;
-  constructor(
-    private readonly profesorService: ProfesorService
-  ) {
-    this.user = JSON.parse(localStorage.getItem('user'));
+  profesor: Profesor;
+  loading = true;
+  constructor(private readonly profesorService: ProfesorService) {
+    this.profesor = JSON.parse(localStorage.getItem('user'));
   }
 
   async ngOnInit(): Promise<any> {
-    this.profesorDetalle = await this.profesorService.obtenerDetalle(this.user.IDPROFESOR);
+
+    this.profesor = await this.profesorService.obtenerDetalle(this.profesor);
+    this.loading = false;
   }
 }

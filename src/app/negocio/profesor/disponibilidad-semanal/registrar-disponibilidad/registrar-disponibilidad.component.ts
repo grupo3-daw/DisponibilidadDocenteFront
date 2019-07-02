@@ -1,15 +1,15 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Curso } from '@negocio/cursos';
-import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { Profesor } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 
 import { EstadoDisponibilidad } from '../estado-disponibilidad.enum';
-import { SemanaLaborable, toStringDia } from '../semana-laborable';
+import { SemanaLaborable } from '../semana-laborable';
 
 
-function sumarHora(horaActual: string, horaNueva: string): string {
+export function sumarHora(horaActual: string, horaNueva: string): string {
   const inicioFinNuevo = horaNueva.split('-');
   if (horaActual.includes(inicioFinNuevo[0])) {
     return horaActual.replace(inicioFinNuevo[0], inicioFinNuevo[1]);
@@ -25,7 +25,7 @@ function sumarHora(horaActual: string, horaNueva: string): string {
 })
 export class RegistrarDisponibilidadComponent implements OnInit {
   @Input() profesorVista = true;
-  @Input() profesor: ProfesorDetalle;
+  @Input() profesor: Profesor;
   @Input() data: Array<SemanaLaborable>;
   @Input() estadoDisponibilidad: EstadoDisponibilidad;
   @ViewChild('modelo', {static:false}) modelo;
@@ -76,20 +76,20 @@ export class RegistrarDisponibilidadComponent implements OnInit {
           'viernes',
           'sabado'
         ];
-        this.profesor.disponibilidad.forEach(element => {
-          const horas = element.HORAS.split(',');
-          horas.forEach(hora => {
-            const indice = this.data.findIndex(semanaLaborable => semanaLaborable.hora === parseInt(hora, 10));
-            const dia = toStringDia(element.DIA);
-            this.data[indice][dia] = true;
-          });
-        });
+        // this.profesor.disponibilidad.forEach(element => {
+        //   const horas = element.HORAS.split(',');
+        //   horas.forEach(hora => {
+        //     const indice = this.data.findIndex(semanaLaborable => semanaLaborable.hora === parseInt(hora, 10));
+        //     const dia = toStringDia(element.DIA);
+        //     this.data[indice][dia] = true;
+        //   });
+        // });
       }
       this.disponibilidad = this.generarHorario();
-      this.horarioEnVista = {
-        disponibilidad: this.disponibilidad,
-        cursos: this.profesor.cursos
-      };
+      // this.horarioEnVista = {
+      //   disponibilidad: this.disponibilidad,
+      //   cursos: this.profesor.cursos
+      // };
       const dialogRef = this.dialog.open(ModalConfirmacionComponent, {
         width: '450px',
         data: {
@@ -102,11 +102,11 @@ export class RegistrarDisponibilidadComponent implements OnInit {
       dialogRef.afterClosed()
         .subscribe(result => {
           if (result === true && this.profesorVista) {
-            if (this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
-              this.profesorService.registrarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
-            } else {
-              this.profesorService.editarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
-            }
+            // if (this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
+            //   this.profesorService.registrarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
+            // } else {
+            //   this.profesorService.editarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
+            // }
           } else {
             this.profesorService.exitoEnProceso.emit(this.estadoDisponibilidad);
           }

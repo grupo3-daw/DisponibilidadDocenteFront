@@ -1,7 +1,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { Disponibilidad, ProfesorDetalle } from '../profesor';
+import { Disponibilidad, Permiso, Profesor } from '../profesor';
 import { SeleccionarCursoService } from '../seleccionar-curso/seleccionar-curso.service';
 import { ProfesorService } from '../services/profesor.service';
 import { DiaLaborable } from './dia-laborable.type';
@@ -15,7 +15,7 @@ import { SemanaLaborable, toStringDia } from './semana-laborable';
   styleUrls: ['./disponibilidad-semanal.component.scss']
 })
 export class DisponibilidadSemanalComponent implements OnInit {
-  @Input() profesor: ProfesorDetalle;
+  @Input() profesor: Profesor;
   estado = EstadoDisponibilidad;
   abriendoPopUp = false;
   horas = 0;
@@ -63,7 +63,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.inicializarDisponibilidad(this.profesor.disponibilidad, this.profesor.PERMISO);
+    this.inicializarDisponibilidad(this.profesor.disponibilidad, this.profesor.permiso);
   }
 
   @HostListener('window:scroll', ['$event']) scroll($event: any): void {
@@ -71,14 +71,14 @@ export class DisponibilidadSemanalComponent implements OnInit {
     this.flotando = algo.scrollTop >= 947;
   }
 
-  inicializarDisponibilidad(disponibilidad: Array<Disponibilidad>, permiso: number): void {
+  inicializarDisponibilidad(disponibilidad: Array<Disponibilidad>, permiso: Permiso): void {
     disponibilidad.forEach(element => {
-      const horas = element.HORAS.split(',');
+      const horas = element.horas.split(',');
       horas.forEach(hora => {
         const indice = this.dataSource.data.findIndex(
           semanaLaborable => semanaLaborable.hora === parseInt(hora, 10)
         );
-        const dia = toStringDia(element.DIA);
+        const dia = toStringDia(element.dia);
         this.horas++;
         this.dataSource.data[indice][dia] = true;
       });
@@ -87,12 +87,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
         this.estadoDisponibilidad = EstadoDisponibilidad.REGISTRAR;
       } else {
         this.diasNoSeleccionados = false;
-        this.estadoDisponibilidad =
-          permiso === 0
-            ? this.profesor.solicitud === null
-              ? EstadoDisponibilidad.SOLICITAR
-              : EstadoDisponibilidad.PROCESANDO_SOLICITUD
-            : EstadoDisponibilidad.EDITAR;
+        this.estadoDisponibilidad = permiso.estado;
       }
     });
   }
@@ -126,7 +121,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
 
   desactivarHeader(dia: DiaLaborable): boolean {
     return (
-      (!this.tieneElementosSeleccionados(dia) && this.horas >= this.profesor.horas_maximas) ||
+      (!this.tieneElementosSeleccionados(dia) && this.horas >= this.profesor.categoria.horasMaximas) ||
       this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR ||
       this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD
     );
@@ -134,7 +129,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
 
   desactivarCelda(element, dia: DiaLaborable): boolean {
     return (
-      (!element[dia] && this.horas >= this.profesor.horas_maximas) ||
+      (!element[dia] && this.horas >= this.profesor.categoria.horasMaximas) ||
       this.estadoDisponibilidad === EstadoDisponibilidad.SOLICITAR ||
       this.estadoDisponibilidad === EstadoDisponibilidad.PROCESANDO_SOLICITUD
     );
@@ -156,22 +151,23 @@ export class DisponibilidadSemanalComponent implements OnInit {
   }
 
   actualizarDisponibilidad(numeroFila: number, dia: DiaLaborable): EstadoHoras {
+    const categoria = this.profesor.categoria;
+
     if (this.dataSource.data[numeroFila][dia]) {
       this.horas--;
-      if (this.horas < this.profesor.horas_minimas) {
+      if (this.horas < categoria.horasMinimas) {
         this.diasNoSeleccionados = true;
       }
       this.dataSource.data[numeroFila][dia] = false;
 
       return EstadoHoras.Disminuyendo;
     }
-    if (this.horas < this.profesor.horas_maximas) {
+    if (this.horas < categoria.horasMaximas) {
       this.horas++;
       this.dataSource.data[numeroFila][dia] = true;
-      if (this.horas >= this.profesor.horas_minimas) {
+      if (this.horas >= categoria.horasMinimas) {
         this.diasNoSeleccionados = false;
       }
-
       return EstadoHoras.Agregando;
     }
 

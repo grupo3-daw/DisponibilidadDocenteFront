@@ -6,7 +6,7 @@
         Estimado profesor presione los <b>dias</b> y <b>horas</b>
       </h5>
       <h4 fxFlex="60%" fxFlex.xs="100%" class="txright">
-        Minimo de Horas <b>{{ profesor.horas_minimas }}</b> | Maximo de Horas <b>{{ profesor.horas_maximas }}</b> | Horas Tomadas
+        Minimo de Horas <b>{{ profesor.categoria.horasMinimas }}</b> | Maximo de Horas <b>{{ profesor.categoria.horasMaximas }}</b> | Horas Tomadas
         <b>{{ horas }}</b>
       </h4>
     </div>
@@ -15,7 +15,7 @@
     <table mat-table [dataSource]="dataSource" >
       <ng-container matColumnDef="horaRango" sticky>
         <th mat-header-cell *matHeaderCellDef>Hora/ Dia</th>
-        <td mat-cell *matCellDef="let element" (mouseover)='over()'>
+        <td mat-cell *matCellDef="let element" >
           {{ element.horaRango }}
         </td>
       </ng-container>
@@ -24,7 +24,7 @@
         <th mat-header-cell *matHeaderCellDef>
           <p>Lunes</p>
         </th>
-        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['lunes'],'bloqueado': !this.dataSource.data[i]['lunes'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'lunes')">
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['lunes'],'bloqueado': !this.dataSource.data[i]['lunes'] && this.horas >= this.profesor.categoria.horasMaximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'lunes')">
         </td>
       </ng-container>
 
@@ -32,7 +32,7 @@
         <th mat-header-cell *matHeaderCellDef>
           <p>Martes</p>
         </th>
-        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['martes'],'bloqueado': !this.dataSource.data[i]['martes'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'martes')">
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['martes'],'bloqueado': !this.dataSource.data[i]['martes'] && this.horas >= this.profesor.categoria.horasMaximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'martes')">
         </td>
       </ng-container>
 
@@ -40,28 +40,28 @@
         <th mat-header-cell *matHeaderCellDef>
           <p>Miercoles</p>
         </th>
-       <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['miercoles'],'bloqueado': !this.dataSource.data[i]['miercoles'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'miercoles')">
+       <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['miercoles'],'bloqueado': !this.dataSource.data[i]['miercoles'] && this.horas >= this.profesor.categoria.horasMaximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'miercoles')">
         </td>
       </ng-container>
       <ng-container matColumnDef="jueves">
         <th mat-header-cell *matHeaderCellDef>
           <p>Jueves</p>
         </th>
-        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['jueves'],'bloqueado': !this.dataSource.data[i]['jueves'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'jueves')">
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['jueves'],'bloqueado': !this.dataSource.data[i]['jueves'] && this.horas >= this.profesor.categoria.horasMaximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'jueves')">
         </td>
       </ng-container>
       <ng-container matColumnDef="viernes">
         <th mat-header-cell *matHeaderCellDef>
           <p>Viernes</p>
         </th>
-        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['viernes'],'bloqueado': !this.dataSource.data[i]['viernes'] && this.horas >= this.profesor.horas_maximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'viernes')">
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['viernes'],'bloqueado': !this.dataSource.data[i]['viernes'] && this.horas >= this.profesor.categoria.horasMaximas}" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'viernes')">
         </td>
       </ng-container>
       <ng-container matColumnDef="sabado">
         <th mat-header-cell *matHeaderCellDef>
           <p>Sabado</p>
         </th>
-        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['sabado'],'bloqueado': !this.dataSource.data[i]['sabado'] && this.horas >= this.profesor.horas_maximas }" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'sabado')">
+        <td mat-cell [ngClass]="{'marcado': this.dataSource.data[i]['sabado'],'bloqueado': !this.dataSource.data[i]['sabado'] && this.horas >= this.profesor.categoria.horasMaximas }" *matCellDef="let element; let i = index" (mouseover)="actualizarDisponibilidad(i, 'sabado')">
         </td>
       </ng-container>
 
@@ -97,7 +97,7 @@
 <ng-container *ngIf="abriendoPopUp">
   <app-solicitar-permisos-edicion
     *ngIf="estadoDisponibilidad === estado.SOLICITAR"
-    [id]="profesor.IDPROFESOR"
+    [id]="profesor.idUsuario"
   ></app-solicitar-permisos-edicion>
   <app-registrar-disponibilidad
     *ngIf="estadoDisponibilidad === estado.REGISTRAR || estadoDisponibilidad === estado.EDITAR"

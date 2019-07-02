@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { Escuela } from '@negocio/administrador/profesores/profesores.component';
-import { Curso, CursoService } from '@negocio/cursos';
+import { CursoService, EscuelaCurso } from '@negocio/cursos';
 import { Formulario } from '@shared/formulario/formulario';
 
 import { EstadoDisponibilidad } from '../disponibilidad-semanal/estado-disponibilidad.enum';
@@ -19,13 +18,12 @@ export interface RowSelect {
   styleUrls: ['./seleccionar-curso.component.scss']
 })
 export class SeleccionarCursoComponent extends Formulario implements OnInit {
-  @Input() cursosEscogidos: Array<Curso>;
+  @Input() cursosEscogidos: Array<EscuelaCurso>;
   @Input() permiso: number;
   estado = EstadoDisponibilidad;
   estadoDisponibilidad: EstadoDisponibilidad;
   cursosSeleccionados: Array<CursoSeleccionados> = [];
-  cursos: Array<Curso>;
-  escuelas: Array<RowSelect>;
+  cursosEscuelas: Array<EscuelaCurso>;
   escuelasCursos: Array<RowSelect> = [];
   searchValue = '';
   valido = true;
@@ -35,11 +33,6 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
     private readonly seleccionarCurso: SeleccionarCursoService
   ) {
     super([{name: 'cursos', validators: [Validators.required]}]);
-    this.escuelas = [
-      {value: 2, viewValue: Escuela.Sistemas},
-      {value: 3, viewValue: Escuela.Software}
-    ];
-
     this.formGroup.valueChanges.subscribe(result => {
       this.actualizarCursosSeleccionados(result.cursos);
     });
@@ -52,21 +45,22 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
           ? EstadoDisponibilidad.SOLICITAR
           : EstadoDisponibilidad.EDITAR
         : EstadoDisponibilidad.REGISTRAR;
-    this.cursos = await this.cursoService.listarCursos();
-    this.cursos.forEach(curso => {
-      let escuela = Escuela.Sistemas;
-      if (curso.IDESCUELA === 3) {
-        escuela = Escuela.Software;
-      }
+    this.cursosEscuelas = await this.cursoService.listarCursos();
+    this.cursosEscuelas.forEach(cursoEscuela => {
+      const escuela = cursoEscuela.escuela.nombre;
       const temp = this.cursosEscogidos.find(
-        cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO
+        cursoEscogido => cursoEscogido.curso.idCurso === cursoEscuela.curso.idCurso
       );
       if (temp) {
-        this.cursosSeleccionados.push({id: curso.IDCURSO, escuela, curso: curso.NOMBRECURSO});
+        this.cursosSeleccionados.push({
+          id: cursoEscuela.curso.idCurso,
+          escuela,
+          curso: cursoEscuela.curso.nombre
+        });
       }
       this.escuelasCursos.push({
-        value: curso.IDCURSO,
-        viewValue: `${escuela} |  ${curso.NOMBRECURSO}`
+        value: `${cursoEscuela.curso.idCurso}-${cursoEscuela.escuela.idEscuela}`,
+        viewValue: `${escuela} |  ${cursoEscuela.curso.nombre}`
       });
     });
     this.formGroup.setValue({cursos: this.cursosSeleccionados.map(curso => curso.id)});

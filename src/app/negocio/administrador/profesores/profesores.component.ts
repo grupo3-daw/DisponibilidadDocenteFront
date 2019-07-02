@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { Profesor } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { FabButton, IconButton } from '@shared/buttons';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
@@ -23,7 +23,7 @@ export interface Dictado {
   cursos: string;
 }
 
-export interface ProfesorVistaAdmin extends ProfesorDetalle {
+export interface ProfesorVistaAdmin extends Profesor {
   nombre: string;
   cursosEscogidos: string;
 }
@@ -68,7 +68,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
   @Input() user;
   @ViewChild('cursosVista', {static: true}) cursosVista;
   @ViewChild('tiposVista', {static: true}) tiposVista;
-  profesor: ProfesorDetalle;
+  profesor: Profesor;
   abriendoPopUp = false;
   cursosEnModal: Selecciones = new Selecciones();
   cursos: Selecciones = new Selecciones();
@@ -147,23 +147,23 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     this.profesorService.exitoEnProceso.subscribe(res => (this.abriendoPopUp = false));
     this.administradorService.exitoEnProceso.subscribe(res => {
       this.dialog.closeAll();
-      this.data.forEach((profesor, index) => {
-        if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
-          this.data[index].solicitud = null;
-        }
-      });
+      // this.data.forEach((profesor, index) => {
+      //   if (profesor.IDPROFESOR === this.profesor.IDPROFESOR) {
+      //     this.data[index].solicitud = null;
+      //   }
+      // });
     });
   }
 
   async ngOnInit(): Promise<any> {
-    const res = await this.administradorService.listarAdmin();
-    this.profesores = res.profesores;
-    this.data = res.profesores;
-    this.cursosEnModal = new Selecciones(res.cursos);
+    // const res = await this.administradorService.listarAdmin();
+    // this.profesores = res.profesores;
+    // this.data = res.profesores;
+    // this.cursosEnModal = new Selecciones(res.cursos);
     this.loading = false;
   }
 
-  operaciones(event: {numeroFila: number; data: {id: string; data: ProfesorDetalle}}): void {
+  operaciones(event: {numeroFila: number; data: {id: string; data: Profesor}}): void {
     this.profesor = event.data.data;
     switch (event.data.id) {
       case 'disponibilidad':
@@ -176,7 +176,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
         });
         break;
       default:
-        this.profesorService.descargarReporte(event.data.data.IDPROFESOR);
+        // this.profesorService.descargarReporte(event.data.data.IDPROFESOR);
         break;
     }
   }
@@ -247,10 +247,10 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     let filtrado;
     if (seleccionados.length > 0) {
       filtrado = data.filter(profesor => {
-        const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel);
-        if (seleccionado) {
-          return true;
-        }
+        // const seleccionado = seleccionados.find(sel => profesor.NOMBRECATEGORIA === sel);
+        // if (seleccionado) {
+        //   return true;
+        // }
 
         return false;
       });

@@ -1,13 +1,12 @@
 
 /**
  * @export
- * @interface Usuario
  */
-export interface Usuario {
-  idUsuario:number;
+export class Usuario {
+  idUsuario: number;
   nombre: string;
   apPaterno: string;
-  apMaterno:string;
-  email:string;
-  contrasena:string;
+  apMaterno: string;
+  email: string;
+  contrasena: string;
 }

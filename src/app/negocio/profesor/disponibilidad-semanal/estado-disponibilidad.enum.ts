@@ -1,6 +1,6 @@
 export enum EstadoDisponibilidad {
-  REGISTRAR = 0,
-  SOLICITAR = 1,
-  PROCESANDO_SOLICITUD = 2,
-  EDITAR = 3
+  REGISTRAR = 'Registrar',
+  SOLICITAR = 'Solicitar',
+  PROCESANDO_SOLICITUD = 'Procesando',
+  EDITAR = 'Editar'
 }

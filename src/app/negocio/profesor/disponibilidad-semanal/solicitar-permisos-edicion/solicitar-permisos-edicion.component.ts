@@ -34,7 +34,7 @@ export class SolicitarPermisosEdicionComponent implements AfterViewInit {
         .subscribe(
           result => {
             if (result === true && this.solicitud.trim().length > 0) {
-              this.profesorService.solicitarEdicion(this.id, this.solicitud);
+              // this.profesorService.solicitarEdicion(this.id, this.solicitud);
             } else {
               this.profesorService.exitoEnProceso.emit(EstadoDisponibilidad.SOLICITAR);
             }

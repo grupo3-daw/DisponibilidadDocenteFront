@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -23,7 +23,7 @@ export class ApiService {
 
   devolverFecha(fecha): string {
     const array = fecha.split('/');
-    const nuevaFecha = array[2] + '-' + array[1] + '-' + array[0];
+    const nuevaFecha = `${array[2]} - ${array[1]} -  ${array[0]}`;
 
     return nuevaFecha;
   }
@@ -49,6 +49,7 @@ export class ApiService {
     tipo: Consulta = Consulta.GET,
     body: any = {},
     headers: HttpHeaders = this.webAddress.getHeaders(),
+    params: HttpParams = new HttpParams(),
     mostrarAlertaSuccess = false,
     mostrarAlertaError = true
   ): Promise<T> {
@@ -75,7 +76,7 @@ export class ApiService {
         break;
       default:
         consulta = this.http
-          .get(this.webAddress.getUrl(), { headers })
+          .get(this.webAddress.getUrl(), { headers, params })
           .toPromise<any>();
         break;
     }
@@ -107,7 +108,7 @@ export class ApiService {
           throw new Error(res.message);
         }
 
-        return Promise.resolve(res);
+        return Promise.resolve(res.body);
       })
       .catch(async error => {
         let message = 'Ocurrió un problema al procesar su solicitud';

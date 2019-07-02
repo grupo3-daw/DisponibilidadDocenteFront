@@ -1,7 +1,7 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AdministradorService } from '@negocio/administrador/services/administrador.service';
-import { ProfesorDetalle } from '@negocio/profesor/profesor';
+import { Profesor } from '@negocio/profesor/profesor';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
 
 @Component({
@@ -16,12 +16,12 @@ export class AprobarSolicitudComponent {
     public dialog: MatDialog,
     public thisDialogRef: MatDialogRef<AprobarSolicitudComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: {profesor: ProfesorDetalle},
+    public data: {profesor: Profesor},
     private readonly administradorService: AdministradorService
   ) { }
 
   aprobar(): void {
-    this.administradorService.evaluarSolicitud(this.data.profesor, 'APROBADO');
+    // this.administradorService.evaluarSolicitud(this.data.profesor, 'APROBADO');
   }
 
   rechazar(): void {
@@ -37,7 +37,7 @@ export class AprobarSolicitudComponent {
       .subscribe(
         result => {
           if (result === true && this.motivo.trim().length > 0) {
-            this.administradorService.evaluarSolicitud(this.data.profesor, 'RECHAZADO', this.motivo);
+            // this.administradorService.evaluarSolicitud(this.data.profesor, 'RECHAZADO', this.motivo);
           }
         }
       );

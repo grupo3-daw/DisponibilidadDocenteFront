@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { ProfesorDetalle } from '../profesor';
+import { Profesor } from '../profesor';
 
 @Component({
   selector: 'app-informacion-perfil',
@@ -10,19 +10,19 @@ import { ProfesorDetalle } from '../profesor';
 export class InformacionPerfilComponent {
   horas: number;
   @Input()
-  set perfil(profesor: ProfesorDetalle) {
+  set perfil(profesor: Profesor) {
     let horas = 0;
     if (profesor.disponibilidad) {
       profesor.disponibilidad.forEach(
-        disponibilidad => horas += disponibilidad.HORAS.split(',').length
+        disponibilidad => horas += disponibilidad.horas.split(',').length
       );
     }
     this.horas = horas;
     this._perfil = profesor;
   }
-  get perfil(): ProfesorDetalle {
+  get perfil(): Profesor {
     return this._perfil;
   }
-  private _perfil: ProfesorDetalle;
+  private _perfil: Profesor;
 
 }
