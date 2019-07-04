@@ -12,12 +12,10 @@ import { Usuario } from '@negocio/usuario';
  * @var PERMISO: number
  */
 export interface Profesor extends Usuario {
-  IDPROFESOR: number;
-  IDCATEGORIA: number;
-  NOMBRE: string;
-  APPATERNO: string;
-  APMATERNO: string;
-  PERMISO: number;
+  nombre: string;
+  appaterno: string;
+  apmaterno: string;
+  permiso: number;
 }
 
 export interface Solicitud {
@@ -29,8 +27,10 @@ export interface Solicitud {
 }
 
 export interface Disponibilidad {
-  DIA: number;
-  HORAS: string;
+  id: number;
+  profesor_id: number;
+  dia: number;
+  horas: string;
 }
 
 /**
@@ -44,10 +44,27 @@ export interface Disponibilidad {
  * @var   solicitud?: Solicitud;
  */
 export interface ProfesorDetalle extends Profesor {
-  NOMBRECATEGORIA: string;
+  categoria: Categoria;
+  cursos?: Array<Curso>;
+  disponibilidades?: Array<Disponibilidad>;
+  permiso_object?: Permiso;
+}
+
+export interface Permiso {
+  id: number;
+  profesor_id: number;
+  estado: string;
+  solicitud: string;
+  motivo: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Categoria {
+  id: number;
+  nombrecategoria: string;
   horas_minimas: number;
   horas_maximas: number;
-  cursos?: Array<Curso>;
-  disponibilidad?: Array<Disponibilidad>;
-  solicitud?: any;
+  created_at: string;
+  updated_at: string;
 }

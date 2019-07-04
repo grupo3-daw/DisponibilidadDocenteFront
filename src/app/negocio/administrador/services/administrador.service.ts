@@ -20,19 +20,19 @@ export class AdministradorService {
     private readonly api: ApiService,
     private readonly profesorService: ProfesorService,
     private readonly notificacionService: NotificationService
-  ) {}
+  ) { }
 
   evaluarSolicitud(profesor: ProfesorDetalle, estado: 'APROBADO' | 'RECHAZADO', motivo = ''): void {
     this.api
       .operacion(
-        `profesores/${profesor.IDPROFESOR}/permiso/${profesor.solicitud.idpermiso}`,
+        `profesores/${profesor.id}/permiso/${profesor.permiso}`,
         Consulta.PATCH,
-        {estado, motivo}
+        { estado, motivo }
       )
       .then(res => {
-        let mensaje = `Solicitud de ${profesor.APPATERNO}${profesor.APMATERNO},  ${
-          profesor.NOMBRE
-        } `;
+        let mensaje = `Solicitud de ${profesor.appaterno}${profesor.apmaterno},  ${
+          profesor.nombre
+          } `;
         if (estado === 'APROBADO') {
           mensaje += 'aprobada';
         } else {
@@ -48,37 +48,41 @@ export class AdministradorService {
 
   async listarAdmin(): Promise<ProfesoresCursosVistaAdmin> {
     return this.listar()
-      .then(lista => {
+      .then(async lista => {
+        console.log(lista);
         const profesores: Array<ProfesorVistaAdmin> = [];
         const cursos: Array<SeleccionEscuela> = [];
         const ids: Array<number> = [];
         lista.forEach(async profesor => {
-          const detalle = await this.profesorService.obtenerDetalle(profesor.IDPROFESOR);
+          const detalle = await this.profesorService.obtenerDetalle(profesor.id);
+          console.log(detalle);
           let cursosDetalle = '';
           detalle.cursos.forEach((curso, index) => {
             let signo = ', ';
             if (index === detalle.cursos.length - 1) {
               signo = '';
             }
-            if (!ids.includes(curso.IDCURSO)) {
-              ids.push(curso.IDCURSO);
+            if (!ids.includes(curso.id)) {
+              ids.push(curso.id);
               cursos.push({
-                nombre: curso.NOMBRECURSO,
-                escuela: curso.IDESCUELA,
+                nombre: curso.nombrecurso,
+                escuela: curso.escuela_id,
                 seleccionado: false
               });
             }
-            cursosDetalle += `${curso.NOMBRECURSO}${signo}`;
+            cursosDetalle += `${curso.nombrecurso}${signo}`;
           });
-          if (detalle.disponibilidad.length > 0) {
+          if (detalle.disponibilidades.length > 0) {
             profesores.push({
               ...detalle,
-              nombre: `${detalle.APPATERNO} ${detalle.APMATERNO},
-                ${detalle.NOMBRE}`,
+              tipo: detalle.categoria.nombrecategoria,
+              nombre: `${detalle.appaterno} ${detalle.apmaterno},
+                ${detalle.nombre}`,
               cursosEscogidos: cursosDetalle
             });
           }
         });
+
         return {
           profesores,
           cursos
@@ -87,7 +91,10 @@ export class AdministradorService {
       .catch();
   }
 
-  private async listar(): Promise<Array<Profesor>> {
-    return this.api.operacion('profesores');
+  async listar(): Promise<Array<Profesor>> {
+    return this.api.operacion<{ profesores: Array<Profesor> }>('profesores')
+      .then(
+        lista => lista.profesores
+      );
   }
 }

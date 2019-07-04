@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
+import { Curso } from '@negocio/cursos';
 import { IconButton } from '@shared/buttons';
 import { MatTablePadre } from '@shared/tables';
 
-export interface CursoSeleccionados {
-  id: number;
+export interface CursoSeleccionado extends Curso {
   escuela: string;
   curso: string;
 }
@@ -13,7 +13,7 @@ export interface CursoSeleccionados {
   templateUrl: './cursos-escogidos.component.html',
   styleUrls: ['./cursos-escogidos.component.scss']
 })
-export class CursosEscogidosComponent extends MatTablePadre<CursoSeleccionados>  {
+export class CursosEscogidosComponent extends MatTablePadre<CursoSeleccionado>  {
   constructor() {
     super();
     this.displayedColumns = [

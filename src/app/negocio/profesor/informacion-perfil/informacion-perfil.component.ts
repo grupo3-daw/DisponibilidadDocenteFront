@@ -12,9 +12,9 @@ export class InformacionPerfilComponent {
   @Input()
   set perfil(profesor: ProfesorDetalle) {
     let horas = 0;
-    if (profesor.disponibilidad) {
-      profesor.disponibilidad.forEach(
-        disponibilidad => horas += disponibilidad.HORAS.split(',').length
+    if (profesor.disponibilidades) {
+      profesor.disponibilidades.forEach(
+        disponibilidad => horas += disponibilidad.horas.split(',').length
       );
     }
     this.horas = horas;

@@ -4,6 +4,7 @@
  * @var CONTRASENA: string
  */
 export interface Usuario {
-  EMAIL: string;
-  CONTRASENA: string;
+  id: number;
+  email: string;
+  contrasena: string;
 }

@@ -1,4 +1,5 @@
 <app-mat-table
+  *ngIf="!loading"
   [data]="data"
   [buttonsExt]="buttonsExt"
   [buttons]="buttons"
@@ -38,18 +39,14 @@
 <ng-template #cursosVista>
   <mat-tab-group>
     <mat-tab label="Ingenieria de Software">
-      <div
-        *ngFor="let curso of mostrarCursosSoftware(); let i = index"
-      >
+      <div *ngFor="let curso of mostrarCursosSoftware(); let i = index">
         <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true, i) : null">
           {{ curso.nombre }}
         </mat-checkbox>
       </div>
     </mat-tab>
     <mat-tab label="Ingenieria de Sistemas">
-      <div
-        *ngFor="let curso of mostrarCursosSistema(); let i = index"
-      >
+      <div *ngFor="let curso of mostrarCursosSistema(); let i = index">
         <mat-checkbox [checked]="curso.seleccionado" (change)="$event ? actualizar(true, i) : null">
           {{ curso.nombre }}
         </mat-checkbox>

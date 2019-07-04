@@ -27,8 +27,7 @@ export class RegistrarDisponibilidadComponent implements OnInit {
   @Input() profesorVista = true;
   @Input() profesor: ProfesorDetalle;
   @Input() data: Array<SemanaLaborable>;
-  @Input() estadoDisponibilidad: EstadoDisponibilidad;
-  @ViewChild('modelo', {static:false}) modelo;
+  @ViewChild('modelo', { static: false }) modelo;
   displayedColumns: Array<string> = [
     'horaRango',
     'lunes',
@@ -76,11 +75,11 @@ export class RegistrarDisponibilidadComponent implements OnInit {
           'viernes',
           'sabado'
         ];
-        this.profesor.disponibilidad.forEach(element => {
-          const horas = element.HORAS.split(',');
+        this.profesor.disponibilidades.forEach(element => {
+          const horas = element.horas.split(',');
           horas.forEach(hora => {
             const indice = this.data.findIndex(semanaLaborable => semanaLaborable.hora === parseInt(hora, 10));
-            const dia = toStringDia(element.DIA);
+            const dia = toStringDia(element.dia);
             this.data[indice][dia] = true;
           });
         });
@@ -102,13 +101,13 @@ export class RegistrarDisponibilidadComponent implements OnInit {
       dialogRef.afterClosed()
         .subscribe(result => {
           if (result === true && this.profesorVista) {
-            if (this.estadoDisponibilidad === EstadoDisponibilidad.REGISTRAR) {
-              this.profesorService.registrarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
+            if (this.profesor.permiso === EstadoDisponibilidad.REGISTRAR) {
+              this.profesorService.registrarDisponibilidadCursos(this.profesor.id, this.profesor.cursos, this.dias, this.horario);
             } else {
-              this.profesorService.editarDisponibilidadCursos(this.profesor.IDPROFESOR, this.profesor.cursos, this.dias, this.horario);
+              this.profesorService.editarDisponibilidadCursos(this.profesor.id, this.profesor.cursos, this.dias, this.horario);
             }
           } else {
-            this.profesorService.exitoEnProceso.emit(this.estadoDisponibilidad);
+            this.profesorService.exitoEnProceso.emit(this.profesor.permiso);
           }
         });
     }, 10);

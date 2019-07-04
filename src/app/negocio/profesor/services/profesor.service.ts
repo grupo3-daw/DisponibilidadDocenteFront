@@ -15,21 +15,27 @@ export class ProfesorService {
   constructor(
     private readonly api: ApiService,
     private readonly notificacionService: NotificationService
-  ) {}
+  ) { }
 
   async obtenerDetalle(id: number): Promise<ProfesorDetalle> {
-    return this.api.operacion(`profesores/${id}`);
+    return this.api.operacion(`profesores/${id}`)
+      .then(
+        res => res.profesor
+      )
+      .catch(
+        error => undefined
+      );
   }
 
   async registrarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
     return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.POST, {
-      cursos: cursos.map(curso => curso.IDCURSO)
+      cursos: cursos.map(curso => curso.id)
     });
   }
 
   async editarCursos(idProfesor: number, cursos: Array<Curso>): Promise<any> {
     return this.api.operacion(`profesores/${idProfesor}/cursos`, Consulta.PUT, {
-      cursos: cursos.map(curso => curso.IDCURSO)
+      cursos: cursos.map(curso => curso.id)
     });
   }
 
@@ -110,7 +116,7 @@ export class ProfesorService {
 
   solicitarEdicion(idProfesor: number, solicitud: string): void {
     this.api
-      .operacion(`profesores/${idProfesor}/permiso`, Consulta.POST, {solicitud})
+      .operacion(`profesores/${idProfesor}/permiso`, Consulta.POST, { solicitud })
       .then(res => {
         this.notificacionService.mostrarMensajeSuccess('Solicitud Enviada Exitosamente');
         this.exitoEnProceso.emit(EstadoDisponibilidad.PROCESANDO_SOLICITUD);
