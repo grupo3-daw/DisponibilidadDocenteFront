@@ -19,6 +19,5 @@ export class LayoutProfesorComponent implements OnInit {
 
   async ngOnInit(): Promise<any> {
     this.profesorDetalle = await this.profesorService.obtenerDetalle(this.user.id);
-    console.log(this.profesorDetalle);
   }
 }

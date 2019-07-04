@@ -55,7 +55,6 @@ export class DisponibilidadSemanalComponent implements OnInit {
       new SemanaLaborable(22)
     ]);
     this.seleccionarCursoService.cursosSeleccionadosEvento.subscribe((res: Array<CursoSeleccionado>) => {
-      console.log(res);
       if (res.length > 0) {
         this.profesor.cursos = res.map(curso => ({
           id: curso.id,
@@ -110,21 +109,7 @@ export class DisponibilidadSemanalComponent implements OnInit {
   }
 
   private inicializarDisponibilidad(disponibilidad: Array<Disponibilidad>): void {
-    if (this.profesor.permiso_object) {
-      if (this.profesor.permiso_object.estado === 'RECHAZADO') {
-        setTimeout(() => {
-          this.profesor.permiso = EstadoDisponibilidad.RECHAZADO;
-        }, 1);
-
-      } else {
-
-        setTimeout(() => {
-          this.profesor.permiso = EstadoDisponibilidad.EDITAR;
-        }, 1);
-      }
-    }
     disponibilidad.forEach(element => {
-      console.log(element);
       const horas = element.horas.split(',');
       horas.forEach(hora => {
         const indice = this.dataSource.data.findIndex(
@@ -134,7 +119,6 @@ export class DisponibilidadSemanalComponent implements OnInit {
         this.horas++;
         this.dataSource.data[indice][dia] = true;
       });
-      console.log(this.horas);
       if (this.horas !== 0) {
         this.diasNoSeleccionados = false;
       }

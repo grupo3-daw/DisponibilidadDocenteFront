@@ -24,9 +24,9 @@ export class MatTablePadre<T = any> extends MatTableData<T> implements OnInit, O
   sortedData: T;
   columnsToDisplay: Array<string> = [];
   resultsLength = 0;
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
-  @ViewChild('table', {static: false}) table: MatTable<T>;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild('table', { static: false }) table: MatTable<T>;
   constructor() {
     super();
   }

@@ -64,7 +64,8 @@ export class RegistrarDisponibilidadComponent implements OnInit {
           new SemanaLaborable(18),
           new SemanaLaborable(19),
           new SemanaLaborable(20),
-          new SemanaLaborable(21)
+          new SemanaLaborable(21),
+          new SemanaLaborable(22)
         ];
         this.displayedColumns = [
           'horaRango',

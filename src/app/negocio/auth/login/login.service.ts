@@ -28,7 +28,6 @@ export class LoginService {
 
   async onSubmit(form: { email: string, contrasena: string }): Promise<boolean> {
     const res = await this.api.operacion<ProfesorLogin | AdminstradorLogin>('login', Consulta.POST, form);
-    console.log(res);
     let ruta = 'administrador';
     if (isProfesorLogin(res)) {
       ruta = 'profesor';

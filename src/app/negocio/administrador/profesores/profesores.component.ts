@@ -4,7 +4,7 @@ import { ProfesorDetalle } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { FabButton, IconButton } from '@shared/buttons';
 import { ModalConfirmacionComponent } from '@shared/modals/modal-confirmacion/modal-confirmacion.component';
-import { MatTableData } from '@shared/tables/mat-tables/mat-table/mat-table-data';
+import { MatTablePadre } from '@shared/tables';
 
 import { Administrador } from '../administrador';
 import { AdministradorService } from '../services/administrador.service';
@@ -67,7 +67,7 @@ export class Selecciones {
   templateUrl: './profesores.component.html',
   styleUrls: ['./profesores.component.css']
 })
-export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implements OnInit {
+export class ProfesoresComponent extends MatTablePadre<ProfesorVistaAdmin> implements OnInit {
   escuela = Escuela;
   @Input() user: Administrador;
   @ViewChild('cursosVista', { static: true }) cursosVista;
@@ -105,7 +105,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
       },
       {
         header: 'Tipo',
-        columna: 'NOMBRECATEGORIA'
+        columna: 'tipo'
       },
       {
         header: 'Cursos',
@@ -161,13 +161,10 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
   async ngOnInit(): Promise<any> {
     const res = await this.administradorService.listarAdmin();
     this.data = res.profesores;
-    console.log(this.data);
     this.cursosEnModal = new Selecciones(res.cursos);
+    this.inicializar();
     this.loading = false;
 
-    setTimeout(() => {
-      this.data = [...this.data];
-    }, 100);
   }
 
   operaciones(event: { numeroFila: number; data: { id: string; data: ProfesorDetalle } }): void {
@@ -206,12 +203,8 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     }
   }
 
-  mostrarCursosSoftware(): Array<Seleccion> {
-    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === 2);
-  }
-
-  mostrarCursosSistema(): Array<Seleccion> {
-    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === 3);
+  mostrarCursosPorEscuela(escuela: number): Array<Seleccion> {
+    return this.cursosEnModal.data.filter((curso: SeleccionEscuela) => curso.escuela === escuela);
   }
 
   remove(esCursos: boolean, chip: Seleccion): void {

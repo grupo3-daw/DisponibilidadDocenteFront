@@ -5,27 +5,52 @@
   </button>
 </h1>
 <div mat-dialog-content>
-  <p>Profesor: {{ data.profesor.APPATERNO}}  {{data.profesor.APMATERNO}}, {{data.profesor.NOMBRE}}</p>
-  <p>Solicitud: {{ data.profesor.solicitud.solicitud }}</p>
+  <p>
+    Profesor: {{ data.profesor.appaterno }} {{ data.profesor.apmaterno }},
+    {{ data.profesor.nombre }}
+  </p>
+  <p>Solicitud: {{ data.profesor.permiso_object.solicitud }}</p>
+  <p>
+    Estado:
+    <span
+      [ngClass]="{
+        error: data.profesor.permiso_object.estado === 'RECHAZADO',
+        primary: data.profesor.permiso_object.estado === 'APROBADO'
+      }"
+      >{{ data.profesor.permiso_object.estado }}</span
+    >
+  </p>
 </div>
-<div mat-dialog-actions >
+<div mat-dialog-actions *ngIf="data.profesor.permiso_object.estado == '-'">
   <button mat-raised-button color="accent" (click)="aprobar()">
     Aprobar
   </button>
   <button mat-raised-button color="warn" (click)="rechazar()">Rechazar</button>
 </div>
 
-
 <ng-template #rechazarModelo>
   <form>
     <mat-form-field>
       <mat-label>Escriba el motivo</mat-label>
-      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
-        cdkAutosizeMaxRows="5"  [(ngModel)]="motivo" [ngModelOptions]="{standalone: true}"></textarea>
-        <button mat-button *ngIf="motivo.length > 0"  matSuffix mat-icon-button aria-label="Clear" (click)="motivo=''">
-          <mat-icon>close</mat-icon>
-        </button>
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="5"
+        [(ngModel)]="motivo"
+        [ngModelOptions]="{standalone: true}"
+      ></textarea>
+      <button
+        mat-button
+        *ngIf="motivo.length > 0"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="motivo = ''"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
     </mat-form-field>
   </form>
 </ng-template>
-

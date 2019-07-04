@@ -25,7 +25,7 @@ export class AdministradorService {
   evaluarSolicitud(profesor: ProfesorDetalle, estado: 'APROBADO' | 'RECHAZADO', motivo = ''): void {
     this.api
       .operacion(
-        `profesores/${profesor.id}/permiso/${profesor.permiso}`,
+        `profesores/${profesor.id}/permiso/${profesor.permiso_object.id}`,
         Consulta.PATCH,
         { estado, motivo }
       )
@@ -47,48 +47,48 @@ export class AdministradorService {
   }
 
   async listarAdmin(): Promise<ProfesoresCursosVistaAdmin> {
-    return this.listar()
-      .then(async lista => {
-        console.log(lista);
-        const profesores: Array<ProfesorVistaAdmin> = [];
-        const cursos: Array<SeleccionEscuela> = [];
-        const ids: Array<number> = [];
-        lista.forEach(async profesor => {
-          const detalle = await this.profesorService.obtenerDetalle(profesor.id);
-          console.log(detalle);
-          let cursosDetalle = '';
-          detalle.cursos.forEach((curso, index) => {
-            let signo = ', ';
-            if (index === detalle.cursos.length - 1) {
-              signo = '';
-            }
-            if (!ids.includes(curso.id)) {
-              ids.push(curso.id);
-              cursos.push({
-                nombre: curso.nombrecurso,
-                escuela: curso.escuela_id,
-                seleccionado: false
+    return this.api.operacion<{ profesores: Array<ProfesorDetalle> }>('profesores/detalle')
+      .then(
+        lista => {
+          const profesores: Array<ProfesorVistaAdmin> = [];
+          const cursos: Array<SeleccionEscuela> = [];
+          const ids: Array<number> = [];
+          lista.profesores.forEach(
+            profesor => {
+              let cursosDetalle = '';
+              profesor.cursos.forEach((curso, index) => {
+                let signo = ', ';
+                if (index === profesor.cursos.length - 1) {
+                  signo = '';
+                }
+                if (!ids.includes(curso.id)) {
+                  ids.push(curso.id);
+                  cursos.push({
+                    nombre: curso.nombrecurso,
+                    escuela: curso.escuela_id,
+                    seleccionado: false
+                  });
+                }
+                cursosDetalle += `${curso.nombrecurso}${signo}`;
               });
+              if (profesor.disponibilidades.length > 0) {
+                profesores.push({
+                  ...profesor,
+                  tipo: profesor.categoria.nombrecategoria,
+                  nombre: `${profesor.appaterno} ${profesor.apmaterno},
+                ${profesor.nombre}`,
+                  cursosEscogidos: cursosDetalle
+                });
+              }
             }
-            cursosDetalle += `${curso.nombrecurso}${signo}`;
-          });
-          if (detalle.disponibilidades.length > 0) {
-            profesores.push({
-              ...detalle,
-              tipo: detalle.categoria.nombrecategoria,
-              nombre: `${detalle.appaterno} ${detalle.apmaterno},
-                ${detalle.nombre}`,
-              cursosEscogidos: cursosDetalle
-            });
-          }
-        });
+          );
 
-        return {
-          profesores,
-          cursos
-        };
-      })
-      .catch();
+          return {
+            profesores,
+            cursos
+          };
+        }
+      );
   }
 
   async listar(): Promise<Array<Profesor>> {

@@ -3,6 +3,10 @@ app-mat-table {
   padding: 20px;
 }
 
+table {
+  width: 100%;
+}
+
 mat-chip-list {
   display: block;
   margin-bottom: 20px;

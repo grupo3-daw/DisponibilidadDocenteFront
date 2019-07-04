@@ -5,10 +5,7 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form
-      [formGroup]="formGroup"
-      *ngIf="permiso !== estado.SOLICITAR && permiso !== estado.RECHAZADO"
-    >
+    <form [formGroup]="formGroup" *ngIf="permiso === estado.REGISTRAR || permiso === estado.EDITAR">
       <mat-form-field>
         <mat-select
           placeholder="Escoja hasta 4 elementos"

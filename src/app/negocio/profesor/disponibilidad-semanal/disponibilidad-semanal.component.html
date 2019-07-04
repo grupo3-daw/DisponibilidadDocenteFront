@@ -33,7 +33,7 @@
               !this.dataSource.data[i]['lunes'] && this.horas >= this.profesor.horas_maximas
           }"
           *matCellDef="let element; let i = index"
-          (mouseover)="actualizarDisponibilidad(i, 'lunes')"
+          (mousedown)="actualizarDisponibilidad(i, 'lunes')"
         ></td>
       </ng-container>
 
@@ -49,7 +49,7 @@
               !this.dataSource.data[i]['martes'] && this.horas >= this.profesor.horas_maximas
           }"
           *matCellDef="let element; let i = index"
-          (mouseover)="actualizarDisponibilidad(i, 'martes')"
+          (mousedown)="actualizarDisponibilidad(i, 'martes')"
         ></td>
       </ng-container>
 
@@ -65,7 +65,7 @@
               !this.dataSource.data[i]['miercoles'] && this.horas >= this.profesor.horas_maximas
           }"
           *matCellDef="let element; let i = index"
-          (mouseover)="actualizarDisponibilidad(i, 'miercoles')"
+          (mousedown)="actualizarDisponibilidad(i, 'miercoles')"
         ></td>
       </ng-container>
       <ng-container matColumnDef="jueves">
@@ -80,7 +80,7 @@
               !this.dataSource.data[i]['jueves'] && this.horas >= this.profesor.horas_maximas
           }"
           *matCellDef="let element; let i = index"
-          (mouseover)="actualizarDisponibilidad(i, 'jueves')"
+          (mousedown)="actualizarDisponibilidad(i, 'jueves')"
         ></td>
       </ng-container>
       <ng-container matColumnDef="viernes">
@@ -95,7 +95,7 @@
               !this.dataSource.data[i]['viernes'] && this.horas >= this.profesor.horas_maximas
           }"
           *matCellDef="let element; let i = index"
-          (mouseover)="actualizarDisponibilidad(i, 'viernes')"
+          (mousedown)="actualizarDisponibilidad(i, 'viernes')"
         ></td>
       </ng-container>
       <ng-container matColumnDef="sabado">
@@ -110,7 +110,7 @@
               !this.dataSource.data[i]['sabado'] && this.horas >= this.profesor.horas_maximas
           }"
           *matCellDef="let element; let i = index"
-          (mouseover)="actualizarDisponibilidad(i, 'sabado')"
+          (mousedown)="actualizarDisponibilidad(i, 'sabado')"
         ></td>
       </ng-container>
 
@@ -137,10 +137,10 @@
         <p *ngSwitchCase="estado.SOLICITAR">
           Solicitar Permisos de Edición
         </p>
-        <p *ngSwitchCase="estado.PROCESANDO_SOLICITUD">
+        <p *ngSwitchCase="estado.PROCESANDO_SOLICITUD" class="accent">
           Solicitud en proceso de evaluación
         </p>
-        <p *ngSwitchCase="estado.RECHAZADO">
+        <p *ngSwitchCase="estado.RECHAZADO"  class="error">
           Solicitud Rechazada
         </p>
         <p *ngSwitchDefault>

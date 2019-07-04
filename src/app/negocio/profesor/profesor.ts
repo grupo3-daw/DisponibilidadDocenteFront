@@ -16,6 +16,9 @@ export interface Profesor extends Usuario {
   appaterno: string;
   apmaterno: string;
   permiso: number;
+  categoria_id: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Solicitud {
@@ -31,6 +34,8 @@ export interface Disponibilidad {
   profesor_id: number;
   dia: number;
   horas: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 /**

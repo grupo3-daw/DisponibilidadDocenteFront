@@ -46,29 +46,27 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
   ) {
     super([{ name: 'cursos', validators: [Validators.required] }]);
     this.formGroup.valueChanges.subscribe(result => {
-      console.log(result);
       this.actualizarCursosSeleccionados(result.cursos);
     });
   }
 
   async ngOnInit(): Promise<any> {
-
-
+    console.log(this.permiso);
     if (
-      this.permiso === EstadoDisponibilidad.SOLICITAR ||
-      this.permiso === EstadoDisponibilidad.EDITAR ||
-      this.permiso === EstadoDisponibilidad.RECHAZADO
+      this.permiso === EstadoDisponibilidad.REGISTRAR
     ) {
+      this.cursosSeleccionados = [];
+      await this.llenarSelectEscuelasCursos();
+    } else {
       this.cursosSeleccionados = this.cursosEscogidos.map(row => {
         const escuela = nombreEscuela(row);
 
         return { ...row, escuela, curso: row.nombrecurso };
       });
+      console.log(this.cursosSeleccionados);
       if (this.permiso === EstadoDisponibilidad.EDITAR) {
         await this.llenarSelectEscuelasCursos();
       }
-    } else {
-      await this.llenarSelectEscuelasCursos();
     }
 
     this.formGroup.setValue({ cursos: this.cursosSeleccionados.map(curso => curso.id) });

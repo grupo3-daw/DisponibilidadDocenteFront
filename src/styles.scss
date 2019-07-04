@@ -56,7 +56,8 @@ div.fondo {
   text-align: right;
 }
 
-.primary-snackbar, .accent-snackbar {
+.primary-snackbar,
+.accent-snackbar {
   background: $primary;
   color: white;
 }
@@ -66,6 +67,17 @@ div.fondo {
   color: white;
 }
 
+.error {
+  color: $warn;
+}
+
+.accent {
+  color: $accent;
+}
+
+.primary {
+  color: $primary;
+}
 
 .grid {
   display: grid;
