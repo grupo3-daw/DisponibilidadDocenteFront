@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { Escuela } from '@negocio/administrador/profesores/profesores.component';
+import { Escuela } from '@negocio/administrador/profesores/escuela.enum';
 import { Curso, CursoService } from '@negocio/cursos';
 import { Formulario } from '@shared/formulario/formulario';
 
@@ -34,10 +34,10 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
     private readonly cursoService: CursoService,
     private readonly seleccionarCurso: SeleccionarCursoService
   ) {
-    super([{name: 'cursos', validators: [Validators.required]}]);
+    super([{ name: 'cursos', validators: [Validators.required] }]);
     this.escuelas = [
-      {value: 2, viewValue: Escuela.Sistemas},
-      {value: 3, viewValue: Escuela.Software}
+      { value: 2, viewValue: Escuela.Sistemas },
+      { value: 3, viewValue: Escuela.Software }
     ];
 
     this.formGroup.valueChanges.subscribe(result => {
@@ -62,14 +62,14 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
         cursoEscogido => cursoEscogido.IDCURSO === curso.IDCURSO
       );
       if (temp) {
-        this.cursosSeleccionados.push({id: curso.IDCURSO, escuela, curso: curso.NOMBRECURSO});
+        this.cursosSeleccionados.push({ id: curso.IDCURSO, escuela, curso: curso.NOMBRECURSO });
       }
       this.escuelasCursos.push({
         value: curso.IDCURSO,
         viewValue: `${escuela} |  ${curso.NOMBRECURSO}`
       });
     });
-    this.formGroup.setValue({cursos: this.cursosSeleccionados.map(curso => curso.id)});
+    this.formGroup.setValue({ cursos: this.cursosSeleccionados.map(curso => curso.id) });
     this.temp = this.escuelasCursos;
   }
 
@@ -91,7 +91,7 @@ export class SeleccionarCursoComponent extends Formulario implements OnInit {
     this.cursosSeleccionados = [];
     filtrado.forEach(row => {
       const separado = row.viewValue.split('|');
-      this.cursosSeleccionados.push({id: row.value, escuela: separado[0], curso: separado[1]});
+      this.cursosSeleccionados.push({ id: row.value, escuela: separado[0], curso: separado[1] });
     });
     this.seleccionarCurso.cursosSeleccionadosEvento.emit(this.cursosSeleccionados);
   }

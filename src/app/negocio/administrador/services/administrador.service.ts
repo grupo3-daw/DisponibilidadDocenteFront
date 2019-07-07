@@ -1,10 +1,12 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { ProfesorVistaAdmin, SeleccionEscuela } from '@negocio/administrador/profesores/profesores.component';
 import { Profesor, ProfesorDetalle } from '@negocio/profesor/profesor';
 import { ProfesorService } from '@negocio/profesor/services/profesor.service';
 import { ApiService } from '@shared/services/api.service';
 import { Consulta } from '@shared/services/consulta.enum';
 import { NotificationService } from '@shared/services/notification.service';
+
+import { ProfesorVistaAdmin } from '../profesores/profesor-vista-admin';
+import { SeleccionEscuela } from '../profesores/seleccion-escuela';
 
 export interface ProfesoresCursosVistaAdmin {
   profesores: Array<ProfesorVistaAdmin>;
@@ -20,19 +22,19 @@ export class AdministradorService {
     private readonly api: ApiService,
     private readonly profesorService: ProfesorService,
     private readonly notificacionService: NotificationService
-  ) {}
+  ) { }
 
   evaluarSolicitud(profesor: ProfesorDetalle, estado: 'APROBADO' | 'RECHAZADO', motivo = ''): void {
     this.api
       .operacion(
         `profesores/${profesor.IDPROFESOR}/permiso/${profesor.solicitud.idpermiso}`,
         Consulta.PATCH,
-        {estado, motivo}
+        { estado, motivo }
       )
       .then(res => {
         let mensaje = `Solicitud de ${profesor.APPATERNO}${profesor.APMATERNO},  ${
           profesor.NOMBRE
-        } `;
+          } `;
         if (estado === 'APROBADO') {
           mensaje += 'aprobada';
         } else {

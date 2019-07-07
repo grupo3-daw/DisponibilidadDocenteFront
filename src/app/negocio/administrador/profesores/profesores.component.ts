@@ -8,55 +8,11 @@ import { MatTableData } from '@shared/tables/mat-tables/mat-table/mat-table-data
 
 import { AdministradorService } from '../services/administrador.service';
 import { AprobarSolicitudComponent } from './aprobar-solicitud/aprobar-solicitud.component';
-
-export enum Escuela {
-  Software = 'Ingenieria de Software',
-  Sistemas = 'Ingenieria de Sistemas'
-}
-export enum Tiempo {
-  completo = 'Tiempo Completo',
-  parcial = 'Tiempo Parcial'
-}
-
-export interface Dictado {
-  escuela: Escuela;
-  cursos: string;
-}
-
-export interface ProfesorVistaAdmin extends ProfesorDetalle {
-  nombre: string;
-  cursosEscogidos: string;
-}
-
-export interface Seleccion {
-  nombre: string;
-  seleccionado: boolean;
-}
-
-export interface SeleccionEscuela extends Seleccion {
-  escuela: number;
-}
-
-export class Selecciones {
-  constructor(public data: Array<Seleccion> = []) {}
-
-  eliminar(seleccion: Seleccion): boolean {
-    const index = this.data.indexOf(seleccion);
-    if (index >= 0) {
-      this.data.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-
-  deseleccionar(seleccion: Seleccion) {
-    const index = this.data.indexOf(seleccion);
-    this.data[index].seleccionado = false;
-  }
-  devolverSoloNombre(): Array<string> {
-    return this.data.filter(row => row.seleccionado).map(row => row.nombre);
-  }
-}
+import { Escuela } from './escuela.enum';
+import { ProfesorVistaAdmin } from './profesor-vista-admin';
+import { Seleccion } from './seleccion';
+import { SeleccionEscuela } from './seleccion-escuela';
+import { Selecciones } from './selecciones';
 
 @Component({
   selector: 'app-profesores',
@@ -66,8 +22,8 @@ export class Selecciones {
 export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implements OnInit {
   escuela = Escuela;
   @Input() user;
-  @ViewChild('cursosVista', {static: true}) cursosVista;
-  @ViewChild('tiposVista', {static: true}) tiposVista;
+  @ViewChild('cursosVista', { static: true }) cursosVista;
+  @ViewChild('tiposVista', { static: true }) tiposVista;
   profesor: ProfesorDetalle;
   abriendoPopUp = false;
   cursosEnModal: Selecciones = new Selecciones();
@@ -163,7 +119,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     this.loading = false;
   }
 
-  operaciones(event: {numeroFila: number; data: {id: string; data: ProfesorDetalle}}): void {
+  operaciones(event: { numeroFila: number; data: { id: string; data: ProfesorDetalle } }): void {
     this.profesor = event.data.data;
     switch (event.data.id) {
       case 'disponibilidad':
@@ -172,7 +128,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
       case 'permisos':
         this.dialog.open(AprobarSolicitudComponent, {
           width: '450px',
-          data: {profesor: this.profesor}
+          data: { profesor: this.profesor }
         });
         break;
       default:
@@ -191,7 +147,7 @@ export class ProfesoresComponent extends MatTableData<ProfesorVistaAdmin> implem
     }
   }
 
-  filtros(event: {id: string; data: any}): void {
+  filtros(event: { id: string; data: any }): void {
     if (event.id === 'filtrar_cursos') {
       this.mostrarCursos();
     } else {
